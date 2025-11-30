@@ -1,3 +1,55 @@
+import {
+    BaseControl,
+    TextControl,
+    __experimentalGrid as Grid,
+    __experimentalNumberControl as NumberControl,
+    SelectControl,
+    Button,
+    Popover,
+} from '@wordpress/components';
+import {useEffect, useState, memo, useCallback} from "@wordpress/element";
+import {isEqual} from "lodash";
+import {ColorSelector} from "Components/ColorSelector";
+
+const generateCSS = (fill, weight, opsz) =>
+    `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
+
+const FAMILY_MAP = {
+    solid: "materialsymbols",
+    outlined: "materialsymbolsoutlined",
+    default: "materialsymbolsoutlined",
+};
+
+const IconPreview = ({name: selectedName, style = "outlined", weight = 300, size = 32, settings = {}}) => {
+    const name =
+        typeof selectedName === "string" && selectedName.trim().length
+            ? selectedName.trim()
+            : "home";
+    console.log(settings);
+    return (
+        <span
+            className="material-symbols-outlined"
+            style={{
+                fontVariationSettings: `'FILL' ${style === "solid" ? 1 : 0},
+                                             'wght' ${weight},
+                                             'GRAD' 0,
+                                             'opsz' ${size}`,
+                fontSize: `${size}px`,
+                lineHeight: 1,
+                color: settings?.color ?? "inherit",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "32px",
+                height: "32px",
+            }}
+        >
+                {name}
+            </span>
+    );
+};
+
+
 export const IconControl = ({
                                 fieldKey,
                                 props,
@@ -192,3 +244,54 @@ export const IconControl = ({
         </BaseControl>
     );
 };
+
+
+export const MaterialIcon = ({
+                                 name,
+                                 weight = 300,
+                                 size,
+                                 style = "outlined",
+                                 color,
+                                 gradient,
+                                 className = "",
+                             }) => {
+
+    const css = `'FILL' ${style === "solid" ? 1 : 0},
+                 'wght' ${weight},
+                 'GRAD' 0,
+                 'opsz' ${size || 24}`;
+
+    const classNames = [
+        "material-symbols-outlined",
+        "wpbs-icon",
+        className,
+        gradient ? "--gradient" : null,
+    ].filter(Boolean).join(" ");
+
+    // Build the style object
+    const styleObj = {
+        fontVariationSettings: css,
+        display: "inline-flex",
+        fontSize: `${size}px`,
+        fontWeight: weight,
+        lineHeight: 1,
+    };
+
+    if (gradient) {
+        // Gradient text technique
+        styleObj.background = gradient;
+        styleObj.color = "transparent"; // fallback
+        styleObj.WebkitBackgroundClip = "text";
+        styleObj.WebkitTextFillColor = "transparent";
+        styleObj.backgroundClip = "text";
+    } else if (color) {
+        styleObj.color = color;
+    }
+
+    return !name ? null : (
+        <span className={classNames} style={styleObj}>
+            {name}
+        </span>
+    );
+};
+

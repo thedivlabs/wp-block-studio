@@ -60,20 +60,6 @@ export const DividerOptions = ({value = {}, props, onChange, ...restProps}) => {
                 onChange={(iconObj) => update({icon: iconObj})}
             />
 
-            {/* ------- Icon Color ------- */}
-            <PanelColorSettings
-                enableAlpha
-                className="!p-0 !border-0 !m-0"
-                colorSettings={[
-                    {
-                        slug: "icon-color",
-                        label: "Icon Color",
-                        value: divider.iconColor,
-                        onChange: (val) => update({'icon-color': val}),
-                        isShownByDefault: true,
-                    },
-                ]}
-            />
         </Grid>
     );
 };

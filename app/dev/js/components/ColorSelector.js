@@ -29,6 +29,10 @@ export function ColorSelector({ label, value, onChange }) {
         // - { color: string|null, gradient: undefined }
         // - { gradient: string|null, color: undefined }
         // - null
+
+
+        console.log(val);
+
         if (!val) {
             onChange("");
             return;
@@ -81,8 +85,10 @@ export function ColorSelector({ label, value, onChange }) {
                         label={label}
                         colorValue={colorValue}
                         gradientValue={gradientValue}
-                        onColorChange={(col) => handleChange({ color: col })}
-                        onGradientChange={(grad) => handleChange({ gradient: grad })}
+                        onChange={(newValue) => {
+                            console.log("RAW", newValue);
+                            onChange(newValue || "");
+                        }}
                         colors={colors}
                         gradients={gradients}
                         enableAlpha

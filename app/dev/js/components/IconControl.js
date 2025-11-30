@@ -138,7 +138,7 @@ export const IconControl = ({
         }
     }, [value]);
 
-    const {name, weight = 300, size = 24, style = "outlined"} = local;
+    const {name, weight = 300, size = 24, style = "outlined", color = ""} = local;
 
     const labelNode = (
         <>

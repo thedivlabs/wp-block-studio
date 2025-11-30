@@ -3,7 +3,7 @@ import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/bloc
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl, __experimentalGrid as Grid} from "@wordpress/components";
 import {ShadowSelector} from "Components/ShadowSelector";
-import {cleanObject, normalizeMedia} from "Includes/helper";
+import {cleanObject, getEditorPalettes, normalizeMedia} from "Includes/helper";
 import {IconControl} from "Components/IconControl";
 import {useMemo} from "react";
 
@@ -50,33 +50,8 @@ export const Field = memo(
             .filter(Boolean)
             .join(" ");
 
-// Pull theme + default palettes so all fields can use them.
-        const { colors, gradients } = useMemo(() => {
-            const editorSettings = wp.data
-                .select('core/editor')
-                ?.getEditorSettings?.() || {};
+        const { colors, gradients } = useMemo(() => getEditorPalettes(), []);
 
-            const themeColors = editorSettings.colors || [];
-            const defaultColors = editorSettings?.__experimentalFeatures?.color?.palette?.default || [];
-
-            const mergedColors = [
-                ...themeColors,
-                ...defaultColors,
-            ];
-
-            const themeGradients = editorSettings.gradients || [];
-            const defaultGradients = editorSettings?.__experimentalFeatures?.color?.gradients?.default || [];
-
-            const mergedGradients = [
-                ...defaultGradients,
-                ...themeGradients,
-            ];
-
-            return {
-                colors: mergedColors,
-                gradients: mergedGradients,
-            };
-        }, []);
         //
         // UNIVERSAL commit wrapper — always sends { slug: newValue }
         //

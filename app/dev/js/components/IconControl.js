@@ -5,10 +5,13 @@ import {
     __experimentalNumberControl as NumberControl,
     SelectControl,
     Button,
-    Popover,
+    Popover, ColorPalette,
 } from '@wordpress/components';
 import {useEffect, useState, memo, useCallback, useMemo} from "@wordpress/element";
 import {debounce, isEqual} from "lodash";
+import { getEditorPalettes } from "Includes/helper";
+
+const { colors, gradients } = getEditorPalettes();
 
 const generateCSS = (fill, weight, opsz) =>
     `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
@@ -108,6 +111,7 @@ export const IconControl = ({
                     weight: Number(next.weight ?? 300),
                     size: Number(next.size ?? 24),
                     style: next.style ?? "outlined",
+                    color: next.color || "",
                 };
 
                 normalized.css = generateCSS(
@@ -223,6 +227,12 @@ export const IconControl = ({
                                         {value: "outlined", label: "Outlined"},
                                         {value: "solid", label: "Solid (Filled)"},
                                     ]}
+                                />
+
+                                <ColorPalette
+                                    colors={colors}
+                                    value={local.color}
+                                    onChange={(val) => update("color", val)}
                                 />
                             </Grid>
                         </Popover>

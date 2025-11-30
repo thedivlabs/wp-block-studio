@@ -1,5 +1,37 @@
 import _, {merge} from "lodash";
 
+export function getEditorPalettes() {
+    const select = wp?.data?.select;
+    if (!select) {
+        return { colors: [], gradients: [] };
+    }
+
+    const editorSettings =
+        select('core/editor')?.getEditorSettings?.() || {};
+
+    // Theme palettes
+    const themeColors = editorSettings.colors || [];
+    const themeGradients = editorSettings.gradients || [];
+
+    // Default palettes (from __experimentalFeatures)
+    const defaultColors =
+        editorSettings?.__experimentalFeatures?.color?.palette?.default || [];
+
+    const defaultGradients =
+        editorSettings?.__experimentalFeatures?.color?.gradients?.default || [];
+
+    return {
+        colors: [
+            ...themeColors,
+            ...defaultColors,
+        ],
+        gradients: [
+            ...defaultGradients,
+            ...themeGradients,
+        ],
+    };
+}
+
 export function resolveFeaturedMedia({type, media, resolution, isEditor}) {
     const res = (resolution || "large").toUpperCase();
 

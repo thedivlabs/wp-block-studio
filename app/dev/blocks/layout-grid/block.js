@@ -119,51 +119,54 @@ const getCssProps = (settings) => {
  * Breakpoint Renderers
  * -------------------------------------------------------------- */
 
-const GridBaseRenderer = ({entry, update}) => {
-    const props = entry ?? {};
+const GridBaseRenderer = ({ entry, update }) => {
+    const props = entry?.props || {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{padding:'14px'}}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{ padding: '14px' }}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}
                 onChange={(val) =>
-                    update({columns: parseInt(val, 10) || 1})
+                    update({
+                        props: {
+                            columns: parseInt(val, 10) || 1,
+                        },
+                    })
                 }
                 min={1}
                 max={6}
                 __next40pxDefaultSize
             />
-
         </Grid>
     );
 };
-
-const GridBreakpointRenderer = ({entry, update}) => {
-    const props = entry ?? {};
+const GridBreakpointRenderer = ({ entry, update }) => {
+    const props = entry?.props || {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{padding:'14px'}}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{ padding: '14px' }}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}
                 onChange={(val) => {
                     if (val === "") {
-                        update({}); // inherit base
+                        update({}); // no change
                     } else {
-                        update({columns: parseInt(val, 10) || 1});
+                        update({
+                            props: {
+                                columns: parseInt(val, 10) || 1,
+                            },
+                        });
                     }
                 }}
                 min={1}
                 max={6}
                 __next40pxDefaultSize
             />
-
-
         </Grid>
     );
 };
-
 /* --------------------------------------------------------------
  * BLOCK REGISTRATION
  * -------------------------------------------------------------- */
@@ -198,10 +201,13 @@ registerBlockType(metadata.name, {
 
         const classNames = getClassNames(attributes, gridSettings);
 
+
+
         /* --------------------------------------------
          * Sync CSS + Preload
          * -------------------------------------------- */
         useEffect(() => {
+            console.log(gridSettings);
             setCss(getCssProps(gridSettings));
         }, [gridSettings, setCss]);
 

@@ -89,6 +89,7 @@ export const Field = memo(
 
                 control = (
                     <BorderControl
+
                         label={label}
                         value={current}
                         disableCustomColors={false}

@@ -12,7 +12,7 @@ import {isEqual} from "lodash";
 import {ColorSelector} from "Components/ColorSelector";
 
 const generateCSS = (fill, weight, opsz) =>
-    `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
+    `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 32}`;
 
 const FAMILY_MAP = {
     solid: "materialsymbols",
@@ -91,7 +91,7 @@ export const IconControl = ({
         const normalized = {
             name: obj.name || "",
             weight: Number(obj.weight ?? 300),
-            size: Number(obj.size ?? 24),
+            size: Number(obj.size ?? 32),
             style: obj.style ?? "outlined",
             color: obj.color || "",
             gradient: obj.gradient || "",
@@ -305,7 +305,7 @@ export const MaterialIcon = ({
     const css = `'FILL' ${style === "solid" ? 1 : 0},
                  'wght' ${weight},
                  'GRAD' 0,
-                 'opsz' ${size || 24}`;
+                 'opsz' ${size || 32}`;
 
     const classNames = [
         "material-symbols-outlined",

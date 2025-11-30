@@ -20,37 +20,34 @@ const FAMILY_MAP = {
     default: "materialsymbolsoutlined",
 };
 
-const IconPreview = memo(
-    ({name: selectedName, style = "outlined", weight = 300, size = 32, color = ""}) => {
-        const name =
-            typeof selectedName === "string" && selectedName.trim().length
-                ? selectedName.trim()
-                : "home";
-
-        return (
-            <span
-                className="material-symbols-outlined"
-                style={{
-                    fontVariationSettings: `'FILL' ${style === "solid" ? 1 : 0},
+const IconPreview = ({name: selectedName, style = "outlined", weight = 300, size = 32, settings = {}}) => {
+    const name =
+        typeof selectedName === "string" && selectedName.trim().length
+            ? selectedName.trim()
+            : "home";
+    console.log(settings);
+    return (
+        <span
+            className="material-symbols-outlined"
+            style={{
+                fontVariationSettings: `'FILL' ${style === "solid" ? 1 : 0},
                                              'wght' ${weight},
                                              'GRAD' 0,
                                              'opsz' ${size}`,
-                    fontSize: `${size}px`,
-                    lineHeight: 1,
-                    color: color || "inherit",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "32px",
-                    height: "32px",
-                }}
-            >
+                fontSize: `${size}px`,
+                lineHeight: 1,
+                color: settings?.color ?? "inherit",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "32px",
+                height: "32px",
+            }}
+        >
                 {name}
             </span>
-        );
-    },
-    (prev, next) => isEqual(prev, next)
-);
+    );
+};
 
 
 export const IconControl = ({
@@ -100,7 +97,7 @@ export const IconControl = ({
             setLocal((prev) => {
                 const next = {...prev, [key]: val};
                 const normalized = normalize(next);
-                console.log(normalized);
+
                 // send normalized object UP immediately
                 onChange(normalized);
 
@@ -174,7 +171,7 @@ export const IconControl = ({
                     __next40pxDefaultSize
                 />
 
-                <IconPreview name={name} style={style}/>
+                <IconPreview name={name} style={style} settings={local}/>
 
                 <div>
                     <Button

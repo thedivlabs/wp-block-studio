@@ -25,20 +25,14 @@ export function ColorSelector({label, value, onChange}) {
 
     // Normalize output coming from ColorGradientControl
     const handleChange = (val) => {
-        // val can be either:
-        // - { color: string|null, gradient: undefined }
-        // - { gradient: string|null, color: undefined }
-        // - null
 
         if (!val) {
-            onChange("");
-            return;
+            return
         }
 
-        onChange(val)
-
-        
+        onChange(val || "");   // always return a string
     };
+
 
     return (
         <Dropdown
@@ -71,11 +65,11 @@ export function ColorSelector({label, value, onChange}) {
             renderContent={() => (
                 <div style={{padding: "8px"}} className={'wpbs-color-dropdown'}>
                     <ColorGradientControl
-                        label={false}
+                        label={label}
                         colorValue={colorValue}
                         gradientValue={gradientValue}
                         onColorChange={(col) => handleChange(col)}
-                        onGradientChange={(grad) => handleChange(grad?.color)}
+                        onGradientChange={(grad) => handleChange(grad)}
                         colors={colors}
                         gradients={gradients}
                         enableAlpha

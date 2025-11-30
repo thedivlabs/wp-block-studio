@@ -123,7 +123,7 @@ const GridBaseRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{padding:'16px'}}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{padding:'12px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}

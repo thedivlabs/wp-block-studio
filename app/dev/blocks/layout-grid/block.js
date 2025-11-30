@@ -123,7 +123,7 @@ const GridBaseRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{padding: '16px'}}>
+        <Grid columns={2} columnGap={10} rowGap={10}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}
@@ -149,7 +149,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={1} columnGap={10} rowGap={10} style={{padding: '16px'}}>
+        <Grid columns={1} columnGap={10} rowGap={10}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}
@@ -253,7 +253,6 @@ registerBlockType(metadata.name, {
                     columns={1}
                     columnGap={10}
                     rowGap={16}
-                    style={{padding: "16px"}}
                 >
                     <TextControl
                         label="Button Label"
@@ -280,7 +279,6 @@ registerBlockType(metadata.name, {
                     columns={1}
                     columnGap={10}
                     rowGap={16}
-                    style={{padding: "16px"}}
                 >
                     <QueryConfigPanel
                         value={gridSettings.query || {}}
@@ -297,7 +295,6 @@ registerBlockType(metadata.name, {
                     value={gridSettings.divider}
                     onChange={(next) => updateSettings({divider: next})}
                     props={props}
-                    style={{padding: '16px'}}
                 />
             ),
             [gridSettings, updateGridSettings]
@@ -313,30 +310,31 @@ registerBlockType(metadata.name, {
                 initialOpen={false}
                 className="wpbs-block-controls is-style-unstyled"
             >
-                <TabPanel
-                    className="wpbs-editor-tabs"
-                    activeClass="active"
-                    initialTabName="options"
-                    tabs={[
-                        {name: "options", title: "Options"},
-                        {name: "loop", title: "Loop"},
-                        {name: "divider", title: "Divider"},
-                    ]}
-                >
-                    {(tab) => {
-                        switch (tab.name) {
-                            case "options":
-                                return tabOptions;
-                            case "loop":
-                                return tabLoop;
-                            case "divider":
-                                return tabDivider;
-                            default:
-                                return null;
-                        }
-                    }}
-                </TabPanel>
-
+                <div style={{padding: '16px'}}>
+                    <TabPanel
+                        className="wpbs-editor-tabs"
+                        activeClass="active"
+                        initialTabName="options"
+                        tabs={[
+                            {name: "options", title: "Options"},
+                            {name: "loop", title: "Loop"},
+                            {name: "divider", title: "Divider"},
+                        ]}
+                    >
+                        {(tab) => {
+                            switch (tab.name) {
+                                case "options":
+                                    return tabOptions;
+                                case "loop":
+                                    return tabLoop;
+                                case "divider":
+                                    return tabDivider;
+                                default:
+                                    return null;
+                            }
+                        }}
+                    </TabPanel>
+                </div>
                 {/* Breakpoints BELOW tabs */}
                 <BreakpointPanels
                     value={gridSettings}

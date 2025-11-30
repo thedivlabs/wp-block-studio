@@ -123,7 +123,7 @@ const GridBaseRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{padding: '16px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}
@@ -149,7 +149,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={1} columnGap={10} rowGap={10}>
+        <Grid columns={1} columnGap={10} rowGap={10} style={{padding: '16px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}
@@ -297,6 +297,7 @@ registerBlockType(metadata.name, {
                     value={gridSettings.divider}
                     onChange={(next) => updateSettings({divider: next})}
                     props={props}
+                    style={{padding: '16px'}}
                 />
             ),
             [gridSettings, updateGridSettings]

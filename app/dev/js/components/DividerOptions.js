@@ -10,7 +10,7 @@ import {IconControl} from "Components/IconControl";
 import {cleanObject} from "Includes/helper";
 
 
-export const DividerOptions = ({value = {}, props, onChange}) => {
+export const DividerOptions = ({value = {}, props, onChange, ...restProps}) => {
     const divider = value || {};
 
 
@@ -26,7 +26,7 @@ export const DividerOptions = ({value = {}, props, onChange}) => {
     const icon = divider.icon || {};
 
     return (
-        <div className="wpbs-layout-tools__panel">
+        <div className="wpbs-layout-tools__panel" {...restProps}>
             {/* ------- Divider Border / Line Style ------- */}
             <BorderControl
                 __next40pxDefaultSize

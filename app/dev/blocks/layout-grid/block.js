@@ -293,7 +293,7 @@ registerBlockType(metadata.name, {
             () => (
                 <DividerOptions
                     value={gridSettings.divider}
-                    onChange={(next) => updateSettings({divider: next})}
+                    onChange={(next) => updateGridSettings({divider: next})}
                     props={props}
                 />
             ),

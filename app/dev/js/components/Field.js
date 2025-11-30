@@ -116,6 +116,10 @@ export const Field = memo(
                     <BorderControl
                         label={label}
                         value={current}
+                        disableCustomColors={false}
+                        disableUnits={false}
+                        enableAlpha={true}
+                        enableStyle={true}
                         colors={colors}              // ← your colors from editor settings
                         gradients={gradients}              // ← your colors from editor settings
                         onChange={(v) => commit({ [slug]: v })}

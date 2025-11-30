@@ -88,18 +88,23 @@ const getCssProps = (settings) => {
     const baseProps = settings?.props || {};
     const breakpoints = settings?.breakpoints || {};
 
-    const baseColumns = baseProps.columns ?? null;
-
     const css = {
-        props: {
-            "--columns": baseColumns,
-        },
+        props: {},
         breakpoints: {},
     };
 
+    // Base columns
+    const baseColumns = baseProps.columns ?? null;
+    if (baseColumns != null) {
+        css.props["--columns"] = baseColumns;
+    }
+
+    // Breakpoint columns
     Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
-        const bpProps = bpEntry || {};
+        const bpProps = bpEntry?.props || {};
         const bpColumns = bpProps.columns ?? null;
+
+        if (bpColumns == null) return; // skip empty bps
 
         css.breakpoints[bpKey] = {
             props: {
@@ -110,6 +115,7 @@ const getCssProps = (settings) => {
 
     return cleanObject(css);
 };
+
 
 /* --------------------------------------------------------------
  * Breakpoint Renderers

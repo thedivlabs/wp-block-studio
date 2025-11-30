@@ -89,24 +89,18 @@ const getCssProps = (settings) => {
     const breakpoints = settings?.breakpoints || {};
 
     const baseColumns = baseProps.columns ?? null;
-    const baseCentered = baseProps.centered ?? null;
 
     const css = {
-        props: {
-            "--columns": baseColumns,
-        },
+        "--columns": baseColumns,
         breakpoints: {},
     };
 
     Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
         const bpProps = bpEntry || {};
         const bpColumns = bpProps.columns ?? null;
-        const bpCentered = bpProps.centered ?? null;
 
         css.breakpoints[bpKey] = {
-            props: {
-                "--columns": bpColumns,
-            },
+            "--columns": bpColumns,
         };
     });
 

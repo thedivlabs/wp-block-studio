@@ -2,6 +2,8 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
+import {useEffect, useMemo} from "@wordpress/element";
+import {getCSSFromStyle, normalizeGapVal} from "Includes/helper";
 
 const selector = "wpbs-layout-grid-container";
 
@@ -18,6 +20,60 @@ const getClassNames = (attributes = {}, styleData) => {
         .join(' ');
 };
 
+function buildGapCSS(attributes) {
+    const style = attributes?.["wpbs-style"] || {};
+    const baseGap = attributes?.style?.spacing?.blockGap || {};
+
+    const css = {
+        props: {},
+        breakpoints: {},
+    };
+
+    /* -------------------------
+       BASE GAP
+    ------------------------- */
+    const baseTop = getCSSFromStyle(normalizeGapVal(baseGap.top));
+    const baseLeft = getCSSFromStyle(normalizeGapVal(baseGap.left));
+
+    if (baseTop) {
+        css.props["--grid-row-gap"] = baseTop;
+    }
+
+    if (baseLeft) {
+        css.props["--grid-column-gap"] = baseLeft;
+    }
+
+    /* -------------------------
+       BREAKPOINT GAPS
+    ------------------------- */
+    const bps = style.breakpoints || {};
+
+    Object.entries(bps).forEach(([bpKey, bpData]) => {
+        const gap = bpData?.style?.spacing?.blockGap || {};
+
+        const bpTop = getCSSFromStyle(normalizeGapVal(gap.top));
+        const bpLeft = getCSSFromStyle(normalizeGapVal(gap.left));
+
+        // skip empty breakpoint
+        if (!bpTop && !bpLeft) return;
+
+        css.breakpoints[bpKey] = {
+            props: {}
+        };
+
+        if (bpTop) {
+            css.breakpoints[bpKey].props["--grid-row-gap"] = bpTop;
+        }
+
+        if (bpLeft) {
+            css.breakpoints[bpKey].props["--grid-column-gap"] = bpLeft;
+        }
+    });
+
+    return css;
+}
+
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -32,8 +88,12 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, styleData, BlockWrapper, setCss, setPreload} = props;
+            const {attributes, styleData, BlockWrapper, setCss} = props;
             const classNames = getClassNames(attributes, styleData);
+
+            useEffect(() => {
+                console.log(buildGapCSS(attributes));
+            }, []);
 
             return (
                 <>

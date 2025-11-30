@@ -75,7 +75,7 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
                     if (left) {
                         result['column-gap'] = left;
-                        result['--column-gap'] = left;
+                        //result['--column-gap'] = left;
                     }
 
                     break;

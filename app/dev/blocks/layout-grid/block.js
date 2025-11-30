@@ -91,7 +91,9 @@ const getCssProps = (settings) => {
     const baseColumns = baseProps.columns ?? null;
 
     const css = {
-        "--columns": baseColumns,
+        props: {
+            "--columns": baseColumns,
+        },
         breakpoints: {},
     };
 
@@ -100,7 +102,9 @@ const getCssProps = (settings) => {
         const bpColumns = bpProps.columns ?? null;
 
         css.breakpoints[bpKey] = {
-            "--columns": bpColumns,
+            props: {
+                "--columns": bpColumns,
+            },
         };
     });
 
@@ -198,6 +202,7 @@ registerBlockType(metadata.name, {
          * Sync CSS + Preload
          * -------------------------------------------- */
         useEffect(() => {
+            console.log(getCssProps(gridSettings));
             setCss(getCssProps(gridSettings));
         }, [gridSettings, setCss]);
 

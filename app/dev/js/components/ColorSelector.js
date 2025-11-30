@@ -86,8 +86,8 @@ export function ColorSelector({label, value, onChange, normalize = true}) {
                         label={label}
                         colorValue={colorValue}
                         gradientValue={gradientValue}
-                        onColorChange={handleChange}
-                        onGradientChange={handleChange}
+                        onColorChange={handleColorChange}
+                        onGradientChange={handleGradientChange}
                         colors={colors}
                         gradients={gradients}
                         enableAlpha

@@ -11,7 +11,7 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/layout-grid-card"
+    "wpbs/loop-card"
   ],
   "supports": {
     "alignWide": true,

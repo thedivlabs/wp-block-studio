@@ -91,10 +91,6 @@ registerBlockType(metadata.name, {
             const {attributes, styleData, BlockWrapper, setCss} = props;
             const classNames = getClassNames(attributes, styleData);
 
-            useEffect(() => {
-                console.log(buildGapCSS(attributes));
-            }, []);
-
             const gapCss = useMemo(() => buildGapCSS(attributes), [JSON.stringify(attributes?.style?.spacing?.blockGap), attributes?.['wpbs-style']]);
 
             useEffect(() => {

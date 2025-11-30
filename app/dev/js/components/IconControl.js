@@ -317,22 +317,17 @@ export const MaterialIcon = ({
     // Build the style object
     const styleObj = {
         fontVariationSettings: css,
-        display: "inline-flex",
         fontSize: `${size}px`,
         fontWeight: weight,
-        lineHeight: 1,
-        backgroundClip: "text"
     };
 
     if (gradient) {
         // Gradient text technique
         styleObj.background = gradient;
         styleObj.color = "transparent"; // fallback
-        styleObj.WebkitBackgroundClip = "text";
-        styleObj.WebkitTextFillColor = "transparent";
-        styleObj.backgroundClip = "text";
     } else if (color) {
         styleObj.color = color;
+        styleObj.background = 'transparent';
     }
 
     return !name ? null : (

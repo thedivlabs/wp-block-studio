@@ -10,6 +10,7 @@ const getClassNames = (attributes = {}, styleData) => {
 
     return [
         selector,
+        'loop-card',
         "w-full",
         "block",
         "relative",

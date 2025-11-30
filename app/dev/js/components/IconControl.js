@@ -20,36 +20,55 @@ const FAMILY_MAP = {
     default: "materialsymbolsoutlined",
 };
 
-const IconPreview = ({name: selectedName, style = "outlined", weight = 300, size = 32, settings = {}}) => {
-    const name =
-        typeof selectedName === "string" && selectedName.trim().length
-            ? selectedName.trim()
-            : "home";
-    console.log(settings);
-    return (
-        <span
-            className="material-symbols-outlined"
-            style={{
-                fontVariationSettings: `'FILL' ${style === "solid" ? 1 : 0},
-                                             'wght' ${weight},
-                                             'GRAD' 0,
-                                             'opsz' ${size}`,
-                fontSize: `${size}px`,
-                lineHeight: 1,
-                color: settings?.color ?? "inherit",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "32px",
-                height: "32px",
-            }}
-        >
-                {name}
+
+/* ------------------------------------------------------------
+   ICON PREVIEW (real Material Icon)
+------------------------------------------------------------ */
+const IconPreview = memo(
+    ({name, settings}) => {
+        const iconName =
+            typeof name === "string" && name.trim().length
+                ? name.trim()
+                : "home";
+
+        const {style, weight, size, color, gradient} = settings;
+
+        const css = `'FILL' ${style === "solid" ? 1 : 0},
+                     'wght' ${weight},
+                     'GRAD' 0,
+                     'opsz' ${size}`;
+
+        const styleObj = {
+            fontVariationSettings: css,
+            display: "inline-flex",
+            fontSize: `${size}px`,
+            fontWeight: weight,
+            lineHeight: 1,
+        };
+
+        if (gradient) {
+            styleObj.background = gradient;
+            styleObj.color = "transparent";
+            styleObj.backgroundClip = "text";
+            styleObj.WebkitBackgroundClip = "text";
+            styleObj.WebkitTextFillColor = "transparent";
+            styleObj.backgroundClip = "text";
+        } else if (color) {
+            styleObj.color = color;
+        }
+
+        return (
+            <span className="material-symbols-outlined" style={styleObj}>
+                {iconName}
             </span>
-    );
-};
+        );
+    },
+    (a, b) => isEqual(a, b)
+);
 
-
+/* ------------------------------------------------------------
+   ICON CONTROL
+------------------------------------------------------------ */
 export const IconControl = ({
                                 fieldKey,
                                 props,
@@ -66,7 +85,7 @@ export const IconControl = ({
     const fieldId = fieldKey;
 
     /* ------------------------------------------------------------
-       NORMALIZER — Turns local state into a clean icon object
+       NORMALIZER
     ------------------------------------------------------------ */
     const normalize = (obj) => {
         const normalized = {
@@ -88,7 +107,7 @@ export const IconControl = ({
     };
 
     /* ------------------------------------------------------------
-       UPDATE — Now accepts ONE object of changes
+       UPDATE — single object patch
     ------------------------------------------------------------ */
     const update = useCallback(
         (patch) => {
@@ -98,10 +117,10 @@ export const IconControl = ({
                 const next = {...prev, ...patch};
                 const normalized = normalize(next);
 
-                // send normalized object UP
+                // pass normalized object UP
                 onChange(normalized);
 
-                // sync registry
+                // update registry
                 const nextIcons =
                     normalized.name.length > 0
                         ? [
@@ -132,10 +151,18 @@ export const IconControl = ({
     );
 
     /* ------------------------------------------------------------
+       EXTERNAL → INTERNAL SYNC
+    ------------------------------------------------------------ */
+    useEffect(() => {
+        if (!isEqual(value, local)) {
+            setLocal(value);
+        }
+    }, [value]);
+
+    /* ------------------------------------------------------------
        UI
     ------------------------------------------------------------ */
-    const {name, weight = 300, size = 32, style = "outlined", color = "", gradient = ""} =
-        local;
+    const {name, weight, size, style, color, gradient} = local;
 
     const labelNode = (
         <>
@@ -150,13 +177,19 @@ export const IconControl = ({
                     justifyContent: "center",
                     alignItems: "center",
                     verticalAlign: "text-bottom",
-                    lineHeight: "inherit",
                     height: "1em",
-                    width: "fit-content",
                     marginLeft: "2px",
                 }}
             >
-                <MaterialIcon name="help" size={15} style="outlined" weight={400}/>
+                <span
+                    className="material-symbols-outlined"
+                    style={{
+                        fontVariationSettings: `'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 15`,
+                        fontSize: "15px",
+                    }}
+                >
+                    help
+                </span>
             </a>
         </>
     );
@@ -173,7 +206,7 @@ export const IconControl = ({
                     __next40pxDefaultSize
                 />
 
-                <IconPreview name={name} style={style} settings={local}/>
+                <IconPreview name={name} settings={local}/>
 
                 <div>
                     <Button
@@ -198,13 +231,17 @@ export const IconControl = ({
                                     min={6}
                                     max={120}
                                     step={1}
-                                    onChange={(val) => update({size: Number(val)})}
+                                    onChange={(val) =>
+                                        update({size: Number(val)})
+                                    }
                                 />
 
                                 <SelectControl
                                     label="Weight"
                                     value={weight}
-                                    onChange={(val) => update({weight: Number(val)})}
+                                    onChange={(val) =>
+                                        update({weight: Number(val)})
+                                    }
                                     options={[
                                         {value: 100, label: 100},
                                         {value: 200, label: 200},
@@ -221,7 +258,7 @@ export const IconControl = ({
                                     onChange={(val) => update({style: val})}
                                     options={[
                                         {value: "outlined", label: "Outlined"},
-                                        {value: "solid", label: "Solid (Filled)"},
+                                        {value: "solid", label: "Solid"},
                                     ]}
                                 />
 
@@ -229,12 +266,21 @@ export const IconControl = ({
                                     label="Icon Color"
                                     value={color || gradient}
                                     normalize={false}
-                                    onChange={(val) =>
-                                        update({
-                                            color: val?.color,
-                                            gradient: val?.gradient,
-                                        })
-                                    }
+                                    onChange={(val) => {
+                                        // val = { color: ... } OR { gradient: ... }
+                                        if (!val) return;
+
+                                        const patch = {};
+
+                                        if ("color" in val) {
+                                            patch.color = val.color || "";
+                                        }
+                                        if ("gradient" in val) {
+                                            patch.gradient = val.gradient || "";
+                                        }
+
+                                        update(patch);
+                                    }}
                                 />
                             </Grid>
                         </Popover>

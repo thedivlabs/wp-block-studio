@@ -1,0 +1,50 @@
+{
+  "apiVersion": 3,
+  "name": "wpbs/layout-grid-container",
+  "title": "Layout Grid Container",
+  "description": "Display a grid container",
+  "selectors": {
+    "root": ".wpbs-layout-grid-container"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "interactivity": true,
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
+  "icon": "editor-kitchensink"
+}
+
+

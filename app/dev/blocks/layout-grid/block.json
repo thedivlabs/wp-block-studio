@@ -11,7 +11,8 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/loop-card"
+    "wpbs/loop-card",
+    "wpbs/layout-grid-container"
   ],
   "supports": {
     "innerBlocks": true,

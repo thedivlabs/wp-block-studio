@@ -119,11 +119,11 @@ const getCssProps = (settings) => {
  * Breakpoint Renderers
  * -------------------------------------------------------------- */
 
-const GridBaseRenderer = ({ entry, update }) => {
+const GridBaseRenderer = ({entry, update}) => {
     const props = entry?.props || {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{ padding: '14px' }}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{padding: '14px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}
@@ -141,11 +141,11 @@ const GridBaseRenderer = ({ entry, update }) => {
         </Grid>
     );
 };
-const GridBreakpointRenderer = ({ entry, update }) => {
+const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry?.props || {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{ padding: '14px' }}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{padding: '14px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}
@@ -200,7 +200,6 @@ registerBlockType(metadata.name, {
         );
 
         const classNames = getClassNames(attributes, gridSettings);
-
 
 
         /* --------------------------------------------
@@ -361,22 +360,12 @@ registerBlockType(metadata.name, {
                             grid: gridSettings || {},
                         }),
                     }}
-                >
-                    <InnerBlocks
-                        allowedBlocks={[
-                            "wpbs/loop-card",
-                            "wpbs/layout-element",
-                            "wpbs/layout-grid-container",
-                            "wpbs/pagination-button",
-                            "core/query-pagination",
-                        ]}
-                    />
-                </BlockWrapper>
+                />
             </>
         );
     }, {
         hasBackground: false,
-        hasChildren:true
+        hasChildren: true
     }),
 
     /* ----------------------------------------------------------
@@ -404,12 +393,10 @@ registerBlockType(metadata.name, {
                     }),
                     ...(attributes["wpbs-props"] || {}),
                 }}
-            >
-                <InnerBlocks.Content/>
-            </BlockWrapper>
+            />
         );
     }, {
         hasBackground: false,
-        hasChildren:true
+        hasChildren: true
     }),
 });

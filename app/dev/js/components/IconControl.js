@@ -21,30 +21,37 @@ const FAMILY_MAP = {
 };
 
 const IconPreview = memo(
-    ({name = 'home', style = 'outlined'}) => {
-        const family = FAMILY_MAP[style] ?? FAMILY_MAP.outlined;
-        const url = `https://fonts.gstatic.com/s/i/short-term/release/${family}/${name}/default/24px.svg`;
+    ({name: selectedName, style = "outlined", weight = 300, size = 32, color = ""}) => {
+        const name =
+            typeof selectedName === "string" && selectedName.trim().length
+                ? selectedName.trim()
+                : "home";
 
         return (
-            <img
-                src={url}
-                alt={name}
+            <span
+                className="material-symbols-outlined"
                 style={{
-                    flexGrow: 0,
-                    width: '32px',
-                    height: '32px',
-                    display: 'inline-flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    objectFit: 'contain',
-                    objectPosition: 'center',
-                    verticalAlign: 'middle',
+                    fontVariationSettings: `'FILL' ${style === "solid" ? 1 : 0},
+                                             'wght' ${weight},
+                                             'GRAD' 0,
+                                             'opsz' ${size}`,
+                    fontSize: `${size}px`,
+                    lineHeight: 1,
+                    color: color || "inherit",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "32px",
+                    height: "32px",
                 }}
-            />
+            >
+                {name}
+            </span>
         );
     },
     (prev, next) => isEqual(prev, next)
 );
+
 
 export const IconControl = ({
                                 fieldKey,
@@ -93,7 +100,7 @@ export const IconControl = ({
             setLocal((prev) => {
                 const next = {...prev, [key]: val};
                 const normalized = normalize(next);
-
+                console.log(normalized);
                 // send normalized object UP immediately
                 onChange(normalized);
 
@@ -127,19 +134,9 @@ export const IconControl = ({
 
 
     /* ------------------------------------------------------------
-       Sync external → internal
-    ------------------------------------------------------------ */
-    useEffect(() => {
-        if (!isEqual(value, local)) {
-            setLocal(value);
-        }
-    }, [value]);
-
-
-    /* ------------------------------------------------------------
        UI
     ------------------------------------------------------------ */
-    const {name, weight = 300, size = 24, style = "outlined", color = ""} = local;
+    const {name, weight = 300, size = 32, style = "outlined", color = ""} = local;
 
     const labelNode = (
         <>

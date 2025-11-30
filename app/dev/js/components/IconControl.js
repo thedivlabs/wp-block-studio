@@ -5,11 +5,11 @@ import {
     __experimentalNumberControl as NumberControl,
     SelectControl,
     Button,
-    Popover, ColorPalette,
+    Popover,
 } from '@wordpress/components';
-import {useEffect, useState, memo, useCallback, useMemo} from "@wordpress/element";
-import {debounce, isEqual} from "lodash";
-import { ColorSelector } from "Components/ColorSelector";
+import {useEffect, useState, memo, useCallback} from "@wordpress/element";
+import {isEqual} from "lodash";
+import {ColorSelector} from "Components/ColorSelector";
 
 const generateCSS = (fill, weight, opsz) =>
     `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
@@ -52,7 +52,6 @@ export const IconControl = ({
                                 value = {},
                                 onChange,
                                 label = 'Icon',
-                                isCommit = true,
                             }) => {
 
     const {updateEditorIcons} = window?.WPBS_StyleEditor ?? {};
@@ -61,16 +60,44 @@ export const IconControl = ({
     const [isOpen, setIsOpen] = useState(false);
 
     const icons = props.attributes["wpbs-icons"] || [];
-
-    //const fieldId = `${fieldKey}-${props.clientId}`;
     const fieldId = fieldKey;
 
 
-    const debouncedRegistryCommit = useMemo(
-        () =>
-            debounce((normalized) => {
-                //if (!isCommit) return;
+    /* ------------------------------------------------------------
+       NORMALIZER — Turns local state into a clean icon object
+    ------------------------------------------------------------ */
+    const normalize = (obj) => {
+        const normalized = {
+            name: obj.name || "",
+            weight: Number(obj.weight ?? 300),
+            size: Number(obj.size ?? 24),
+            style: obj.style ?? "outlined",
+            color: obj.color || "",
+        };
 
+        normalized.css = generateCSS(
+            normalized.style === "solid" ? 1 : 0,
+            normalized.weight,
+            normalized.size
+        );
+
+        return normalized;
+    };
+
+
+    /* ------------------------------------------------------------
+       UPDATE — Single passthrough update handler, immediate
+    ------------------------------------------------------------ */
+    const update = useCallback(
+        (key, val) => {
+            setLocal((prev) => {
+                const next = {...prev, [key]: val};
+                const normalized = normalize(next);
+
+                // send normalized object UP immediately
+                onChange(normalized);
+
+                // update registry immediately
                 const nextIcons = [
                     ...icons.filter((icon) => icon.key !== fieldId),
                     normalized.name
@@ -81,7 +108,7 @@ export const IconControl = ({
                             weight: normalized.weight,
                             opsz: normalized.size,
                             grade: Number(normalized.grade ?? 0),
-                            color: normalized.color || "",   // <-- 🔥 ADD THIS LINE
+                            color: normalized.color,
                         }
                         : null,
                 ].filter(Boolean);
@@ -92,52 +119,26 @@ export const IconControl = ({
                     updateEditorIcons(nextIcons);
                 }
 
-
-            }, 1500),
-        [icons, fieldId, props.setAttributes, updateEditorIcons]
-    );
-
-
-    const update = useCallback(
-        (key, val) => {
-            setLocal((prev) => {
-                const next = {...prev, [key]: val};
-
-                // create the clean normalized icon object immediately
-                const normalized = {
-                    ...next,
-                    name: next.name || "",
-                    weight: Number(next.weight ?? 300),
-                    size: Number(next.size ?? 24),
-                    style: next.style ?? "outlined",
-                    color: next.color || "",
-                };
-
-                normalized.css = generateCSS(
-                    normalized.style === "solid" ? 1 : 0,
-                    normalized.weight,
-                    normalized.size
-                );
-
-                // send normalized object UP to HOC immediately
-                onChange(normalized);
-
-                // fire delayed registry update
-                debouncedRegistryCommit(normalized);
-
                 return next;
             });
         },
-        [debouncedRegistryCommit, onChange]
+        [icons, fieldId, onChange, props.setAttributes, updateEditorIcons]
     );
 
 
+    /* ------------------------------------------------------------
+       Sync external → internal
+    ------------------------------------------------------------ */
     useEffect(() => {
         if (!isEqual(value, local)) {
             setLocal(value);
         }
     }, [value]);
 
+
+    /* ------------------------------------------------------------
+       UI
+    ------------------------------------------------------------ */
     const {name, weight = 300, size = 24, style = "outlined", color = ""} = local;
 
     const labelNode = (
@@ -198,10 +199,10 @@ export const IconControl = ({
                                 <NumberControl
                                     label="Size"
                                     value={size}
-                                    onChange={(val) => update("size", val)}
                                     min={6}
                                     max={120}
                                     step={1}
+                                    onChange={(val) => update("size", val)}
                                 />
 
                                 <SelectControl
@@ -228,10 +229,9 @@ export const IconControl = ({
                                     ]}
                                 />
 
-
                                 <ColorSelector
-                                    label={'Icon Color'}
-                                    value={local.color}
+                                    label="Icon Color"
+                                    value={color}
                                     onChange={(val) => update("color", val)}
                                 />
                             </Grid>
@@ -242,6 +242,7 @@ export const IconControl = ({
         </BaseControl>
     );
 };
+
 
 export const MaterialIcon = ({
                                  name,

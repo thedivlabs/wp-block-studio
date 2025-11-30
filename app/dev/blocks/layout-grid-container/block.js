@@ -10,8 +10,7 @@ const getClassNames = (attributes = {}, styleData) => {
 
     return [
         selector,
-        'layout-grid-container',
-        "w-full",
+        'loop-container w-full flex flex-wrap relative z-20',
         "block",
         "relative",
     ]

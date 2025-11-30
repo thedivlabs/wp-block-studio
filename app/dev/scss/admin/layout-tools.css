@@ -206,7 +206,7 @@
 }
 
 .wpbs-block-settings {
-  background-color: #efefef;
+  background-color: var(--color-gray-300);
   padding: 9px;
 
   .wpbs-block-settings__panel {

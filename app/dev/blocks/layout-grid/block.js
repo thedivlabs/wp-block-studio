@@ -393,7 +393,9 @@ registerBlockType(metadata.name, {
                     }),
                     ...(attributes["wpbs-props"] || {}),
                 }}
-            />
+            >
+                <InnerBlocks.Content/>
+            </BlockWrapper>
         );
     }, {
         hasBackground: false,

@@ -205,6 +205,21 @@
 
 }
 
+.wpbs-block-settings {
+  background-color: #efefef;
+  padding: 9px;
+
+  .wpbs-block-settings__panel {
+    background: white;
+    border: 0;
+    grid-column: 1/-1;
+    width: 100%;
+    border-radius: 0;
+    overflow: hidden;
+    padding: 12px !important;
+  }
+}
+
 .wpbs-block-controls {
 
   .wpbs-controls__color {

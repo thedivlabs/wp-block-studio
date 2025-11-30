@@ -310,9 +310,9 @@ registerBlockType(metadata.name, {
                 initialOpen={false}
                 className="wpbs-block-controls is-style-unstyled"
             >
-                <div style={{padding: '16px'}}>
+                <div className="wpbs-block-settings">
                     <TabPanel
-                        className="wpbs-editor-tabs"
+                        className="wpbs-editor-tabs wpbs-block-settings__panel"
                         activeClass="active"
                         initialTabName="options"
                         tabs={[

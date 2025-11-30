@@ -14,6 +14,7 @@
     "wpbs/loop-card"
   ],
   "supports": {
+    "innerBlocks": true,
     "alignWide": true,
     "layout": false,
     "interactivity": true,

@@ -293,15 +293,7 @@ registerBlockType(metadata.name, {
 
         const tabDivider = useMemo(
             () => (
-                <DividerOptions
-                    value={gridSettings.divider || {}}
-                    onChange={(next) =>
-                        updateGridSettings({
-                            ...gridSettings,
-                            divider: next,
-                        })
-                    }
-                />
+                <></>
             ),
             [gridSettings, updateGridSettings]
         );

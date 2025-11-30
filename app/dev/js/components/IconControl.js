@@ -55,7 +55,7 @@ const IconPreview = memo(
         }
 
         return (
-            <span className="material-symbols-outlined" style={styleObj}>
+            <span className="material-symbols-outlined wpbs-icon" style={styleObj}>
                 {iconName}
             </span>
         );

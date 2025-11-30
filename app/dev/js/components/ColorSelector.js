@@ -77,7 +77,7 @@ export function ColorSelector({label, value, onChange}) {
                 </button>
             )}
             renderContent={() => (
-                <div style={{padding: "16px"}} className={'wpbs-color-dropdown'}>
+                <div style={{padding: "8px"}} className={'wpbs-color-dropdown'}>
                     <ColorGradientControl
                         label={false}
                         colorValue={colorValue}

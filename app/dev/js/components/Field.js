@@ -50,27 +50,33 @@ export const Field = memo(
             .filter(Boolean)
             .join(" ");
 
-        // Global theme colors + gradients (shared by ALL fields)
+// Pull theme + default palettes so all fields can use them.
         const { colors, gradients } = useMemo(() => {
-            let editorColors = [];
-            let editorGradients = [];
+            const editorSettings = wp.data
+                .select('core/editor')
+                ?.getEditorSettings?.() || {};
 
-            try {
-                const editorSettings =
-                    wp.data.select("core/editor").getEditorSettings() || {};
+            const themeColors = editorSettings.colors || [];
+            const defaultColors = editorSettings?.__experimentalFeatures?.color?.palette?.default || [];
 
-                editorColors = editorSettings.colors || [];
-                editorGradients = editorSettings.gradients || [];
-            } catch (e) {
-                // Editor may not be available during initialization — safe fallback
-            }
+            const mergedColors = [
+                ...themeColors,
+                ...defaultColors,
+            ];
+
+            const themeGradients = editorSettings.gradients || [];
+            const defaultGradients = editorSettings?.__experimentalFeatures?.color?.gradients?.default || [];
+
+            const mergedGradients = [
+                ...defaultGradients,
+                ...themeGradients,
+            ];
 
             return {
-                colors: editorColors,
-                gradients: editorGradients,
+                colors: mergedColors,
+                gradients: mergedGradients,
             };
         }, []);
-
         //
         // UNIVERSAL commit wrapper — always sends { slug: newValue }
         //
@@ -111,6 +117,7 @@ export const Field = memo(
                         label={label}
                         value={current}
                         colors={colors}              // ← your colors from editor settings
+                        gradients={gradients}              // ← your colors from editor settings
                         onChange={(v) => commit({ [slug]: v })}
                         __nextHasNoMarginBottom
                         __next40pxDefaultSize

@@ -7,6 +7,7 @@ import {PanelColorSettings} from "@wordpress/block-editor";
 
 import {useCallback} from "@wordpress/element";
 import {IconControl} from "Components/IconControl";
+import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
 
 
@@ -35,18 +36,19 @@ export const DividerOptions = ({value = {}, props, onChange, ...restProps}) => {
 
     return (
         <Grid {...panelProps}>
-            {/* ------- Divider Border / Line Style ------- */}
-            <BorderControl
-                __next40pxDefaultSize
-                enableAlpha
-                enableStyle
-                disableUnits
-                value={border}
-                colors={WPBS?.settings?.colors ?? []}
-                __experimentalIsRenderedInSidebar={true}
-                label="Border"
-                onChange={(newBorder) => update({border: newBorder})}
-                shouldSanitizeBorder
+
+
+            <Field
+                field={{
+                    type: "border",
+                    slug: "border",
+                    label: "Border",
+                    full: true,
+                }}
+                settings={border}
+                callback={(newBorder) => update({border: newBorder})}
+                isToolsPanel={false}
+                props={props}
             />
 
             {/* ------- Divider Icon ------- */}

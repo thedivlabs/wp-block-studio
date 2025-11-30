@@ -25,8 +25,16 @@ export const DividerOptions = ({value = {}, props, onChange, ...restProps}) => {
     const border = divider.border || {};
     const icon = divider.icon || {};
 
+    const panelProps = {
+        columns: 2,
+        columnGap: 15,
+        rowGap: 20,
+        className: "wpbs-layout-tools__panel",
+        ...restProps,
+    }
+
     return (
-        <div className="wpbs-layout-tools__panel" {...restProps}>
+        <Grid {...panelProps}>
             {/* ------- Divider Border / Line Style ------- */}
             <BorderControl
                 __next40pxDefaultSize
@@ -64,6 +72,6 @@ export const DividerOptions = ({value = {}, props, onChange, ...restProps}) => {
                     },
                 ]}
             />
-        </div>
+        </Grid>
     );
 };

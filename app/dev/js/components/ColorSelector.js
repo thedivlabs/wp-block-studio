@@ -7,7 +7,7 @@ import {
     __experimentalColorGradientControl as ColorGradientControl,
 } from "@wordpress/block-editor";
 
-import { getEditorPalettes } from "Includes/helper";
+import {getEditorPalettes} from "Includes/helper";
 
 /**
  * A unified color/gradient selector.
@@ -15,8 +15,8 @@ import { getEditorPalettes } from "Includes/helper";
  * Accepts either a color string ("#fff") or a gradient string ("linear-gradient(...)").
  * The parent is expected to store whatever we return via onChange.
  */
-export function ColorSelector({ label, value, onChange }) {
-    const { colors, gradients } = getEditorPalettes();
+export function ColorSelector({label, value, onChange}) {
+    const {colors, gradients} = getEditorPalettes();
 
     // Normalize what the control expects
     const isGradient = typeof value === "string" && value.startsWith("linear-gradient");
@@ -29,10 +29,6 @@ export function ColorSelector({ label, value, onChange }) {
         // - { color: string|null, gradient: undefined }
         // - { gradient: string|null, color: undefined }
         // - null
-
-
-        console.log(val);
-
         if (!val) {
             onChange("");
             return;
@@ -54,9 +50,10 @@ export function ColorSelector({ label, value, onChange }) {
 
     return (
         <Dropdown
-            style={{ width: "100%" }}
-            popoverProps={{ placement: "left-start" }}
-            renderToggle={({ isOpen, onToggle }) => (
+            style={{width: "100%"}}
+
+            popoverProps={{placement: "left-start"}}
+            renderToggle={({isOpen, onToggle}) => (
                 <button
                     type="button"
                     onClick={onToggle}
@@ -80,15 +77,13 @@ export function ColorSelector({ label, value, onChange }) {
                 </button>
             )}
             renderContent={() => (
-                <div style={{ padding: "12px", width: "240px" }}>
+                <div style={{padding: "16px"}} className={'wpbs-color-dropdown'}>
                     <ColorGradientControl
-                        label={label}
+                        label={false}
                         colorValue={colorValue}
                         gradientValue={gradientValue}
-                        onChange={(newValue) => {
-                            console.log("RAW", newValue);
-                            onChange(newValue || "");
-                        }}
+                        onColorChange={(col) => handleChange({color: col})}
+                        onGradientChange={(grad) => handleChange({gradient: grad})}
                         colors={colors}
                         gradients={gradients}
                         enableAlpha

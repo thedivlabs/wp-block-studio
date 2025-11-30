@@ -1,63 +1,10 @@
-import {
-    BaseControl,
-    TextControl,
-    __experimentalGrid as Grid,
-    __experimentalNumberControl as NumberControl,
-    SelectControl,
-    Button,
-    Popover,
-} from '@wordpress/components';
-import {useEffect, useState, memo, useCallback} from "@wordpress/element";
-import {isEqual} from "lodash";
-import {ColorSelector} from "Components/ColorSelector";
-
-const generateCSS = (fill, weight, opsz) =>
-    `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
-
-const FAMILY_MAP = {
-    solid: "materialsymbols",
-    outlined: "materialsymbolsoutlined",
-    default: "materialsymbolsoutlined",
-};
-
-const IconPreview = ({name: selectedName, style = "outlined", weight = 300, size = 32, settings = {}}) => {
-    const name =
-        typeof selectedName === "string" && selectedName.trim().length
-            ? selectedName.trim()
-            : "home";
-    console.log(settings);
-    return (
-        <span
-            className="material-symbols-outlined"
-            style={{
-                fontVariationSettings: `'FILL' ${style === "solid" ? 1 : 0},
-                                             'wght' ${weight},
-                                             'GRAD' 0,
-                                             'opsz' ${size}`,
-                fontSize: `${size}px`,
-                lineHeight: 1,
-                color: settings?.color ?? "inherit",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "32px",
-                height: "32px",
-            }}
-        >
-                {name}
-            </span>
-    );
-};
-
-
 export const IconControl = ({
                                 fieldKey,
                                 props,
                                 value = {},
                                 onChange,
-                                label = 'Icon',
+                                label = "Icon",
                             }) => {
-
     const {updateEditorIcons} = window?.WPBS_StyleEditor ?? {};
 
     const [local, setLocal] = useState(value);
@@ -65,7 +12,6 @@ export const IconControl = ({
 
     const icons = props.attributes["wpbs-icons"] || [];
     const fieldId = fieldKey;
-
 
     /* ------------------------------------------------------------
        NORMALIZER — Turns local state into a clean icon object
@@ -77,6 +23,7 @@ export const IconControl = ({
             size: Number(obj.size ?? 24),
             style: obj.style ?? "outlined",
             color: obj.color || "",
+            gradient: obj.gradient || "",
         };
 
         normalized.css = generateCSS(
@@ -88,34 +35,37 @@ export const IconControl = ({
         return normalized;
     };
 
-
     /* ------------------------------------------------------------
-       UPDATE — Single passthrough update handler, immediate
+       UPDATE — Now accepts ONE object of changes
     ------------------------------------------------------------ */
     const update = useCallback(
-        (key, val) => {
+        (patch) => {
+            if (!patch || typeof patch !== "object") return;
+
             setLocal((prev) => {
-                const next = {...prev, [key]: val};
+                const next = {...prev, ...patch};
                 const normalized = normalize(next);
 
-                // send normalized object UP immediately
+                // send normalized object UP
                 onChange(normalized);
 
-                // update registry immediately
-                const nextIcons = [
-                    ...icons.filter((icon) => icon.key !== fieldId),
-                    normalized.name
-                        ? {
-                            key: fieldId,
-                            name: normalized.name,
-                            fill: normalized.style === "solid" ? 1 : 0,
-                            weight: normalized.weight,
-                            opsz: normalized.size,
-                            grade: Number(normalized.grade ?? 0),
-                            color: normalized.color,
-                        }
-                        : null,
-                ].filter(Boolean);
+                // sync registry
+                const nextIcons =
+                    normalized.name.length > 0
+                        ? [
+                            ...icons.filter((icon) => icon.key !== fieldId),
+                            {
+                                key: fieldId,
+                                name: normalized.name,
+                                fill: normalized.style === "solid" ? 1 : 0,
+                                weight: normalized.weight,
+                                opsz: normalized.size,
+                                grade: Number(normalized.grade ?? 0),
+                                color: normalized.color,
+                                gradient: normalized.gradient,
+                            },
+                        ]
+                        : icons.filter((i) => i.key !== fieldId);
 
                 props.setAttributes({"wpbs-icons": nextIcons});
 
@@ -129,11 +79,11 @@ export const IconControl = ({
         [icons, fieldId, onChange, props.setAttributes, updateEditorIcons]
     );
 
-
     /* ------------------------------------------------------------
        UI
     ------------------------------------------------------------ */
-    const {name, weight = 300, size = 32, style = "outlined", color = ""} = local;
+    const {name, weight = 300, size = 32, style = "outlined", color = "", gradient = ""} =
+        local;
 
     const labelNode = (
         <>
@@ -143,15 +93,15 @@ export const IconControl = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                    textDecoration: 'none',
-                    display: 'inline-flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    verticalAlign: 'text-bottom',
-                    lineHeight: 'inherit',
-                    height: '1em',
-                    width: 'fit-content',
-                    marginLeft: '2px',
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    verticalAlign: "text-bottom",
+                    lineHeight: "inherit",
+                    height: "1em",
+                    width: "fit-content",
+                    marginLeft: "2px",
                 }}
             >
                 <MaterialIcon name="help" size={15} style="outlined" weight={400}/>
@@ -164,7 +114,7 @@ export const IconControl = ({
             <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
                 <TextControl
                     value={name}
-                    onChange={(val) => update("name", val)}
+                    onChange={(val) => update({name: val})}
                     placeholder="Icon name"
                     style={{flex: 1}}
                     __nextHasNoMarginBottom
@@ -196,13 +146,13 @@ export const IconControl = ({
                                     min={6}
                                     max={120}
                                     step={1}
-                                    onChange={(val) => update("size", val)}
+                                    onChange={(val) => update({size: Number(val)})}
                                 />
 
                                 <SelectControl
                                     label="Weight"
                                     value={weight}
-                                    onChange={(val) => update("weight", Number(val))}
+                                    onChange={(val) => update({weight: Number(val)})}
                                     options={[
                                         {value: 100, label: 100},
                                         {value: 200, label: 200},
@@ -216,7 +166,7 @@ export const IconControl = ({
                                 <SelectControl
                                     label="Style"
                                     value={style}
-                                    onChange={(val) => update("style", val)}
+                                    onChange={(val) => update({style: val})}
                                     options={[
                                         {value: "outlined", label: "Outlined"},
                                         {value: "solid", label: "Solid (Filled)"},
@@ -225,8 +175,14 @@ export const IconControl = ({
 
                                 <ColorSelector
                                     label="Icon Color"
-                                    value={color}
-                                    onChange={(val) => update("color", val)}
+                                    value={color || gradient}
+                                    normalize={false}
+                                    onChange={(val) =>
+                                        update({
+                                            color: val?.color ?? "",
+                                            gradient: val?.gradient ?? "",
+                                        })
+                                    }
                                 />
                             </Grid>
                         </Popover>
@@ -234,32 +190,5 @@ export const IconControl = ({
                 </div>
             </div>
         </BaseControl>
-    );
-};
-
-
-export const MaterialIcon = ({
-                                 name,
-                                 weight = 300,
-                                 size,
-                                 style = "outlined",
-                                 className = "",
-                             }) => {
-    const css = `'FILL' ${style === "solid" ? 1 : 0}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${
-        size || 24
-    }`;
-
-    return !name ? null : (
-        <span
-            className={`material-symbols-outlined wpbs-icon ${className}`}
-            style={{
-                fontVariationSettings: css,
-                display: "inline-flex",
-                fontSize: `${size}px`,
-                fontWeight: `${weight}`,
-            }}
-        >
-            {name}
-        </span>
     );
 };

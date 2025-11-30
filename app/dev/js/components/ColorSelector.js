@@ -18,34 +18,26 @@ import {getEditorPalettes} from "Includes/helper";
 export function ColorSelector({label, value, onChange, normalize = true}) {
     const {colors, gradients} = getEditorPalettes();
 
-    // Normalize what the control expects
     const isGradient = typeof value === "string" && value.startsWith("linear-gradient");
     const colorValue = !isGradient ? value : undefined;
     const gradientValue = isGradient ? value : undefined;
 
-    // Normalize output coming from ColorGradientControl
     const handleChange = (val) => {
-
-        if (val === undefined) {
-            return
+        if (!val) {
+            onChange("");
+            return;
         }
 
-        let result;
-
-        if (!!normalize) {
-            result = val?.color ?? val?.gradient ?? {};
+        if (normalize) {
+            onChange(val.color ?? val.gradient ?? "");
         } else {
-            result = val;
+            onChange(val);
         }
-
-        onChange(result);   // always return a string
     };
-
 
     return (
         <Dropdown
             style={{width: "100%"}}
-
             popoverProps={{placement: "left-start"}}
             renderToggle={({isOpen, onToggle}) => (
                 <button
@@ -64,20 +56,18 @@ export function ColorSelector({label, value, onChange, normalize = true}) {
                         background: "#fff",
                     }}
                 >
-                    <ColorIndicator
-                        colorValue={colorValue || gradientValue}
-                    />
+                    <ColorIndicator colorValue={colorValue || gradientValue}/>
                     <span>{label}</span>
                 </button>
             )}
             renderContent={() => (
-                <div style={{padding: "8px"}} className={'wpbs-color-dropdown'}>
+                <div style={{padding: "8px"}} className="wpbs-color-dropdown">
                     <ColorGradientControl
                         label={label}
                         colorValue={colorValue}
                         gradientValue={gradientValue}
-                        onColorChange={(col) => handleChange({color: col})}
-                        onGradientChange={(grad) => handleChange({gradient: grad})}
+                        onColorChange={handleChange}
+                        onGradientChange={handleChange}
                         colors={colors}
                         gradients={gradients}
                         enableAlpha

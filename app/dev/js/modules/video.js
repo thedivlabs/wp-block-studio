@@ -66,7 +66,7 @@ export default class Video {
             });
         } else {
             element.classList.add('active');
-            element.querySelector('.wpbs-video__media').replaceChildren(component.get(0));
+            element.replaceChildren(component.get(0));
         }
 
 

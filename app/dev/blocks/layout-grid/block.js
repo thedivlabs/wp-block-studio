@@ -94,7 +94,6 @@ const getCssProps = (settings) => {
     const css = {
         props: {
             "--columns": baseColumns,
-            "--centered": baseCentered ? "1" : null,
         },
         breakpoints: {},
     };
@@ -107,7 +106,6 @@ const getCssProps = (settings) => {
         css.breakpoints[bpKey] = {
             props: {
                 "--columns": bpColumns,
-                "--centered": bpCentered ? "1" : null,
             },
         };
     });

@@ -130,7 +130,7 @@ registerBlockType(metadata.name, {
                 <IconControl
                     label="Icon"
                     fieldKey="cta-icon"
-                    value={settings?.icon}
+                    value={settings?.icon ?? {}}
                     onChange={(icon) => updateSettings({'icon': icon})}
                     props={props}
                 />
@@ -162,19 +162,7 @@ registerBlockType(metadata.name, {
                     />
                 </Grid>
 
-                <PanelColorSettings
-                    enableAlpha
-                    className="!p-0 !border-0 [&_.components-tools-panel-item]:!m-0"
-                    colorSettings={[
-                        {
-                            slug: 'icon',
-                            label: 'Icon Color',
-                            value: settings?.['icon-color'],
-                            onChange: (val) => updateSettings({'icon-color': val}),
-                            isShownByDefault: true,
-                        }
-                    ]}
-                />
+                {/* PanelColorSettings removed – color now lives on settings.icon */}
             </Grid>
         ), [attributes?.['wpbs-cta']]);
 
@@ -196,7 +184,8 @@ registerBlockType(metadata.name, {
         // ----------------------------------------
         const cssObj = useMemo(() => ({
             props: {
-                '--icon-color': settings?.['icon-color'] || null,
+                '--icon-color': settings?.icon?.color || null,
+                '--icon-gradient': settings?.icon?.gradient || null,
                 '--offset': settings?.['offset'] || null,
                 '--offset-icon': settings?.['offset-icon'] || null,
             },

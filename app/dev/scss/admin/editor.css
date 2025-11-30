@@ -145,10 +145,10 @@ div[class*='wp-block-wpbs'] .block-list-appender .block-editor-inserter__toggle:
 }
 
 .wpbs-editor-tabs .components-tab-panel__tabs-item:hover:not(.active) {
-  color: #000000; /* text-black */
+  color: #000000 !important; /* text-black */
 }
 
 .wpbs-editor-tabs .components-tab-panel__tabs-item.active {
-  border-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
-  color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+  border-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9)) !important;
+  color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9)) !important;
 }

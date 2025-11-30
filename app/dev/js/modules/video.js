@@ -1,75 +1,81 @@
 export default class Video {
-
     static init() {
+        if (document.body.classList.contains("wp-admin")) return;
 
-        if (document.body.classList.contains('wp-admin')) return;
-
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.wpbs-video:not(.--disabled)')) {
-                this.clickHandler(e.target.closest('.wpbs-video'));
+        document.addEventListener("click", (e) => {
+            const el = e.target.closest(".wpbs-video:not(.--disabled)");
+            if (el) {
+                this.clickHandler(el);
             }
         });
-
     }
 
     static clickHandler(element) {
+        const { title, vid, platform } = element.dataset;
+        const isLightbox = element.classList.contains("--lightbox");
 
-        const {title, vid, platform} = element.dataset;
-
-        const isLightbox = element.classList.contains('--lightbox');
-
-        if (element.classList.contains('active')) {
-            return false;
-        }
+        if (element.classList.contains("active")) return false;
 
         const baseURL = {
-            'rumble': 'https://rumble.com/embed/',
-            'youtube': 'https://www.youtube.com/embed/',
-            'vimeo': 'https://player.vimeo.com/video/',
-        }
+            rumble: "https://rumble.com/embed/",
+            youtube: "https://www.youtube.com/embed/",
+            vimeo: "https://player.vimeo.com/video/",
+        };
 
         const queryString = {
-            'rumble': '',
-            'youtube': '?autoplay=1&enablejsapi=1&rel=0',
-            'vimeo': '',
-        }
+            rumble: "",
+            youtube: "?autoplay=1&enablejsapi=1&rel=0",
+            vimeo: "",
+        };
 
         const classNames = [
-            'wpbs-video-player',
-            !!isLightbox ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
-        ].filter(x => x).join(' ');
+            "wpbs-video-player",
+            isLightbox
+                ? "h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative"
+                : "w-full h-full",
+        ]
+            .filter(Boolean)
+            .join(" ");
 
-        const player = jQuery('<iframe />', {
-            src: baseURL[platform || 'youtube'] + vid + queryString[platform || 'youtube'],
-            allow: 'autoplay;',
-            allowFullScreen: true,
-            title: title || 'YouTube video player',
-            frameBorder: 0,
-            width: '100%',
-            height: '100%',
-            class: 'absolute top-0 left-0 w-full h-full opacity-0 transition-opacity duration-500'
-        }).on('load', function () {
-            jQuery(this).css({opacity: 1});
-            WPBS.loader.toggle({
-                remove: true
-            });
+        // ----------------------------------------------
+        // iframe (jQuery → pure)
+        // ----------------------------------------------
+        const iframe = document.createElement("iframe");
+        iframe.src =
+            (baseURL[platform] || baseURL.youtube) +
+            vid +
+            (queryString[platform] || queryString.youtube);
+        iframe.allow = "autoplay;";
+        iframe.allowFullscreen = true;
+        iframe.title = title || "YouTube video player";
+        iframe.frameBorder = "0";
+        iframe.width = "100%";
+        iframe.height = "100%";
+        iframe.className =
+            "absolute top-0 left-0 w-full h-full opacity-0 transition-opacity duration-500";
+
+        iframe.addEventListener("load", () => {
+            iframe.style.opacity = "1";
+            WPBS.loader.toggle({ remove: true });
         });
 
-        const component = jQuery('<div />', {
-            class: classNames,
-        }).append(player);
+        // ----------------------------------------------
+        // wrapper div (jQuery → pure)
+        // ----------------------------------------------
+        const component = document.createElement("div");
+        component.className = classNames;
+        component.appendChild(iframe);
 
-
-        if (!!isLightbox) {
+        // ----------------------------------------------
+        // lightbox vs inline
+        // ----------------------------------------------
+        if (isLightbox) {
             WPBS.modals.toggle_modal(false, {
-                template: component.get(0)
+                template: component,
             });
         } else {
-            element.classList.add('active');
-            element.replaceChildren(component.get(0));
+            element.classList.add("active");
+            element.replaceChildren(component);
         }
-
-
     }
-
 }

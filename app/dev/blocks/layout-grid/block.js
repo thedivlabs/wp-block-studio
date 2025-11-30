@@ -207,7 +207,6 @@ registerBlockType(metadata.name, {
          * Sync CSS + Preload
          * -------------------------------------------- */
         useEffect(() => {
-            console.log(gridSettings);
             setCss(getCssProps(gridSettings));
         }, [gridSettings, setCss]);
 

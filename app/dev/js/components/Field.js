@@ -5,6 +5,7 @@ import {BaseControl, __experimentalGrid as Grid} from "@wordpress/components";
 import {ShadowSelector} from "Components/ShadowSelector";
 import {cleanObject, normalizeMedia} from "Includes/helper";
 import {IconControl} from "Components/IconControl";
+import {useMemo} from "react";
 
 export const Field = memo(
     ({
@@ -49,6 +50,27 @@ export const Field = memo(
             .filter(Boolean)
             .join(" ");
 
+        // Global theme colors + gradients (shared by ALL fields)
+        const { colors, gradients } = useMemo(() => {
+            let editorColors = [];
+            let editorGradients = [];
+
+            try {
+                const editorSettings =
+                    wp.data.select("core/editor").getEditorSettings() || {};
+
+                editorColors = editorSettings.colors || [];
+                editorGradients = editorSettings.gradients || [];
+            } catch (e) {
+                // Editor may not be available during initialization — safe fallback
+            }
+
+            return {
+                colors: editorColors,
+                gradients: editorGradients,
+            };
+        }, []);
+
         //
         // UNIVERSAL commit wrapper — always sends { slug: newValue }
         //
@@ -74,7 +96,29 @@ export const Field = memo(
         // FIELD TYPES
         //
         switch (type) {
+            case "border": {
+                const { BorderControl } = wp.components || {};
 
+                if (!BorderControl) {
+                    control = null;
+                    break;
+                }
+
+                const current = value || defaultValue || {};
+
+                control = (
+                    <BorderControl
+                        label={label}
+                        value={current}
+                        colors={colors}              // ← your colors from editor settings
+                        onChange={(v) => commit({ [slug]: v })}
+                        __nextHasNoMarginBottom
+                        __next40pxDefaultSize
+                        {...controlProps}
+                    />
+                );
+                break;
+            }
             case "icon":
                 control = (
                     <IconControl

@@ -1,59 +1,94 @@
 import {
-    ColorIndicator, Dropdown,
+    ColorIndicator,
+    Dropdown,
 } from "@wordpress/components";
-import React, {useMemo} from "react";
+
 import {
     __experimentalColorGradientControl as ColorGradientControl,
 } from "@wordpress/block-editor";
 
-export function ColorSelector({label, value, onColorChange}) {
+import { getEditorPalettes } from "Includes/helper";
 
+/**
+ * A unified color/gradient selector.
+ *
+ * Accepts either a color string ("#fff") or a gradient string ("linear-gradient(...)").
+ * The parent is expected to store whatever we return via onChange.
+ */
+export function ColorSelector({ label, value, onChange }) {
+    const { colors, gradients } = getEditorPalettes();
 
-    const {colors, gradients} = useMemo(() => {
+    // Normalize what the control expects
+    const isGradient = typeof value === "string" && value.startsWith("linear-gradient");
+    const colorValue = !isGradient ? value : undefined;
+    const gradientValue = isGradient ? value : undefined;
 
-        const editorColors = wp.data.select('core/editor').getEditorSettings().colors || [];
-        const editorGradients = wp.data.select('core/editor').getEditorSettings().gradients || [];
-
-        return {
-            colors: editorColors,
-            gradients: editorGradients,
+    // Normalize output coming from ColorGradientControl
+    const handleChange = (val) => {
+        // val can be either:
+        // - { color: string|null, gradient: undefined }
+        // - { gradient: string|null, color: undefined }
+        // - null
+        if (!val) {
+            onChange("");
+            return;
         }
-    }, []);
 
-    return <Dropdown
-        style={{width: '100%'}}
-        popoverProps={{placement: 'left-start'}}
-        renderToggle={({isOpen, onToggle}) => (
-            <div
-                onClick={onToggle}
-                aria-expanded={isOpen}
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    gap: '8px',
-                    padding: '10px 12px',
-                    height: '40px',
-                    border: '1px solid #ddd',
-                    width: '100%',
-                }}
-            >
-                <ColorIndicator colorValue={value}/>
-                <span>{label}</span>
-            </div>
-        )}
-        renderContent={() => (
-            <div style={{padding: '12px', width: '100%'}}>
-                <ColorGradientControl
-                    label={label}
-                    colorValue={value}
-                    onColorChange={onColorChange}
-                    enableAlpha
-                    colors={colors}
-                    gradients={gradients}
-                />
-            </div>
-        )}
-    />;
+        if (val.color) {
+            onChange(val.color);
+            return;
+        }
+
+        if (val.gradient) {
+            onChange(val.gradient);
+            return;
+        }
+
+        // Fallback: pass through
+        onChange("");
+    };
+
+    return (
+        <Dropdown
+            style={{ width: "100%" }}
+            popoverProps={{ placement: "left-start" }}
+            renderToggle={({ isOpen, onToggle }) => (
+                <button
+                    type="button"
+                    onClick={onToggle}
+                    aria-expanded={isOpen}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        gap: "8px",
+                        padding: "10px 12px",
+                        height: "40px",
+                        border: "1px solid #ddd",
+                        width: "100%",
+                        background: "#fff",
+                    }}
+                >
+                    <ColorIndicator
+                        colorValue={colorValue || gradientValue}
+                    />
+                    <span>{label}</span>
+                </button>
+            )}
+            renderContent={() => (
+                <div style={{ padding: "12px", width: "240px" }}>
+                    <ColorGradientControl
+                        label={label}
+                        colorValue={colorValue}
+                        gradientValue={gradientValue}
+                        onColorChange={(col) => handleChange({ color: col })}
+                        onGradientChange={(grad) => handleChange({ gradient: grad })}
+                        colors={colors}
+                        gradients={gradients}
+                        enableAlpha
+                    />
+                </div>
+            )}
+        />
+    );
 }
-

@@ -9,9 +9,7 @@ import {
 } from '@wordpress/components';
 import {useEffect, useState, memo, useCallback, useMemo} from "@wordpress/element";
 import {debounce, isEqual} from "lodash";
-import { getEditorPalettes } from "Includes/helper";
-
-const { colors, gradients } = getEditorPalettes();
+import { ColorSelector } from "Components/ColorSelector";
 
 const generateCSS = (fill, weight, opsz) =>
     `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
@@ -83,6 +81,7 @@ export const IconControl = ({
                             weight: normalized.weight,
                             opsz: normalized.size,
                             grade: Number(normalized.grade ?? 0),
+                            color: normalized.color || "",   // <-- 🔥 ADD THIS LINE
                         }
                         : null,
                 ].filter(Boolean);
@@ -229,8 +228,9 @@ export const IconControl = ({
                                     ]}
                                 />
 
-                                <ColorPalette
-                                    colors={colors}
+
+                                <ColorSelector
+                                    label={'Icon Color'}
                                     value={local.color}
                                     onChange={(val) => update("color", val)}
                                 />

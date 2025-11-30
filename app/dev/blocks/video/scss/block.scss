@@ -16,6 +16,7 @@
       width: 100%;
       height: 100%;
       background: var(--overlay, none);
+      pointer-events: none;
     }
   }
 
@@ -40,6 +41,7 @@
   .wpbs-video__button {
     transform: translate(-50%, -50%);
     color: var(--icon-color, inherit);
+    pointer-events: none;
 
     &:before {
       color: var(--icon-color, inherit);

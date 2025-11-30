@@ -15,7 +15,7 @@ import {getEditorPalettes} from "Includes/helper";
  * Accepts either a color string ("#fff") or a gradient string ("linear-gradient(...)").
  * The parent is expected to store whatever we return via onChange.
  */
-export function ColorSelector({label, value, onChange}) {
+export function ColorSelector({label, value, onChange, normalize = true}) {
     const {colors, gradients} = getEditorPalettes();
 
     // Normalize what the control expects
@@ -26,11 +26,19 @@ export function ColorSelector({label, value, onChange}) {
     // Normalize output coming from ColorGradientControl
     const handleChange = (val) => {
 
-        if (!val) {
+        if (val === undefined) {
             return
         }
 
-        onChange(val || "");   // always return a string
+        let result;
+
+        if (!!normalize) {
+            result = val?.color ?? val?.gradient ?? {};
+        } else {
+            result = val;
+        }
+
+        onChange(result);   // always return a string
     };
 
 
@@ -68,8 +76,8 @@ export function ColorSelector({label, value, onChange}) {
                         label={label}
                         colorValue={colorValue}
                         gradientValue={gradientValue}
-                        onColorChange={(col) => handleChange(col)}
-                        onGradientChange={(grad) => handleChange(grad)}
+                        onColorChange={(col) => handleChange({color: col})}
+                        onGradientChange={(grad) => handleChange({gradient: grad})}
                         colors={colors}
                         gradients={gradients}
                         enableAlpha

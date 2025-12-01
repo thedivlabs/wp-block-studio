@@ -233,8 +233,8 @@ export const withStyle = (Component, config) => (props) => {
             return (
                 <BlockWrapper
                     props={blockProps}
-                    wrapperProps={wrapperProps}   {/* <-- PATCH: wrapperProps ONLY */}
-                    config={config}               {/* <-- PATCH: functional flags ONLY */}
+                    wrapperProps={wrapperProps}
+                    config={config}
                 >
                     {children}
                 </BlockWrapper>

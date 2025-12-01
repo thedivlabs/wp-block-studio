@@ -1,8 +1,44 @@
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
-import { SelectControl, __experimentalGrid as Grid } from "@wordpress/components";
-import { useCallback } from "@wordpress/element";
-import { LoopBasicSettings } from "./LoopBasicSettings";
+import { SelectControl, __experimentalGrid as Grid,Button } from "@wordpress/components";
+import { useCallback,useState } from "@wordpress/element";
+import { loopFieldsMap } from "Includes/config";
+import { Field } from "Components/Field";
+
+export const LoopBasicSettings = ({ value = {}, onChange }) => {
+    const [open, setOpen] = useState(false);
+
+    const update = (patch) => onChange({ ...value, ...patch });
+
+    return (
+        <div className="wpbs-loop-basic-settings">
+            <Button
+                variant="secondary"
+                onClick={() => setOpen(!open)}
+                __next40pxDefaultSize
+            >
+                Basic Query Settings
+            </Button>
+
+            {open && (
+                <div style={{ marginTop: "16px", display: "grid", gap: "16px" }}>
+                    {loopFieldsMap.map((field) => (
+                        <Field
+                            key={field.slug}
+                            field={field}
+                            settings={value}
+                            isToolsPanel={false}
+                            callback={(valueObj) => {
+                                const next = { ...value, ...valueObj };
+                                update(next);
+                            }}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 export const Loop = ({ value = {}, onChange }) => {
     const { post_type, taxonomy, term } = value;

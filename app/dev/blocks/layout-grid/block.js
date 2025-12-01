@@ -382,6 +382,7 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames}
+                tagName={'template'}
                 {...(isLoop && {
                     "data-wp-interactive": "wpbs/layout-grid",
                     "data-wp-init": "actions.init",

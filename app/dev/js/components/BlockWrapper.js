@@ -13,7 +13,7 @@ const {cleanObject} = API;
 
 const BlockBackground = memo(
     ({attributes}) => {
-        return <BackgroundElement attributes={attributes} isSave={false}/>;
+        return <BackgroundElement attributes={attributes} isSave={false} />;
     },
     (prev, next) =>
         _.isEqual(
@@ -91,13 +91,22 @@ export const BlockWrapper = ({
     const bgSettings = attributes["wpbs-background"] || {};
     const {"wpbs-advanced": advanced = {}} = attributes;
 
+    // tagName from config + support tagName passed directly to BlockWrapper
     const {
-        tagName: wrapperTagName = "div",
+        tagName: configTagName = "div",
         hasBackground = true,
         hasChildren = false,
     } = config;
 
-    const Tag = ElementTag(advanced?.tagName, wrapperTagName);
+    // Allow tagName to be passed in as a prop to BlockWrapper as well
+    const {
+        tagName: propTagName,
+        ...restWrapperProps
+    } = wrapperProps || {};
+
+    const resolvedTagName = propTagName || configTagName || "div";
+
+    const Tag = ElementTag(advanced?.tagName, resolvedTagName);
 
     const isBackgroundActive =
         hasAnyBackground(bgSettings) && !!hasBackground;
@@ -109,7 +118,7 @@ export const BlockWrapper = ({
         "wpbs-layout-wrapper wpbs-container w-full h-full relative z-20";
 
     const mergedWrapperProps = {
-        ...(wrapperProps || {}),
+        ...(restWrapperProps || {}),
     };
 
     const baseBlockProps = getBlockPropsMerged(props, mergedWrapperProps);
@@ -121,11 +130,11 @@ export const BlockWrapper = ({
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>
-                        <InnerBlocks.Content/>
+                        <InnerBlocks.Content />
                         {children}
                     </div>
 
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    <BackgroundElement attributes={attributes} isSave={true} />
                 </Tag>
             );
         }
@@ -133,7 +142,7 @@ export const BlockWrapper = ({
         if (hasChildren) {
             return (
                 <Tag {...saveProps}>
-                    <InnerBlocks.Content/>
+                    <InnerBlocks.Content />
                     {children}
                 </Tag>
             );
@@ -143,7 +152,7 @@ export const BlockWrapper = ({
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>{children}</div>
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    <BackgroundElement attributes={attributes} isSave={true} />
                 </Tag>
             );
         }
@@ -166,7 +175,7 @@ export const BlockWrapper = ({
                     {children}
                 </div>
 
-                <BlockBackground attributes={attributes}/>
+                <BlockBackground attributes={attributes} />
             </Tag>
         );
     }

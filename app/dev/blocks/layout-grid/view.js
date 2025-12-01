@@ -1,8 +1,8 @@
 /**************************************************************************
- * WPBS LAYOUT GRID — FRONT-END LOOP ENGINE (no <template> tags needed)
+ * WPBS LAYOUT GRID — FRONT-END LOOP ENGINE (JSON-based template system)
  **************************************************************************/
 
-import { store, getContext, getElement } from "@wordpress/interactivity";
+import {store, getContext, getElement} from "@wordpress/interactivity";
 
 store("wpbs/layout-grid", {
     state: {
@@ -11,7 +11,9 @@ store("wpbs/layout-grid", {
         page: 1,
         hasMore: false,
         totalPages: 1,
-        templateHTML: null,  // ⭐ store extracted loop-card template
+
+        // ⭐ JSON template extracted from <script data-wpbs-loop-template>
+        templateJSON: null,
     },
 
     callbacks: {
@@ -19,7 +21,7 @@ store("wpbs/layout-grid", {
          * Staggered reveal animation
          * ----------------------------------------------------------- */
         revealCards() {
-            const { state } = store("wpbs/layout-grid");
+            const {state} = store("wpbs/layout-grid");
             const container = state.containerEl;
             if (!container) return;
 
@@ -38,7 +40,7 @@ store("wpbs/layout-grid", {
                     });
                 }, 50);
             });
-        }
+        },
     },
 
     actions: {
@@ -46,27 +48,32 @@ store("wpbs/layout-grid", {
          * INIT
          * ----------------------------------------------------------- */
         init() {
-            const { state, actions } = store("wpbs/layout-grid");
-            const { ref: el } = getElement();
+            const {state, actions} = store("wpbs/layout-grid");
+            const {ref: el} = getElement();
             const context = getContext();
 
             state.containerEl = el;
 
             /***********************************************************
-             * ⭐ EXTRACT TEMPLATE FROM FIRST LOOP CARD
+             * ⭐ Extract JSON template from <script data-wpbs-loop-template>
              ***********************************************************/
-            const sampleCard = el.querySelector(".wpbs-loop-card");
+            const templateScript = el.querySelector("script[data-wpbs-loop-template]");
 
-            if (!sampleCard) {
-                console.error("WPBS Loop Error: No .wpbs-loop-card found as template.");
+            if (!templateScript) {
+                console.error("WPBS Loop Error: Missing loop template script tag.");
                 return;
             }
 
-            // Save the template HTML for SSR
-            state.templateHTML = sampleCard.outerHTML;
+            try {
+                state.templateJSON = JSON.parse(templateScript.textContent);
+            } catch (err) {
+                console.error("WPBS Loop Error: Failed to parse template JSON.", err);
+                return;
+            }
 
-            // Remove from DOM so SSR populates container
-            sampleCard.remove();
+            // Remove <script> tag from DOM
+            templateScript.remove();
+
 
             /***********************************************************
              * Lazy-load when entering viewport
@@ -80,7 +87,7 @@ store("wpbs/layout-grid", {
                         }
                     });
                 },
-                { threshold: 0 }
+                {threshold: 0}
             );
 
             observer.observe(el);
@@ -90,27 +97,27 @@ store("wpbs/layout-grid", {
          * FETCH SSR LOOP RESULTS
          * ----------------------------------------------------------- */
         async fetchQuery(context, page = 1) {
-            const { state, callbacks } = store("wpbs/layout-grid");
-            const { query = {} } = context;
+            const {state, callbacks} = store("wpbs/layout-grid");
+            const {query = {}} = context;
 
             try {
                 /***********************************************************
-                 * We now use templateHTML from the extracted loop-card
+                 * ⭐ Ensure templateJSON exists
                  ***********************************************************/
-                if (!state.templateHTML) {
-                    console.error("WPBS Loop Error: Missing templateHTML (no loop-card?).");
+                if (!state.templateJSON) {
+                    console.error("WPBS Loop Error: Missing templateJSON.");
                     return;
                 }
 
                 const payload = {
-                    template: state.templateHTML,
+                    template: state.templateJSON,
                     query,
                     page,
                 };
 
                 const res = await fetch("/wp-json/wpbs/v1/loop", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(payload),
                 });
 
@@ -164,7 +171,7 @@ store("wpbs/layout-grid", {
          * LOAD MORE
          * ----------------------------------------------------------- */
         async loadMore() {
-            const { state, actions } = store("wpbs/layout-grid");
+            const {state, actions} = store("wpbs/layout-grid");
 
             if (!state.hasMore) return;
 
@@ -172,6 +179,6 @@ store("wpbs/layout-grid", {
 
             const context = getContext();
             await actions.fetchQuery(context, nextPage);
-        }
-    }
+        },
+    },
 });

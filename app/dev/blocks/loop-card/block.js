@@ -71,15 +71,13 @@ registerBlockType(metadata.name, {
         const {isLoop = false} = attributes;
 
         if (!!isLoop) {
-            return null;
+            //return null;
         }
 
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
-                tagName={(isLoop ? 'template' : 'article')}
-                {...{'data-block': (isLoop ? JSON.stringify(props) : {})}}
             />
         );
     }, {

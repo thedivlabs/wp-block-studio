@@ -1,6 +1,9 @@
 <?php
 
-if ( ! empty( $attributes['isLoop'] ) ) {
+if (
+	! empty( $attributes['isLoop'] ) &&
+	! ( defined( 'REST_REQUEST' ) && REST_REQUEST )
+) {
 
 	echo '<script type="application/json" data-wpbs-loop-template>';
 	echo wp_json_encode(

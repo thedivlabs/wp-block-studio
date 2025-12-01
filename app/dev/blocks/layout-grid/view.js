@@ -1,17 +1,23 @@
+/**************************************************************************
+ * WPBS LAYOUT GRID — FRONT-END LOOP ENGINE (no <template> tags needed)
+ **************************************************************************/
+
 import { store, getContext, getElement } from "@wordpress/interactivity";
 
 store("wpbs/layout-grid", {
     state: {
-        pageSize: 12,
-
         containerEl: null,
         isLoaded: false,
         page: 1,
         hasMore: false,
-        totalPages: 1
+        totalPages: 1,
+        templateHTML: null,  // ⭐ store extracted loop-card template
     },
 
     callbacks: {
+        /* -----------------------------------------------------------
+         * Staggered reveal animation
+         * ----------------------------------------------------------- */
         revealCards() {
             const { state } = store("wpbs/layout-grid");
             const container = state.containerEl;
@@ -46,7 +52,25 @@ store("wpbs/layout-grid", {
 
             state.containerEl = el;
 
-            // Lazy-load grid only when block enters viewport
+            /***********************************************************
+             * ⭐ EXTRACT TEMPLATE FROM FIRST LOOP CARD
+             ***********************************************************/
+            const sampleCard = el.querySelector(".wpbs-loop-card");
+
+            if (!sampleCard) {
+                console.error("WPBS Loop Error: No .wpbs-loop-card found as template.");
+                return;
+            }
+
+            // Save the template HTML for SSR
+            state.templateHTML = sampleCard.outerHTML;
+
+            // Remove from DOM so SSR populates container
+            sampleCard.remove();
+
+            /***********************************************************
+             * Lazy-load when entering viewport
+             ***********************************************************/
             const observer = new IntersectionObserver(
                 (entries) => {
                     entries.forEach((entry) => {
@@ -70,25 +94,24 @@ store("wpbs/layout-grid", {
             const { query = {} } = context;
 
             try {
-                const templateEl = state.containerEl.querySelector("template");
-
-                if (!templateEl) {
-                    console.error("WPBS Loop Error: Missing <template> in markup.");
+                /***********************************************************
+                 * We now use templateHTML from the extracted loop-card
+                 ***********************************************************/
+                if (!state.templateHTML) {
+                    console.error("WPBS Loop Error: Missing templateHTML (no loop-card?).");
                     return;
                 }
 
-                const templateHTML = templateEl.innerHTML;
-
                 const payload = {
-                    template: templateHTML,
+                    template: state.templateHTML,
                     query,
-                    page
+                    page,
                 };
 
                 const res = await fetch("/wp-json/wpbs/v1/loop", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
                 });
 
                 if (!res.ok) {
@@ -99,23 +122,32 @@ store("wpbs/layout-grid", {
                 const data = await res.json();
                 const html = data?.html || "";
 
-                // 1. Convert HTML into elements
+                /***********************************************************
+                 * Convert SSR HTML → DOM Nodes
+                 ***********************************************************/
                 const temp = document.createElement("div");
                 temp.innerHTML = html;
                 const cards = Array.from(temp.children);
 
-                // 2. Inject into the DOM
+                /***********************************************************
+                 * Replace old cards with new SSR-rendered cards
+                 ***********************************************************/
                 const container = state.containerEl;
 
-                // Remove all old loop cards
-                container.querySelectorAll(".wpbs-loop-card").forEach((old) => old.remove());
+                // Remove old cards
+                container
+                    .querySelectorAll(".wpbs-loop-card")
+                    .forEach((old) => old.remove());
 
                 // Append new cards
                 cards.forEach((card) => {
-                    card.classList.remove("--visible"); // ready for animation
+                    card.classList.remove("--visible");
                     container.appendChild(card);
                 });
 
+                /***********************************************************
+                 * Update pagination state
+                 ***********************************************************/
                 state.page = page;
                 state.totalPages = data.pages || 1;
                 state.hasMore = page < state.totalPages;
@@ -129,7 +161,7 @@ store("wpbs/layout-grid", {
         },
 
         /* -----------------------------------------------------------
-         * LOAD MORE (pagination)
+         * LOAD MORE
          * ----------------------------------------------------------- */
         async loadMore() {
             const { state, actions } = store("wpbs/layout-grid");

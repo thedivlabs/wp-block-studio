@@ -1,8 +1,13 @@
 <?php
 
+$is_rest = function_exists( 'wp_is_rest_request' )
+	? wp_is_rest_request()
+	: ( defined( 'REST_REQUEST' ) && REST_REQUEST );
+
+
 if (
 	! empty( $attributes['isLoop'] ) &&
-	! ( defined( 'REST_REQUEST' ) && REST_REQUEST )
+	! $is_rest
 ) {
 
 	echo '<script type="application/json" data-wpbs-loop-template>';

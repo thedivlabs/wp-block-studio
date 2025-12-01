@@ -1,50 +1,46 @@
-import { useSelect } from "@wordpress/data";
-import { store as coreStore } from "@wordpress/core-data";
-import { SelectControl, __experimentalGrid as Grid,Button } from "@wordpress/components";
-import { useCallback,useState } from "@wordpress/element";
-import { loopFieldsMap } from "Includes/config";
-import { Field } from "Components/Field";
+import {useSelect} from "@wordpress/data";
+import {store as coreStore} from "@wordpress/core-data";
+import {SelectControl, __experimentalGrid as Grid, __experimentalToolsPanel as ToolsPanel} from "@wordpress/components";
+import {useCallback, useState} from "@wordpress/element";
+import {loopFieldsMap} from "Includes/config";
+import {Field} from "Components/Field";
 
-export const LoopBasicSettings = ({ value = {}, onChange }) => {
-    const [open, setOpen] = useState(false);
 
-    const update = (patch) => onChange({ ...value, ...patch });
+export const LoopBasicSettings = ({value = {}, onChange}) => {
+
+    const update = (patch, reset = false) => {
+        if (reset) {
+            onChange({});
+            return;
+        }
+        onChange({...value, ...patch});
+    };
 
     return (
-        <div className="wpbs-loop-basic-settings">
-            <Button
-                variant="secondary"
-                onClick={() => setOpen(!open)}
-                __next40pxDefaultSize
-            >
-                Basic Query Settings
-            </Button>
-
-            {open && (
-                <div style={{ marginTop: "16px", display: "grid", gap: "16px" }}>
-                    {loopFieldsMap.map((field) => (
-                        <Field
-                            key={field.slug}
-                            field={field}
-                            settings={value}
-                            isToolsPanel={false}
-                            callback={(valueObj) => {
-                                const next = { ...value, ...valueObj };
-                                update(next);
-                            }}
-                        />
-                    ))}
-                </div>
-            )}
-        </div>
+        <ToolsPanel
+            label="Advanced Settings"
+            className="wpbs-loop-tools is-style-unstyled"
+            resetAll={() => update({}, true)}
+        >
+            {loopFieldsMap.map((field) => (
+                <Field
+                    key={field.slug}
+                    field={field}
+                    settings={value}
+                    callback={(obj) => update(obj)}
+                    isToolsPanel={true}
+                />
+            ))}
+        </ToolsPanel>
     );
 };
 
-export const Loop = ({ value = {}, onChange }) => {
-    const { post_type, taxonomy, term } = value;
+
+export const Loop = ({value = {}, onChange}) => {
+    const {post_type, taxonomy, term} = value;
 
     const postTypes = useSelect((select) => {
-        const types = select(coreStore).getPostTypes({ per_page: -1 });
+        const types = select(coreStore).getPostTypes({per_page: -1});
         if (!types) return null;
         return Object.values(types).filter(
             (type) => type?.viewable && type.slug !== "attachment"
@@ -60,7 +56,7 @@ export const Loop = ({ value = {}, onChange }) => {
     const terms = useSelect(
         (select) => {
             if (!taxonomy) return [];
-            const args = { per_page: -1, hide_empty: false };
+            const args = {per_page: -1, hide_empty: false};
             const records = select(coreStore).getEntityRecords("taxonomy", taxonomy, args);
             return records || [];
         },
@@ -68,14 +64,14 @@ export const Loop = ({ value = {}, onChange }) => {
     );
 
     const update = useCallback(
-        (patch) => onChange({ ...value, ...patch }),
+        (patch) => onChange({...value, ...patch}),
         [value, onChange]
     );
 
     const postTypeOptions = [
-        { value: "", label: "Select a post type" },
-        { value: "current", label: "Current Post" },
-        { label: "— Registered Post Types —", value: "", disabled: true },
+        {value: "", label: "Select a post type"},
+        {value: "current", label: "Current Post"},
+        {label: "— Registered Post Types —", value: "", disabled: true},
         ...(postTypes || []).map((pt) => ({
             value: pt.slug,
             label: pt.name,
@@ -83,7 +79,7 @@ export const Loop = ({ value = {}, onChange }) => {
     ];
 
     const taxonomyOptions = [
-        { value: "", label: "Select a taxonomy" },
+        {value: "", label: "Select a taxonomy"},
         ...(taxonomies || []).map((tax) => ({
             value: tax.slug,
             label: tax.name,
@@ -91,7 +87,7 @@ export const Loop = ({ value = {}, onChange }) => {
     ];
 
     const termOptions = [
-        { value: "", label: "Select a term" },
+        {value: "", label: "Select a term"},
         ...(terms || []).map((t) => ({
             value: t.id,
             label: t.name,
@@ -134,7 +130,7 @@ export const Loop = ({ value = {}, onChange }) => {
                 value={term || ""}
                 options={termOptions}
                 onChange={(newValue) => {
-                    update({ term: newValue });
+                    update({term: newValue});
                 }}
                 disabled={!taxonomy}
                 __next40pxDefaultSize

@@ -118,23 +118,29 @@ export const BlockWrapper = ({
     if (isSave) {
         const saveProps = useBlockProps.save(baseBlockProps);
 
+        // 🔥 RE-MERGE WRAPPER PROPS AFTER useBlockProps.save()
+        const finalSaveProps = {
+            ...saveProps,
+            ...wrapperProps, // <-- ensures FE gets the attributes
+        };
+
         if (hasChildren && (hasContainer && isBackgroundActive)) {
             return (
-                <Tag {...saveProps}>
+                <Tag {...finalSaveProps}>
                     <div className={containerClass}>
-                        <InnerBlocks.Content/>
+                        <InnerBlocks.Content />
                         {children}
                     </div>
 
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    <BackgroundElement attributes={attributes} isSave={true} />
                 </Tag>
             );
         }
 
         if (hasChildren) {
             return (
-                <Tag {...saveProps}>
-                    <InnerBlocks.Content/>
+                <Tag {...finalSaveProps}>
+                    <InnerBlocks.Content />
                     {children}
                 </Tag>
             );
@@ -142,14 +148,14 @@ export const BlockWrapper = ({
 
         if (hasContainer || isBackgroundActive) {
             return (
-                <Tag {...saveProps}>
+                <Tag {...finalSaveProps}>
                     <div className={containerClass}>{children}</div>
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    <BackgroundElement attributes={attributes} isSave={true} />
                 </Tag>
             );
         }
 
-        return <Tag {...saveProps}>{children}</Tag>;
+        return <Tag {...finalSaveProps}>{children}</Tag>;
     }
 
     const blockProps = useBlockProps(baseBlockProps);

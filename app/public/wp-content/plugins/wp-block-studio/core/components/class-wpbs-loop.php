@@ -15,15 +15,12 @@ class WPBS_Loop {
 		return self::$instance;
 	}
 
-
 	/**
 	 * Private constructor — registers endpoint
 	 */
 	private function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoint' ] );
 	}
-
-
 
 	/*───────────────────────────────────────────────────────────────
 		REST ENDPOINT REGISTRATION
@@ -44,7 +41,8 @@ class WPBS_Loop {
 	}
 
 	public function permissions(): bool {
-		return true; // public endpoint — tighten if needed
+		// Public endpoint for now; restrict if needed later.
+		return true;
 	}
 
 	private function get_allowed_args(): array {
@@ -66,36 +64,32 @@ class WPBS_Loop {
 		];
 	}
 
-
-
 	/*───────────────────────────────────────────────────────────────
 		MAIN REST API HANDLER
 	───────────────────────────────────────────────────────────────*/
 
 	public function handle_request( WP_REST_Request $request ): WP_REST_Response {
 
-		$template = $request->get_param( 'template' );
+		$template  = $request->get_param( 'template' );
 		$query_raw = $request->get_param( 'query' );
-		$page = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
+		$page      = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
 
-		if ( empty($template) || ! is_string($template) ) {
-			return $this->error('Invalid template.');
+		if ( empty( $template ) || ! is_string( $template ) ) {
+			return $this->error( 'Invalid template.' );
 		}
 
 		if ( ! is_array( $query_raw ) ) {
-			return $this->error('Query must be an object.');
+			return $this->error( 'Query must be an object.' );
 		}
 
-		// sanitize all query settings
+		// Sanitize all query settings
 		$query = $this->sanitize_query( $query_raw );
 
-		// run SSR loop
+		// Run SSR loop
 		$output = $this->render_loop( $template, $query, $page );
 
 		return rest_ensure_response( $output );
 	}
-
-
 
 	/*───────────────────────────────────────────────────────────────
 		QUERY SANITIZATION
@@ -106,63 +100,85 @@ class WPBS_Loop {
 		$clean = [];
 
 		// post_type (supports "current")
-		$public_pts = get_post_types([ 'public' => true ], 'names');
+		$public_pts = get_post_types( [ 'public' => true ], 'names' );
 
 		if ( isset( $q['post_type'] ) ) {
-			$pt = sanitize_key($q['post_type']);
+			$pt = sanitize_key( $q['post_type'] );
 
 			if ( $pt === 'current' ) {
 				$clean['post_type'] = 'current';
-			}
-			elseif ( in_array($pt, $public_pts, true) ) {
+			} elseif ( in_array( $pt, $public_pts, true ) ) {
 				$clean['post_type'] = $pt;
-			}
-			else {
+			} else {
 				$clean['post_type'] = 'post';
 			}
 		}
 
 		// posts_per_page
-		if ( isset($q['posts_per_page']) ) {
-			$clean['posts_per_page'] = max(-1, intval($q['posts_per_page']));
+		if ( isset( $q['posts_per_page'] ) ) {
+			$clean['posts_per_page'] = max( -1, intval( $q['posts_per_page'] ) );
+		}
+
+		// loop_terms (term loop mode)
+		if ( ! empty( $q['loop_terms'] ) ) {
+			$clean['loop_terms'] = (bool) $q['loop_terms'];
 		}
 
 		// taxonomy
-		if ( ! empty($q['taxonomy']) ) {
-			$tax = sanitize_key($q['taxonomy']);
-			if ( taxonomy_exists($tax) ) {
+		if ( ! empty( $q['taxonomy'] ) ) {
+			$tax = sanitize_key( $q['taxonomy'] );
+			if ( taxonomy_exists( $tax ) ) {
 				$clean['taxonomy'] = $tax;
 			}
 		}
 
-		// term
-		if ( ! empty($q['term']) ) {
-			$clean['term'] = intval($q['term']);
+		// term (supports single, array, or "current")
+		if ( array_key_exists( 'term', $q ) ) {
+
+			// explicit "current" term marker
+			if ( $q['term'] === 'current' ) {
+				$clean['term'] = 'current';
+			} elseif ( is_array( $q['term'] ) ) {
+				$clean['term'] = array_map( 'intval', $q['term'] );
+			} elseif ( $q['term'] !== null && $q['term'] !== '' ) {
+				$clean['term'] = [ intval( $q['term'] ) ];
+			}
 		}
 
-		// orderby
-		if ( ! empty($q['orderby']) ) {
-			$clean['orderby'] = sanitize_key($q['orderby']);
+		// orderby (whitelist)
+		if ( ! empty( $q['orderby'] ) ) {
+			$allowed_orderby = [
+				'date',
+				'title',
+				'menu_order',
+				'modified',
+				'ID',
+				'name',
+				'author',
+				'rand',
+			];
+
+			$ob = sanitize_key( $q['orderby'] );
+
+			$clean['orderby'] = in_array( $ob, $allowed_orderby, true ) ? $ob : 'date';
 		}
 
 		// order
-		if ( ! empty($q['order']) ) {
-			$order = strtoupper($q['order']);
-			$clean['order'] = in_array($order, ['ASC', 'DESC'], true) ? $order : 'DESC';
+		if ( ! empty( $q['order'] ) ) {
+			$order          = strtoupper( (string) $q['order'] );
+			$clean['order'] = in_array( $order, [ 'ASC', 'DESC' ], true ) ? $order : 'DESC';
 		}
 
 		// include / exclude
-		if ( ! empty($q['include']) && is_array($q['include']) ) {
-			$clean['post__in'] = array_map('intval', $q['include']);
+		if ( ! empty( $q['include'] ) && is_array( $q['include'] ) ) {
+			$clean['post__in'] = array_map( 'intval', $q['include'] );
 		}
-		if ( ! empty($q['exclude']) && is_array($q['exclude']) ) {
-			$clean['post__not_in'] = array_map('intval', $q['exclude']);
+		if ( ! empty( $q['exclude'] ) && is_array( $q['exclude'] ) ) {
+			$clean['post__not_in'] = array_map( 'intval', $q['exclude'] );
 		}
 
 		return $clean;
 	}
-
-
 
 	/*───────────────────────────────────────────────────────────────
 		MAIN LOOP RENDERING
@@ -172,24 +188,49 @@ class WPBS_Loop {
 
 		$template_blocks = parse_blocks( $template_html );
 
-		// Build WP_Query args
+		// TERM LOOP MODE
+		if ( ! empty( $query['loop_terms'] ) && ! empty( $query['taxonomy'] ) ) {
+
+			$terms = $this->get_terms_for_query( $query );
+
+			$html = '';
+
+			foreach ( $terms as $term ) {
+				if ( ! $term instanceof WP_Term ) {
+					continue;
+				}
+
+				$html .= $this->render_card( $template_blocks, null, $term->term_id );
+			}
+
+			$total = count( $terms );
+
+			return [
+				'html'  => $html,
+				'total' => $total,
+				// For now, term loops are treated as a single "page".
+				'pages' => 1,
+				'page'  => 1,
+			];
+		}
+
+		// POST LOOP MODE
 		$args = $this->build_query_args( $query, $page );
 
 		$wpq = new WP_Query( $args );
 
-		$total = intval($wpq->found_posts);
+		$total = intval( $wpq->found_posts );
 		$pages = $args['posts_per_page'] > 0
-			? max(1, (int) ceil($total / $args['posts_per_page']))
+			? max( 1, (int) ceil( $total / $args['posts_per_page'] ) )
 			: 1;
 
 		$html = '';
 
-		// Loop through posts
 		while ( $wpq->have_posts() ) {
 			$wpq->the_post();
 			$post_id = get_the_ID();
 
-			$html .= $this->render_card( $template_blocks, $post_id );
+			$html .= $this->render_card( $template_blocks, $post_id, null );
 		}
 		wp_reset_postdata();
 
@@ -201,7 +242,31 @@ class WPBS_Loop {
 		];
 	}
 
+	/*───────────────────────────────────────────────────────────────
+		TERM QUERY ARG BUILDER
+	───────────────────────────────────────────────────────────────*/
 
+	private function get_terms_for_query( array $q ): array {
+
+		$args = [
+			'taxonomy'   => $q['taxonomy'],
+			'hide_empty' => true,
+		];
+
+		// If "term" is an explicit list of IDs
+		if ( ! empty( $q['term'] ) && is_array( $q['term'] ) && $q['term'] !== 'current' ) {
+			$args['include'] = array_map( 'intval', $q['term'] );
+		}
+
+		if ( ! empty( $q['orderby'] ) ) {
+			$args['orderby'] = $q['orderby'];
+		}
+		if ( ! empty( $q['order'] ) ) {
+			$args['order'] = $q['order'];
+		}
+
+		return get_terms( $args );
+	}
 
 	/*───────────────────────────────────────────────────────────────
 		QUERY ARG BUILDER (supports "current")
@@ -209,12 +274,12 @@ class WPBS_Loop {
 
 	private function build_query_args( array $q, int $page ): array {
 
-		// special “current” mode
-		if ( ($q['post_type'] ?? '') === 'current' ) {
+		// Special “current” mode
+		if ( ( $q['post_type'] ?? '' ) === 'current' ) {
 
 			$queried = get_queried_object();
 
-			// singular post/page
+			// Singular post/page
 			if ( $id = get_queried_object_id() ) {
 				return [
 					'post_type'      => 'any',
@@ -225,23 +290,25 @@ class WPBS_Loop {
 				];
 			}
 
-			// term archive
+			// Term archive
 			if ( $queried instanceof WP_Term ) {
 				return [
 					'post_type'      => 'any',
 					'post_status'    => 'publish',
 					'posts_per_page' => $q['posts_per_page'] ?? 12,
 					'paged'          => $page,
-					'tax_query'      => [[
-						'taxonomy' => $queried->taxonomy,
-						'field'    => 'term_id',
-						'terms'    => [$queried->term_id],
-					]],
+					'tax_query'      => [
+						[
+							'taxonomy' => $queried->taxonomy,
+							'field'    => 'term_id',
+							'terms'    => [ $queried->term_id ],
+						],
+					],
 				];
 			}
 		}
 
-		// normal mode
+		// Normal mode
 		$args = [
 			'post_type'      => $q['post_type'] ?? 'post',
 			'post_status'    => 'publish',
@@ -249,41 +316,78 @@ class WPBS_Loop {
 			'paged'          => $page,
 		];
 
-		if (!empty($q['orderby'])) $args['orderby'] = $q['orderby'];
-		if (!empty($q['order']))   $args['order'] = $q['order'];
-
-		if (!empty($q['taxonomy']) && !empty($q['term'])) {
-			$args['tax_query'] = [[
-				'taxonomy' => $q['taxonomy'],
-				'field'    => 'term_id',
-				'terms'    => intval($q['term']),
-			]];
+		if ( ! empty( $q['orderby'] ) ) {
+			$args['orderby'] = $q['orderby'];
+		}
+		if ( ! empty( $q['order'] ) ) {
+			$args['order'] = $q['order'];
 		}
 
-		if (!empty($q['post__in']))     $args['post__in'] = $q['post__in'];
-		if (!empty($q['post__not_in'])) $args['post__not_in'] = $q['post__not_in'];
+		// Tax query (supports array of terms, and "current" via sanitize_query)
+		if ( ! empty( $q['taxonomy'] ) && ! empty( $q['term'] ) ) {
+
+			$terms = $q['term'];
+
+			if ( $terms === 'current' ) {
+				$queried = get_queried_object();
+				if ( $queried instanceof WP_Term ) {
+					$terms = [ $queried->term_id ];
+				} else {
+					$terms = [];
+				}
+			}
+
+			if ( ! is_array( $terms ) ) {
+				$terms = [ intval( $terms ) ];
+			}
+
+			$args['tax_query'] = [
+				[
+					'taxonomy' => $q['taxonomy'],
+					'field'    => 'term_id',
+					'terms'    => array_map( 'intval', $terms ),
+					'operator' => 'IN',
+				],
+			];
+		}
+
+		if ( ! empty( $q['post__in'] ) ) {
+			$args['post__in'] = array_map( 'intval', $q['post__in'] );
+		}
+
+		if ( ! empty( $q['post__not_in'] ) ) {
+			$args['post__not_in'] = array_map( 'intval', $q['post__not_in'] );
+		}
 
 		return $args;
 	}
-
-
 
 	/*───────────────────────────────────────────────────────────────
 		CARD RENDERING
 	───────────────────────────────────────────────────────────────*/
 
-	private function render_card( array $blocks, int $post_id ): string {
+	private function render_card( array $blocks, ?int $post_id = null, ?int $term_id = null ): string {
 
 		$output = '';
 
 		foreach ( $blocks as $block ) {
 
+			$extra_context = [];
+
+			if ( $post_id ) {
+				$extra_context['wpbs/postId'] = $post_id;
+			}
+
+			if ( $term_id ) {
+				$extra_context['wpbs/termId'] = $term_id;
+			}
+
 			$context = array_merge(
 				$block['context'] ?? [],
-				['wpbs/postId' => $post_id]
+				$extra_context
 			);
 
-			$b = $block;
+			$b            = $block;
 			$b['context'] = $context;
 
 			$output .= render_block( $b );
@@ -292,14 +396,11 @@ class WPBS_Loop {
 		return $output;
 	}
 
-
-
 	/*───────────────────────────────────────────────────────────────
 		ERROR HELPERS
 	───────────────────────────────────────────────────────────────*/
 
 	private function error( string $msg, int $code = 400 ): WP_REST_Response {
-		return new WP_REST_Response([ 'error' => $msg ], $code);
+		return new WP_REST_Response( [ 'error' => $msg ], $code );
 	}
-
 }

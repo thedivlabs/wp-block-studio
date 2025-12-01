@@ -391,7 +391,6 @@ registerBlockType(metadata.name, {
                             grid: gridSettings || {},
                         }),
                     }),
-                    ...(attributes["wpbs-props"] || {}),
                 }}
             >
                 <InnerBlocks.Content/>

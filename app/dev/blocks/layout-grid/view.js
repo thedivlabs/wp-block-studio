@@ -57,7 +57,7 @@ store("wpbs/layout-grid", {
 
             state.containerEl = el;
 
-            console.log(context);
+            console.log(JSON.parse(JSON.stringify(context)));
 
             // Lazy load the query when block enters viewport
             const observer = new IntersectionObserver(

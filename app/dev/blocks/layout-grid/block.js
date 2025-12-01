@@ -387,7 +387,7 @@ registerBlockType(metadata.name, {
                     "data-wp-init": "actions.init",
                     "data-wp-context": JSON.stringify({
                         query: gridSettings.query || {},
-                        grid: gridSettings || {},
+                        divider: gridSettings.divider || {},
                     }),
                 })}
             >

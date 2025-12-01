@@ -19,56 +19,6 @@ import {
 } from '@wordpress/components';
 
 /**
- * @typedef {Object} TaxFilter
- * @property {string} taxonomy
- * @property {(number|string)[]} terms
- * @property {'term_id'|'slug'} [field]
- * @property {'IN'|'NOT IN'|'AND'} [operator]
- */
-
-/**
- * @typedef {Object} MetaFilter
- * @property {string} key
- * @property {string|number|(string|number)[]} value
- * @property {'='|'!='|'>'|'>='|'<'|'<='|'IN'|'NOT IN'|'LIKE'} [compare]
- * @property {'CHAR'|'NUMERIC'|'DATE'} [type]
- */
-
-/**
- * @typedef {Object} DateRange
- * @property {'none'|'after'|'before'|'between'|'relative'} mode
- * @property {string|null} [after]
- * @property {string|null} [before]
- * @property {'days'|'weeks'|'months'|'years'} [relativeUnit]
- * @property {number|null} [relativeAmount]
- */
-
-/**
- * @typedef {Object} QueryConfig
- * @property {'posts'|'manual'|'taxonomy'} mode
- * @property {string} [postType]
- * @property {string[]} [postStatus]
- * @property {number[]} [includeIds]
- * @property {number[]} [excludeIds]
- * @property {TaxFilter[]} [taxFilters]
- * @property {number[]} [authors]
- * @property {'any'|'current'} [authorMode]
- * @property {string} [search]
- * @property {'ignore'|'only'|'exclude'} [stickyMode]
- * @property {string} [orderby]
- * @property {'ASC'|'DESC'} [order]
- * @property {string|null} [metaKey]
- * @property {number} [postsPerPage]
- * @property {number|null} [maxItems]
- * @property {number|null} [offset]
- * @property {DateRange} [dateRange]
- * @property {MetaFilter[]} [metaFilters]
- * @property {'AND'|'OR'} [metaRelation]
- * @property {string|null} [dateFormat]
- * @property {string|number|null} [imageSize]
- */
-
-/**
  * Default query config. This is merged with the incoming value so the consumer
  * only needs to provide fields they care about.
  *
@@ -104,12 +54,7 @@ export const DEFAULT_QUERY_CONFIG = {
     imageSize: null,
 };
 
-/**
- * Merge an incoming partial config with defaults.
- *
- * @param {Partial<QueryConfig>|undefined|null} value
- * @returns {QueryConfig}
- */
+
 const normalizeConfig = (value) => {
     const base = {...DEFAULT_QUERY_CONFIG};
     if (!value || typeof value !== 'object') {
@@ -193,32 +138,7 @@ const ensureArray = (maybeArray) => {
     }
     return [maybeArray];
 };
-
-/**
- * @typedef {Object} QueryOptions
- * @property {{label: string, value: string}[]} [postTypes]
- * @property {{label: string, value: string}[]} [statuses]
- * @property {{label: string, value: string}[]} [orderBy]
- * @property {{label: string, value: string}[]} [authors]
- * @property {{label: string, value: string}[]} [dateFormats]
- * @property {{label: string, value: string|number}[]} [imageSizes]
- * @property {{
- *    slug: string,
- *    label: string
- * }[]} [taxonomies]
- * @property {Record<string, {label: string, value: string|number}[]>} [termsByTaxonomy]
- */
-
-/**
- * Query configuration panel component.
- *
- * @param {Object} props
- * @param {QueryConfig|Partial<QueryConfig>|undefined|null} props.value
- * @param {(next: QueryConfig) => void} props.onChange
- * @param {QueryOptions} [props.options]
- * @param {string} [props.title]
- * @constructor
- */
+ 
 export const QueryConfigPanel = ({
                                      value,
                                      onChange,

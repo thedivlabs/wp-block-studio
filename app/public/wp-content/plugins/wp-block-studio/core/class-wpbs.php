@@ -682,9 +682,9 @@ class WPBS {
 		// SCRIPT PRELOADS (unchanged)
 		// ------------------------------------------------------------
 		$default_scripts = [
-			'jquery-core',
-			'jquery',
-			'jquery-migrate',
+			//'jquery-core',
+			//'jquery',
+			//'jquery-migrate',
 		];
 
 		$preload_scripts = array_values( array_filter(

@@ -42,11 +42,12 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                        hasBackground={true}
-                        hasChildren={true}
                     />
                 </>
             );
+        }, {
+            hasChildren: true,
+            hasBackground: true,
         }),
 
     save: withStyleSave((props) => {
@@ -57,9 +58,10 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames}
-                hasBackground={true}
-                hasChildren={true}
             />
         );
+    }, {
+        hasChildren: true,
+        hasBackground: true,
     }),
 });

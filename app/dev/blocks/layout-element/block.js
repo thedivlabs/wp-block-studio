@@ -33,7 +33,6 @@ registerBlockType(metadata.name, {
         (props) => {
 
             const {attributes, styleData, BlockWrapper, setCss, setPreload} = props;
-            const {'wpbs-style': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 
             return (
@@ -41,11 +40,12 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                        hasBackground={true}
-                        hasChildren={true}
                     />
                 </>
             );
+        }, {
+            hasChildren: true,
+            hasBackground: true,
         }),
 
     save: withStyleSave((props) => {
@@ -56,9 +56,10 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames}
-                hasBackground={true}
-                hasChildren={true}
             />
         );
+    }, {
+        hasChildren: true,
+        hasBackground: true,
     }),
 });

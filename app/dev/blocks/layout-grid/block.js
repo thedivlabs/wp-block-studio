@@ -326,9 +326,12 @@ registerBlockType(metadata.name, {
                     >
                         {(tab) => {
                             switch (tab.name) {
-                                case "options": return tabOptions;
-                                case "loop":    return isLoop ? tabLoop : null;
-                                case "divider": return tabDivider;
+                                case "options":
+                                    return tabOptions;
+                                case "loop":
+                                    return isLoop ? tabLoop : null;
+                                case "divider":
+                                    return tabDivider;
                             }
                         }}
                     </TabPanel>
@@ -355,7 +358,6 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                    tagName="div"
                 />
             </>
         );

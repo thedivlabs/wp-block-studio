@@ -355,7 +355,6 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                    tagName="div"
                     data-platform="youtube"
                     data-vid={getVideoId(settings.link)}
                     data-title={settings.title || ""}
@@ -368,6 +367,7 @@ registerBlockType(metadata.name, {
         hasBackground: false,
         hasAdvanced: false,
         hasChildren: false,
+        tagName: "div",
     }),
 
     save: withStyleSave((props) => {
@@ -380,7 +380,6 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames}
-                tagName="div"
                 data-platform="youtube"
                 data-vid={getVideoId(settings.link)}
                 data-title={settings.title || ""}
@@ -392,5 +391,6 @@ registerBlockType(metadata.name, {
         hasBackground: false,
         hasAdvanced: false,
         hasChildren: false,
+        tagName: "div",
     }),
 });

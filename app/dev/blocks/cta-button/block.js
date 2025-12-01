@@ -245,6 +245,8 @@ registerBlockType(metadata.name, {
                 </BlockWrapper>
             </>
         );
+    }, {
+        tagName: "div",
     }),
 
     save: withStyleSave((props) => {
@@ -266,7 +268,6 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames(attributes)}
-                tagName="a"
                 {...anchorProps}
             >
                 <span className="wpbs-cta-button__title">{'Learn more'}</span>
@@ -276,5 +277,7 @@ registerBlockType(metadata.name, {
                 />
             </BlockWrapper>
         );
+    }, {
+        tagName: "a",
     }),
 });

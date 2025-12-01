@@ -263,13 +263,13 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                    hasBackground={true}
-                    tagName="figure"
                 >
                     {renderFigureContent(settings, attributes, true)}
                 </BlockWrapper>
             </>
         );
+    }, {
+        tagName: "figure",
     }),
 
     save: withStyleSave((props) => {
@@ -283,11 +283,11 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames}
-                hasBackground={true}
-                tagName="figure"
             >
                 {renderFigureContent(settings, attributes, false)}
             </BlockWrapper>
         );
+    }, {
+        tagName: "figure",
     }),
 });

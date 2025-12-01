@@ -64,6 +64,8 @@ export const withStyle = (Component, config) => (props) => {
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
+    console.log(props);
+
     const {
         uniqueId,
         "wpbs-style": styleData = {props: {}, breakpoints: {}, hover: {}},

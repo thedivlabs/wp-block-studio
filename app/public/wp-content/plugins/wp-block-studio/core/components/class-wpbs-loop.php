@@ -152,11 +152,11 @@ class WPBS_Loop {
 		}
 
 		// include / exclude
-		if ( ! empty($q['post__in']) && is_array($q['post__in']) ) {
-			$clean['post__in'] = array_map('intval', $q['post__in']);
+		if ( ! empty($q['include']) && is_array($q['include']) ) {
+			$clean['post__in'] = array_map('intval', $q['include']);
 		}
-		if ( ! empty($q['post__not_in']) && is_array($q['post__not_in']) ) {
-			$clean['post__not_in'] = array_map('intval', $q['post__not_in']);
+		if ( ! empty($q['exclude']) && is_array($q['exclude']) ) {
+			$clean['post__not_in'] = array_map('intval', $q['exclude']);
 		}
 
 		return $clean;

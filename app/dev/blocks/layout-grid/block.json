@@ -17,7 +17,13 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "isLoop": {
+      "type": "boolean"
     }
+  },
+  "providesContext": {
+    "wpbs/isLoop": "isLoop"
   },
   "supports": {
     "innerBlocks": true,

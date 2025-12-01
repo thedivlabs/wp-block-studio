@@ -202,9 +202,20 @@ registerBlockType(metadata.name, {
             [rawGrid]
         );
 
+        const classNames = getClassNames(attributes, gridSettings);
+
         const isLoop = attributes?.className?.includes("is-style-loop");
 
-        const classNames = getClassNames(attributes, gridSettings);
+        useEffect(() => {
+
+            if (!isLoop && attributes.isLoop === undefined) {
+                return;
+            }
+
+            if (attributes.isLoop !== isLoop) {
+                setAttributes({isLoop: isLoop});
+            }
+        }, [isLoop]);
 
 
         /* --------------------------------------------
@@ -374,6 +385,8 @@ registerBlockType(metadata.name, {
         const gridSettings = normalizeGridSettings(
             attributes["wpbs-grid"] || {}
         );
+
+        // card block needs to be aware of this variable
         const isLoop = attributes?.className?.includes("is-style-loop");
 
         const classNames = getClassNames(attributes, gridSettings);

@@ -12,10 +12,14 @@
     },
     "postId": {
       "type": "string"
+    },
+    "isLoop": {
+      "type": "boolean"
     }
   },
   "usesContext": [
-    "wpbs/postId"
+    "wpbs/postId",
+    "wpbs/isLoop"
   ],
   "providesContext": {
     "wpbs/postId": "postId"
@@ -53,7 +57,8 @@
   },
   "editorScript": "file:./block.js",
   "style": "file:./block.css",
-  "icon": "editor-kitchensink"
+  "icon": "editor-kitchensink",
+  "render": "file:./render.php"
 }
 
 

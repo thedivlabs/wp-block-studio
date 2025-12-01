@@ -391,11 +391,17 @@ registerBlockType(metadata.name, {
                     }),
                 })}
             >
-                <InnerBlocks.Content/>
+                {isLoop ? (
+                    <template>
+                        <InnerBlocks.Content />
+                    </template>
+                ) : (
+                    <InnerBlocks.Content />
+                )}
             </BlockWrapper>
         );
     }, {
         hasBackground: false,
         hasChildren: true
-    }),
+    })
 });

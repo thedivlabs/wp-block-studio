@@ -78,43 +78,66 @@ store("wpbs/layout-grid", {
         /* -----------------------------------------------------------
          * FETCH — Calls your custom REST endpoint
          * ----------------------------------------------------------- */
+
         async fetchQuery(context) {
             const { state, callbacks } = store("wpbs/layout-grid");
-            const { query = {} } = context;
-
-            // Build query params
-            const params = new URLSearchParams(
-                Object.fromEntries(
-                    Object.entries(query).filter(
-                        ([_, v]) => v !== undefined && v !== null && v !== ""
-                    )
-                )
-            );
+            const { query = {}, divider = {} } = context;
 
             try {
-                const url = `/wp-json/wpbs/v1/query?${params.toString()}`;
-                const res = await fetch(url);
+                // 1. Get the loop card template (SSR requires the block’s save markup)
+                const templateEl = state.containerEl.querySelector("template");
+
+                if (!templateEl) {
+                    console.error("WPBS Loop Error: Missing <template> in markup.");
+                    return;
+                }
+
+                const templateHTML = templateEl.innerHTML;
+
+                // 2. Build REST payload
+                const payload = {
+                    template: templateHTML,
+                    query,
+                    page: 1,
+                    divider // optional — only if you want backend to use it
+                };
+
+                const res = await fetch("/wp-json/wpbs/v1/loop", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
 
                 if (!res.ok) {
-                    console.error("WPBS Query Error:", res.statusText);
+                    console.error("WPBS Loop Error:", res.statusText);
                     return;
                 }
 
                 const data = await res.json();
-                const items = data?.items || [];
 
-                state.allItems = items;
+                // The backend returns:
+                // { html, total, pages, page }
+                const html = data?.html || "";
+
+                // Convert HTML string into DOM nodes
+                const temp = document.createElement("div");
+                temp.innerHTML = html;
+
+                const cards = Array.from(temp.children);
+
+                state.allItems = cards;
                 state.visibleCount = state.pageSize;
-                state.items = items.slice(0, state.visibleCount);
-                state.hasMore = state.visibleCount < items.length;
+                state.items = cards.slice(0, state.visibleCount);
+                state.hasMore = state.visibleCount < cards.length;
 
                 state.isLoaded = true;
                 callbacks.revealCards();
 
             } catch (err) {
-                console.error("WPBS Query Fetch Exception:", err);
+                console.error("WPBS Loop Fetch Exception:", err);
             }
         },
+
 
         /* -----------------------------------------------------------
          * LOAD MORE — Simple pagination

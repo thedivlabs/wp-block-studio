@@ -4,6 +4,7 @@ import {SelectControl, __experimentalGrid as Grid, __experimentalToolsPanel as T
 import {useCallback, useState} from "@wordpress/element";
 import {loopFieldsMap} from "Includes/config";
 import {Field} from "Components/Field";
+import {PostSelectField} from "Components/PostSelectField";
 
 
 export const LoopBasicSettings = ({value = {}, onChange}) => {
@@ -38,7 +39,7 @@ export const LoopBasicSettings = ({value = {}, onChange}) => {
 
 
 export const Loop = ({value = {}, onChange}) => {
-    const {post_type, taxonomy, term} = value;
+    const {post_type, taxonomy, term, exclude, include} = value;
 
     const postTypes = useSelect((select) => {
         const types = select(coreStore).getPostTypes({per_page: -1});
@@ -139,6 +140,25 @@ export const Loop = ({value = {}, onChange}) => {
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />
+
+            <PostSelectField
+                value={include}
+                onChange={(newValue) => {
+                    update({include: newValue});
+                }}
+                label={'Select Posts'}
+                querySettings={value}
+            />
+
+            <PostSelectField
+                value={exclude}
+                onChange={(newValue) => {
+                    update({exclude: newValue});
+                }}
+                label={'Exclude Posts'}
+                querySettings={value}
+            />
+
 
             {/* ⭐ NEW: Basic Query Settings (collapsible) */}
             <LoopBasicSettings

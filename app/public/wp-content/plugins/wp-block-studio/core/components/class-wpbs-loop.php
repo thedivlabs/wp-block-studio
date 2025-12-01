@@ -366,34 +366,31 @@ class WPBS_Loop {
 		CARD RENDERING
 	───────────────────────────────────────────────────────────────*/
 
-	private function render_card( array $blocks, ?int $post_id = null, ?int $term_id = null ): string {
+	private function render_card(string $template_html, int $post_id): string {
 
-		$output = '';
+		// Parse blocks fresh each render — safe and correct
+		$blocks = parse_blocks($template_html);
 
-		foreach ( $blocks as $block ) {
+		// We expect ONE top-level block (your Loop Card block)
+		$card = $blocks[0] ?? null;
+		if (!$card) return '';
 
-			$extra_context = [];
-
-			if ( $post_id ) {
-				$extra_context['wpbs/postId'] = $post_id;
-			}
-
-			if ( $term_id ) {
-				$extra_context['wpbs/termId'] = $term_id;
-			}
-
-			$context = array_merge(
-				$block['context'] ?? [],
-				$extra_context
-			);
-
-			$b            = $block;
-			$b['context'] = $context;
-
-			$output .= render_block( $b );
+		// Ensure attributes exist
+		if (!isset($card['attrs'])) {
+			$card['attrs'] = [];
 		}
 
-		return $output;
+		// This is CRITICAL — let block.json propagate context
+		$card['attrs']['postId'] = $post_id;
+
+		// Add context for children
+		$card['context'] = array_merge(
+			$card['context'] ?? [],
+			['wpbs/postId' => $post_id]
+		);
+
+		// Allow the loop card to render inner blocks with correct context
+		return render_block($card);
 	}
 
 	/*───────────────────────────────────────────────────────────────

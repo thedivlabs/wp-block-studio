@@ -2,24 +2,13 @@ import { store, getContext, getElement } from "@wordpress/interactivity";
 
 store("wpbs/layout-grid", {
     state: {
-        // Raw items returned from REST API
-        allItems: [],
-
-        // Items currently visible inside the grid
-        items: [],
-
-        // Total items visible so far
-        visibleCount: 0,
-
-        // Page size for load-more (can eventually come from settings)
         pageSize: 12,
 
-        // Whether more items exist after visibleCount
-        hasMore: false,
-
-        // UI / timing helpers
-        isLoaded: false,
         containerEl: null,
+        isLoaded: false,
+        page: 1,
+        hasMore: false,
+        totalPages: 1
     },
 
     callbacks: {
@@ -41,14 +30,14 @@ store("wpbs/layout-grid", {
                     newCards.forEach((card) => {
                         card.classList.add("--visible");
                     });
-                }, 100);
+                }, 50);
             });
         }
     },
 
     actions: {
         /* -----------------------------------------------------------
-         * INIT — Runs automatically on block hydration
+         * INIT
          * ----------------------------------------------------------- */
         init() {
             const { state, actions } = store("wpbs/layout-grid");
@@ -57,15 +46,13 @@ store("wpbs/layout-grid", {
 
             state.containerEl = el;
 
-            console.log(JSON.parse(JSON.stringify(context)));
-
-            // Lazy load the query when block enters viewport
+            // Lazy-load grid only when block enters viewport
             const observer = new IntersectionObserver(
                 (entries) => {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting) {
                             observer.unobserve(entry.target);
-                            actions.fetchQuery(context);
+                            actions.fetchQuery(context, 1);
                         }
                     });
                 },
@@ -76,15 +63,13 @@ store("wpbs/layout-grid", {
         },
 
         /* -----------------------------------------------------------
-         * FETCH — Calls your custom REST endpoint
+         * FETCH SSR LOOP RESULTS
          * ----------------------------------------------------------- */
-
-        async fetchQuery(context) {
+        async fetchQuery(context, page = 1) {
             const { state, callbacks } = store("wpbs/layout-grid");
-            const { query = {}, divider = {} } = context;
+            const { query = {} } = context;
 
             try {
-                // 1. Get the loop card template (SSR requires the block’s save markup)
                 const templateEl = state.containerEl.querySelector("template");
 
                 if (!templateEl) {
@@ -94,12 +79,10 @@ store("wpbs/layout-grid", {
 
                 const templateHTML = templateEl.innerHTML;
 
-                // 2. Build REST payload
                 const payload = {
                     template: templateHTML,
                     query,
-                    page: 1,
-                    divider // optional — only if you want backend to use it
+                    page
                 };
 
                 const res = await fetch("/wp-json/wpbs/v1/loop", {
@@ -114,23 +97,30 @@ store("wpbs/layout-grid", {
                 }
 
                 const data = await res.json();
-
-                // The backend returns:
-                // { html, total, pages, page }
                 const html = data?.html || "";
 
-                // Convert HTML string into DOM nodes
+                // 1. Convert HTML into elements
                 const temp = document.createElement("div");
                 temp.innerHTML = html;
-
                 const cards = Array.from(temp.children);
 
-                state.allItems = cards;
-                state.visibleCount = state.pageSize;
-                state.items = cards.slice(0, state.visibleCount);
-                state.hasMore = state.visibleCount < cards.length;
+                // 2. Inject into the DOM
+                const container = state.containerEl;
 
+                // Remove all old loop cards
+                container.querySelectorAll(".wpbs-loop-card").forEach((old) => old.remove());
+
+                // Append new cards
+                cards.forEach((card) => {
+                    card.classList.remove("--visible"); // ready for animation
+                    container.appendChild(card);
+                });
+
+                state.page = page;
+                state.totalPages = data.pages || 1;
+                state.hasMore = page < state.totalPages;
                 state.isLoaded = true;
+
                 callbacks.revealCards();
 
             } catch (err) {
@@ -138,22 +128,18 @@ store("wpbs/layout-grid", {
             }
         },
 
-
         /* -----------------------------------------------------------
-         * LOAD MORE — Simple pagination
+         * LOAD MORE (pagination)
          * ----------------------------------------------------------- */
-        loadMore() {
-            const { state, callbacks } = store("wpbs/layout-grid");
+        async loadMore() {
+            const { state, actions } = store("wpbs/layout-grid");
 
-            state.visibleCount = Math.min(
-                state.visibleCount + state.pageSize,
-                state.allItems.length
-            );
+            if (!state.hasMore) return;
 
-            state.items = state.allItems.slice(0, state.visibleCount);
-            state.hasMore = state.visibleCount < state.allItems.length;
+            const nextPage = state.page + 1;
 
-            callbacks.revealCards();
+            const context = getContext();
+            await actions.fetchQuery(context, nextPage);
         }
     }
 });

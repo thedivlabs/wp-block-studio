@@ -4,12 +4,6 @@
   "title": "Layout Grid",
   "icon": "grid-view",
   "description": "Displays a content grid",
-  "attributes": {
-    "settings": {
-      "type": "object",
-      "default": {}
-    }
-  },
   "allowedBlocks": [
     "wpbs/layout-grid-container"
   ],

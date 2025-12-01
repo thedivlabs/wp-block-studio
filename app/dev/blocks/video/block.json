@@ -37,7 +37,6 @@
     }
   },
   "editorScript": "file:./block.js",
-  "viewScriptModule": "file:./view.js",
   "icon": "format-video",
   "style": [
     "file:./block.css"

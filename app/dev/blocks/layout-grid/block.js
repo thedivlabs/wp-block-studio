@@ -18,6 +18,7 @@ import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {isEqual} from "lodash";
 
 import {cleanObject} from "Includes/helper";
+import {Loop} from "Components/Loop";
 
 import {
     STYLE_ATTRIBUTES,
@@ -208,6 +209,7 @@ registerBlockType(metadata.name, {
          * Sync CSS + Preload
          * -------------------------------------------- */
         useEffect(() => {
+            console.log(attributes);
             setCss(getCssProps(gridSettings));
         }, [gridSettings, setCss]);
 
@@ -275,13 +277,13 @@ registerBlockType(metadata.name, {
                     columnGap={10}
                     rowGap={16}
                 >
-                    <QueryConfigPanel
+                    <Loop
                         value={gridSettings.query || {}}
                         onChange={updateQuerySettings}
                     />
                 </Grid>
             ),
-            [gridSettings, updateQuerySettings]
+            [gridSettings?.query, updateQuerySettings]
         );
 
         const tabDivider = useMemo(

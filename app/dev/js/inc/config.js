@@ -813,4 +813,75 @@ export const backgroundFieldsMap = [
     },
 ];
 
+// LoopFieldsMap.js
+export const loopFieldsMap = [
+    {
+        type: "number",
+        slug: "posts_per_page",
+        label: "Posts Per Page",
+        full: true,
+        inputProps: {
+            min: -1,
+            max: 50,
+            step: 1,
+        },
+        isToolsPanel: false,
+    },
+
+    {
+        type: "select",
+        slug: "orderby",
+        label: "Order By",
+        options: [
+            { label: "Default", value: "" },
+            { label: "Date", value: "date" },
+            { label: "Title", value: "title" },
+            { label: "Menu Order", value: "menu_order" },
+            { label: "Random", value: "rand" },
+        ],
+        isToolsPanel: false,
+    },
+
+    {
+        type: "select",
+        slug: "order",
+        label: "Sort Direction",
+        options: [
+            { label: "Descending", value: "DESC" },
+            { label: "Ascending", value: "ASC" },
+        ],
+        isToolsPanel: false,
+    },
+
+    {
+        type: "composite",
+        slug: "post__in",
+        label: "Include Posts",
+        full: true,
+        isToolsPanel: false,
+        fields: [
+            {
+                type: "text",
+                slug: "post__in",
+                label: "Comma-separated IDs",
+            },
+        ],
+    },
+
+    {
+        type: "composite",
+        slug: "post__not_in",
+        label: "Exclude Posts",
+        full: true,
+        isToolsPanel: false,
+        fields: [
+            {
+                type: "text",
+                slug: "post__not_in",
+                label: "Comma-separated IDs",
+            },
+        ],
+    },
+];
+
 

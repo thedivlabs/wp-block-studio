@@ -2,11 +2,11 @@ import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import { SelectControl, __experimentalGrid as Grid } from "@wordpress/components";
 import { useCallback } from "@wordpress/element";
+import { LoopBasicSettings } from "./LoopBasicSettings";
 
 export const Loop = ({ value = {}, onChange }) => {
     const { post_type, taxonomy, term } = value;
 
-    // Get every public post type (excluding attachments)
     const postTypes = useSelect((select) => {
         const types = select(coreStore).getPostTypes({ per_page: -1 });
         if (!types) return null;
@@ -15,14 +15,12 @@ export const Loop = ({ value = {}, onChange }) => {
         );
     }, []);
 
-    // Get every public taxonomy
     const taxonomies = useSelect((select) => {
         const items = select(coreStore).getTaxonomies();
         if (!items) return null;
         return items.filter((t) => t.visibility?.public);
     }, []);
 
-    // Terms depend on taxonomy (this is OK!)
     const terms = useSelect(
         (select) => {
             if (!taxonomy) return [];
@@ -40,11 +38,8 @@ export const Loop = ({ value = {}, onChange }) => {
 
     const postTypeOptions = [
         { value: "", label: "Select a post type" },
-
         { value: "current", label: "Current Post" },
-
         { label: "— Registered Post Types —", value: "", disabled: true },
-
         ...(postTypes || []).map((pt) => ({
             value: pt.slug,
             label: pt.name,
@@ -108,6 +103,12 @@ export const Loop = ({ value = {}, onChange }) => {
                 disabled={!taxonomy}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
+            />
+
+            {/* ⭐ NEW: Basic Query Settings (collapsible) */}
+            <LoopBasicSettings
+                value={value}
+                onChange={onChange}
             />
         </Grid>
     );

@@ -64,8 +64,6 @@ export const withStyle = (Component, config) => (props) => {
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
-    console.log(props);
-
     const {
         uniqueId,
         "wpbs-style": styleData = {props: {}, breakpoints: {}, hover: {}},
@@ -95,7 +93,7 @@ export const withStyle = (Component, config) => (props) => {
         return () => {
             unregisterBlock(uniqueId, clientId);
         };
-    }, [clientId]);
+    }, [clientId, uniqueId]);
 
 
     const updateStyleSettings = useCallback(
@@ -120,7 +118,7 @@ export const withStyle = (Component, config) => (props) => {
 
             setAttributes(result);
         },
-        [setAttributes, styleData]
+        [setAttributes]
     );
 
 
@@ -148,7 +146,7 @@ export const withStyle = (Component, config) => (props) => {
             setAttributes(result);
 
         },
-        [setAttributes, bgData]
+        [setAttributes]
     );
 
 
@@ -160,7 +158,7 @@ export const withStyle = (Component, config) => (props) => {
             };
             setAttributes({"wpbs-advanced": next});
         },
-        [setAttributes, advData]
+        [setAttributes]
     );
 
 
@@ -242,7 +240,7 @@ export const withStyle = (Component, config) => (props) => {
                 </BlockWrapper>
             );
         },
-        [config]
+        []
     );
 
 

@@ -382,16 +382,14 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames}
-                wrapperProps={{
-                    ...(isLoop && {
-                        "data-wp-interactive": "wpbs/layout-grid",
-                        "data-wp-init": "actions.init",
-                        "data-wp-context": JSON.stringify({
-                            query: gridSettings.query || {},
-                            grid: gridSettings || {},
-                        }),
+                {...(isLoop && {
+                    "data-wp-interactive": "wpbs/layout-grid",
+                    "data-wp-init": "actions.init",
+                    "data-wp-context": JSON.stringify({
+                        query: gridSettings.query || {},
+                        grid: gridSettings || {},
                     }),
-                }}
+                })}
             >
                 <InnerBlocks.Content/>
             </BlockWrapper>

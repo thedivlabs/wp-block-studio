@@ -28,7 +28,6 @@ const getBlockPropsMerged = (props, mergedWrapperProps = {}) => {
     const {
         className: userClass = "",
         style: blockStyle = {},
-        tagName: _removeTagName,   // <-- PATCH: remove tagName from wrapperProps
         ...restWrapperProps
     } = mergedWrapperProps || {};
 
@@ -118,29 +117,23 @@ export const BlockWrapper = ({
     if (isSave) {
         const saveProps = useBlockProps.save(baseBlockProps);
 
-        // 🔥 RE-MERGE WRAPPER PROPS AFTER useBlockProps.save()
-        const finalSaveProps = {
-            ...saveProps,
-            ...wrapperProps, // <-- ensures FE gets the attributes
-        };
-
         if (hasChildren && (hasContainer && isBackgroundActive)) {
             return (
-                <Tag {...finalSaveProps}>
+                <Tag {...saveProps}>
                     <div className={containerClass}>
-                        <InnerBlocks.Content />
+                        <InnerBlocks.Content/>
                         {children}
                     </div>
 
-                    <BackgroundElement attributes={attributes} isSave={true} />
+                    <BackgroundElement attributes={attributes} isSave={true}/>
                 </Tag>
             );
         }
 
         if (hasChildren) {
             return (
-                <Tag {...finalSaveProps}>
-                    <InnerBlocks.Content />
+                <Tag {...saveProps}>
+                    <InnerBlocks.Content/>
                     {children}
                 </Tag>
             );
@@ -148,14 +141,14 @@ export const BlockWrapper = ({
 
         if (hasContainer || isBackgroundActive) {
             return (
-                <Tag {...finalSaveProps}>
+                <Tag {...saveProps}>
                     <div className={containerClass}>{children}</div>
-                    <BackgroundElement attributes={attributes} isSave={true} />
+                    <BackgroundElement attributes={attributes} isSave={true}/>
                 </Tag>
             );
         }
 
-        return <Tag {...finalSaveProps}>{children}</Tag>;
+        return <Tag {...saveProps}>{children}</Tag>;
     }
 
     const blockProps = useBlockProps(baseBlockProps);

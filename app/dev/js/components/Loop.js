@@ -62,7 +62,7 @@ export const Loop = ({value = {}, onChange}) => {
 
     const terms = useSelect(
         (select) => {
-            if (!taxonomy) return [];
+            if (!taxonomy && !loopTerms) return [];
             const args = {per_page: -1, hide_empty: false};
             const records = select(coreStore).getEntityRecords("taxonomy", taxonomy, args);
             return records || [];
@@ -141,7 +141,7 @@ export const Loop = ({value = {}, onChange}) => {
                 onChange={(newValue) => {
                     update({term: newValue});
                 }}
-                disabled={!taxonomy}
+                disabled={(!taxonomy && !loopTerms)}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />

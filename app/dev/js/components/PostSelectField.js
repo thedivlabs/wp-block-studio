@@ -1,7 +1,7 @@
 import { useMemo } from "@wordpress/element";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
-import { ComboboxControl, Spinner } from "@wordpress/components";
+import { FormTokenField, Spinner } from "@wordpress/components";
 
 /**
  * Extract only valid REST query args from the full Loop settings object.
@@ -24,8 +24,10 @@ function normalizeQuerySettings(raw = {}) {
     if (post_type) out.post_type = post_type;
     if (taxonomy) out.taxonomy = taxonomy;
     if (term) out.term = term;
-    //if (order) out.order = order;
-    //if (orderby) out.orderby = orderby;
+
+    // order/orderby optional
+    if (order) out.order = order;
+    if (orderby) out.orderby = orderby;
 
     // default per_page
     out.per_page = Number.isInteger(per_page) ? per_page : -1;
@@ -36,50 +38,62 @@ function normalizeQuerySettings(raw = {}) {
 /**
  * PostSelectField
  *
- * A single-post combobox with searchable suggestions.
+ * Multi-select token field with suggestions (typeahead).
  * Accepts the *entire* Loop settings object through querySettings,
- * then automatically extracts only valid parameters via normalizeQuerySettings().
+ * then extracts only valid query parameters internally.
  *
  * Props:
- * - value: number|null  (selected post ID)
- * - onChange: (postId) => void
+ * - value: number|array|null
+ * - onChange: (idsArray) => void
  * - label: string
- * - querySettings: full Loop settings object (auto-sanitized)
+ * - querySettings: full Loop settings object
+ * - multiple: boolean (default true)
  */
 export function PostSelectField({
-                                    value = null,
+                                    value = [],
                                     onChange,
-                                    label = "Select Post",
+                                    label = "Select Posts",
                                     querySettings = {},
+                                    multiple = true,
                                 }) {
-    // Normalized query params (stable + memoized)
+    /**
+     * Normalize incoming value.
+     *
+     * We ALWAYS treat it as an array of numeric IDs internally.
+     * Even if the caller wants single-select, we still store as array
+     * and unwrap back to single value in onChange.
+     */
+    const selectedIds = useMemo(() => {
+        if (value == null) return [];
+        if (Array.isArray(value)) return value.map((v) => parseInt(v, 10)).filter(Boolean);
+        return [parseInt(value, 10)].filter(Boolean);
+    }, [value]);
+
+    // Normalize query params (stable + memoized)
     const normalizedQuery = useMemo(
         () => normalizeQuerySettings(querySettings),
         [querySettings]
     );
 
-    // Normalized combobox selected value
-    const normalizedValue = value ? String(value) : "";
-
     /**
      * MAIN SELECTOR — fetch posts based on normalized query
      */
-    const { options, isResolving } = useSelect(
+    const { options, suggestionsMap, isResolving } = useSelect(
         (select) => {
             const core = select(coreStore);
 
             /**
-             * STEP 1 — fetch all public post types (posts, pages, CPTs)
+             * STEP 1 — Fetch public post types
              */
             const types = core.getPostTypes({ per_page: -1 });
-            if (!types) return { options: [], isResolving: true };
+            if (!types) return { options: [], suggestionsMap: {}, isResolving: true };
 
             const publicTypes = Object.values(types).filter(
                 (t) => t.viewable && t.slug !== "attachment"
             );
 
             /**
-             * STEP 2 — choose which types to query
+             * STEP 2 — Filter to target post types if post_type is given
              */
             let targetTypes = publicTypes;
 
@@ -94,7 +108,7 @@ export function PostSelectField({
             }
 
             /**
-             * STEP 3 — Build REST args for core-data
+             * STEP 3 — core-data REST args
              */
             const baseArgs = {
                 per_page: normalizedQuery.per_page ?? -1,
@@ -104,9 +118,7 @@ export function PostSelectField({
             };
 
             const taxArgs = {};
-
             if (normalizedQuery.taxonomy && normalizedQuery.term) {
-                // Some taxonomies require mapping to their REST base
                 const taxBase =
                     {
                         category: "categories",
@@ -117,10 +129,10 @@ export function PostSelectField({
             }
 
             /**
-             * STEP 4 — Perform entity queries for each post type
+             * STEP 4 — Query all target post types
              */
-            let resolving = false;
             const posts = [];
+            let resolving = false;
 
             for (const type of targetTypes) {
                 const args = { ...baseArgs, ...taxArgs };
@@ -142,50 +154,74 @@ export function PostSelectField({
 
                 records.forEach((post) => {
                     posts.push({
-                        value: String(post.id),
-                        label:
-                            post.title?.rendered ||
-                            "(No title)",
+                        id: post.id,
+                        label: post.title?.rendered || "(No title)",
                         typeLabel: type.name || type.slug,
                     });
                 });
             }
 
             /**
-             * STEP 5 — Final options list
+             * Build suggestions + reverse lookup map
              */
-            const options = posts.map((item) => ({
-                value: item.value,
-                label: `${item.label} (${item.typeLabel})`,
-            }));
+            const suggestions = posts.map((p) => `${p.label} (${p.typeLabel})`);
+            const suggestionsMap = {};
 
-            return { options, isResolving: resolving };
+            posts.forEach((p) => {
+                suggestionsMap[`${p.label} (${p.typeLabel})`] = p.id;
+            });
+
+            return {
+                options: suggestions,
+                suggestionsMap,
+                isResolving: resolving,
+            };
         },
         [JSON.stringify(normalizedQuery)]
     );
 
     /**
-     * Render
+     * Convert selected IDs → tokens (labels)
+     */
+    const selectedTokens = useMemo(() => {
+        return selectedIds
+            .map((id) => {
+                const entry = Object.entries(suggestionsMap).find(
+                    ([label, mappedId]) => mappedId === id
+                );
+                return entry ? entry[0] : null;
+            })
+            .filter(Boolean);
+    }, [selectedIds, suggestionsMap]);
+
+    /**
+     * Handle onChange from the token field
+     */
+    const handleTokenChange = (tokens) => {
+        const ids = tokens
+            .map((token) => suggestionsMap[token])
+            .filter(Boolean);
+
+        if (multiple) {
+            onChange?.(ids);
+        } else {
+            onChange?.(ids[0] ?? null);
+        }
+    };
+
+    /**
+     * RENDER
      */
     return (
         <div className="wpbs-post-select-field" style={{ display: "flex", gap: 8 }}>
             <div style={{ flex: 1 }}>
-                <ComboboxControl
+                <FormTokenField
                     label={label}
-                    value={normalizedValue}
-                    onChange={(nextValue) => {
-                        const id = nextValue ? parseInt(nextValue, 10) : null;
-                        onChange?.(Number.isNaN(id) ? null : id);
-                    }}
-                    options={[
-                        { value: "", label: "— Select —" },
-                        ...(options || []),
-                    ]}
-                    __nextHasNoMarginBottom
+                    value={selectedTokens}
+                    suggestions={options}
+                    onChange={handleTokenChange}
                     __next40pxDefaultSize
-                    help={
-                        isResolving ? "Loading…" : undefined
-                    }
+                    __nextHasNoMarginBottom
                 />
             </div>
 

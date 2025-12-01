@@ -21,6 +21,7 @@ export const LoopBasicSettings = ({value = {}, onChange}) => {
             label="Advanced Settings"
             className="wpbs-loop-tools is-style-unstyled"
             resetAll={() => update({}, true)}
+            style={{marginTop: '15px'}}
         >
             {loopFieldsMap.map((field) => (
                 <Field

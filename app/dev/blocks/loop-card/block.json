@@ -9,15 +9,15 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
-    }
+    },
+    "wpbs/postId": {"type": "string"}
   },
-  "styles": [
-    {
-      "name": "dynamic",
-      "label": "Dynamic",
-      "isDefault": false
-    }
+  "usesContext": [
+    "wpbs/postId"
   ],
+  "providesContext": {
+
+  },
   "supports": {
     "interactivity": true,
     "innerBlocks": true,

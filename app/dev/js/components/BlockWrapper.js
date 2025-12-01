@@ -91,12 +91,18 @@ export const BlockWrapper = ({
     const bgSettings = attributes["wpbs-background"] || {};
     const {"wpbs-advanced": advanced = {}} = attributes;
 
+    //
+    // 🔥 PATCHED: these now come ONLY from config
+    //
     const {
         tagName: wrapperTagName = "div",
         hasBackground = true,
         hasChildren = false,
-    } = wrapperProps;
+    } = config;
 
+    //
+    // Wrapper props now contain ONLY DOM attributes
+    //
     const Tag = ElementTag(advanced?.tagName, wrapperTagName);
 
     const isBackgroundActive =
@@ -108,9 +114,11 @@ export const BlockWrapper = ({
     const containerClass =
         "wpbs-layout-wrapper wpbs-container w-full h-full relative z-20";
 
+    //
+    // 🔥 PATCHED: config is NO LONGER merged into wrapperProps
+    //
     const mergedWrapperProps = {
-        ...(wrapperProps || {}),
-        ...(config || {}),
+        ...(wrapperProps || {})
     };
 
     const baseBlockProps = getBlockPropsMerged(props, mergedWrapperProps);

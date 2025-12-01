@@ -202,6 +202,8 @@ registerBlockType(metadata.name, {
             [rawGrid]
         );
 
+        const isLoop = attributes?.className?.includes("is-style-loop");
+
         const classNames = getClassNames(attributes, gridSettings);
 
 
@@ -315,24 +317,18 @@ registerBlockType(metadata.name, {
                 <div className="wpbs-block-settings">
                     <TabPanel
                         className="wpbs-editor-tabs wpbs-block-settings__panel"
-                        activeClass="active"
                         initialTabName="options"
                         tabs={[
                             {name: "options", title: "Options"},
-                            {name: "loop", title: "Loop"},
+                            ...(isLoop ? [{name: "loop", title: "Loop"}] : []),
                             {name: "divider", title: "Divider"},
                         ]}
                     >
                         {(tab) => {
                             switch (tab.name) {
-                                case "options":
-                                    return tabOptions;
-                                case "loop":
-                                    return tabLoop;
-                                case "divider":
-                                    return tabDivider;
-                                default:
-                                    return null;
+                                case "options": return tabOptions;
+                                case "loop":    return isLoop ? tabLoop : null;
+                                case "divider": return tabDivider;
                             }
                         }}
                     </TabPanel>
@@ -359,16 +355,7 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                    hasBackground={true}
                     tagName="div"
-                    wrapperProps={{
-                        "data-wp-interactive": "wpbs/layout-grid",
-                        "data-wp-init": "actions.init",
-                        "data-wp-context": JSON.stringify({
-                            query: gridSettings.query || {},
-                            grid: gridSettings || {},
-                        }),
-                    }}
                 />
             </>
         );
@@ -386,19 +373,22 @@ registerBlockType(metadata.name, {
         const gridSettings = normalizeGridSettings(
             attributes["wpbs-grid"] || {}
         );
+        const isLoop = attributes?.className?.includes("is-style-loop");
+
         const classNames = getClassNames(attributes, gridSettings);
 
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
-                hasBackground={true}
                 wrapperProps={{
-                    "data-wp-interactive": "wpbs/layout-grid",
-                    "data-wp-init": "actions.init",
-                    "data-wp-context": JSON.stringify({
-                        query: gridSettings.query || {},
-                        grid: gridSettings || {},
+                    ...(isLoop && {
+                        "data-wp-interactive": "wpbs/layout-grid",
+                        "data-wp-init": "actions.init",
+                        "data-wp-context": JSON.stringify({
+                            query: gridSettings.query || {},
+                            grid: gridSettings || {},
+                        }),
                     }),
                     ...(attributes["wpbs-props"] || {}),
                 }}

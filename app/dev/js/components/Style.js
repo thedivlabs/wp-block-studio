@@ -59,7 +59,7 @@ export const withStyle = (Component, config) => (props) => {
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
 
-    const {hasBackground = true, hasAdvanced = true, hasChildren} = config || {};
+    const {hasBackground = true, hasAdvanced = true, hasChildren, tagName} = config || {};
 
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
@@ -233,8 +233,8 @@ export const withStyle = (Component, config) => (props) => {
             return (
                 <BlockWrapper
                     props={blockProps}
-                    wrapperProps={{...wrapperProps, ...config}}
-                    config={config}
+                    wrapperProps={wrapperProps}   {/* <-- PATCH: wrapperProps ONLY */}
+                    config={config}               {/* <-- PATCH: functional flags ONLY */}
                 >
                     {children}
                 </BlockWrapper>
@@ -282,7 +282,6 @@ export const withStyle = (Component, config) => (props) => {
         </>
     );
 };
-
 
 export const withStyleSave = (Component, config) => (props) => {
     const {attributes} = props;

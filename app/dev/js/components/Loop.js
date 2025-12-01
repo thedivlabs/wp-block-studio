@@ -40,6 +40,11 @@ export const Loop = ({ value = {}, onChange }) => {
 
     const postTypeOptions = [
         { value: "", label: "Select a post type" },
+
+        { value: "current", label: "Current (this post/page/term)" },
+
+        { label: "— Registered Post Types —", value: "", disabled: true },
+
         ...(postTypes || []).map((pt) => ({
             value: pt.slug,
             label: pt.name,

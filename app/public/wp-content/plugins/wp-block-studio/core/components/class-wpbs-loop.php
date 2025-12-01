@@ -1,278 +1,305 @@
 <?php
+declare(strict_types=1);
 
 class WPBS_Loop {
 
-	public string $content;
-	public array $card;
-	public string $css;
-	public string $pagination_label;
-	public bool $is_last;
-	public bool $is_rest;
-	public bool $is_query;
-	public bool $is_term_loop;
-	public bool $is_current;
-	public bool $is_related;
-	public bool $is_menu_order;
-	public bool $is_pagination;
-	public string|bool $icon_next;
-	public string|bool $icon_prev;
-	public array|WP_Query $query;
+	private static WPBS_Loop $instance;
 
-
-	public function __construct( WP_Block|false|array $block, $query = false, $page = 1, $is_rest = false ) {
-
-		$block = is_a( $block, 'WP_Block' ) ? $block->parsed_block['innerBlocks'][0] ?? false : $block;
-
-		$card = WPBS::get_block_template( $block );
-
-		$query = $query ?: $block->attributes['wpbs-query'] ?? false;
-
-		if ( empty( $card ) || empty( $query ) ) {
-			return;
+	/**
+	 * Singleton initializer
+	 */
+	public static function init(): WPBS_Loop {
+		if ( empty( self::$instance ) ) {
+			self::$instance = new WPBS_Loop();
 		}
-
-		$this->is_menu_order    = ! empty( $query['menu_order'] );
-		$this->is_term_loop     = ! empty( $query['loop_terms'] );
-		$this->is_current       = ( $query['post_type'] ?? false ) == 'current';
-		$this->is_related       = ( $query['post_type'] ?? false ) == 'related';
-		$this->is_pagination    = ! empty( $query['pagination'] );
-		$this->pagination_label = $query['pagination-label'] ?? 'Show More';
-		$this->icon_next        = $query['icon_next'] ?? false;
-		$this->icon_prev        = $query['icon_prev'] ?? false;
-
-		$new_content = '';
-		$css         = '';
-
-
-		$this->query = $this->loop_query( $query, $page );
-
-
-		$this->is_rest  = ! empty( $is_rest );
-		$this->is_query = is_a( $this->query, 'WP_Query' );
-		$this->is_last  = ( $this->is_query && ( $this->query->query_vars['paged'] ?? 1 ) >= ( $this->query->max_num_pages ?? 1 ) ) || is_array( $this->query );
-
-		if ( $this->is_query && $this->query->have_posts() ) {
-
-
-			$query_counter = 0;
-
-			while ( $this->query->have_posts() ) {
-				$this->query->the_post();
-
-				$new_block = $this->loop_card( $card, [
-					'wpbs/postId' => get_the_id(),
-				], $query_counter, $is_rest );
-
-				$query_counter ++;
-
-				$new_content .= $new_block->render();
-				$css         .= $new_block->attributes['wpbs-css'] ?? '';
-
-			}
-
-			wp_reset_postdata();
-
-		}
-
-		if ( ! $this->is_query && is_array( $this->query ) ) {
-
-			foreach ( $this->query as $k => $term_id ) {
-
-				$term = get_term( $term_id );
-
-				if ( ! is_a( $term, 'WP_Term' ) ) {
-					continue;
-				}
-
-				$card['attrs']['termId'] = $term->term_id;
-
-				$new_block = $this->loop_card( $card, [
-					'wpbs/termId' => $term->term_id,
-				], $k, $is_rest );
-
-				$css         .= $new_block->attributes['wpbs-css'] ?? '';
-				$new_content .= $new_block->render();
-
-			}
-
-		}
-
-		$this->content = $new_content;
-		$this->css     = $css;
-		$this->card    = $card;
-
+		return self::$instance;
 	}
 
-	private function loop_card( $block_template = [], $args = [], $index = false, $is_rest = false ): WP_Block|bool {
 
-		global $post;
-
-		$original_id = $block_template['attrs']['uniqueId'] ?? '';
-
-		$post_id = $post->ID ?? $block['attrs']['postId'] ?? $args['wpbs/postId'] ?? get_the_ID();
-		$term_id = $block['attrs']['termId'] ?? $args['wpbs/termId'] ?? false;
-
-		$new_id = $term_id || $post_id ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
-
-
-		$unique_id = join( ' ', array_filter( [
-			$original_id ?? null,
-			$new_id
-		] ) );
-
-		$selector = '.' . join( '.', array_filter( [
-				$original_id ?? null,
-				$new_id
-			] ) );
-
-		$block_template['attrs']['postId']   = $post_id;
-		$block_template['attrs']['termId']   = $term_id;
-		$block_template['attrs']['uniqueId'] = $unique_id;
-		$block_template['attrs']['index']    = $index;
-		$block_template['attrs']['is_rest']  = true;
-
-		$new_block = new WP_Block( $block_template, array_filter( [
-			'wpbs/termId'   => $term_id,
-			'wpbs/postId'   => $post_id,
-			'wpbs/uniqueId' => $unique_id,
-			'wpbs/index'    => $index,
-		] ) );
-
-		return apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
+	/**
+	 * Private constructor — registers endpoint
+	 */
+	private function __construct() {
+		add_action( 'rest_api_init', [ $this, 'register_endpoint' ] );
 	}
 
-	private function loop_query( $query, $page = 1 ): WP_Query|bool|array {
 
-		if ( empty( $query ) ) {
-			return false;
+
+	/*───────────────────────────────────────────────────────────────
+		REST ENDPOINT REGISTRATION
+	───────────────────────────────────────────────────────────────*/
+
+	public function register_endpoint(): void {
+
+		register_rest_route(
+			'wpbs/v1',
+			'/loop',
+			[
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'handle_request' ],
+				'permission_callback' => [ $this, 'permissions' ],
+				'args'                => $this->get_allowed_args(),
+			]
+		);
+	}
+
+	public function permissions(): bool {
+		return true; // public endpoint — tighten if needed
+	}
+
+	private function get_allowed_args(): array {
+		return [
+			'template' => [
+				'type'        => 'string',
+				'required'    => true,
+				'description' => 'HTML markup for the Loop Card block.',
+			],
+			'query' => [
+				'type'        => 'object',
+				'required'    => true,
+				'description' => 'Editor-generated query settings.',
+			],
+			'page' => [
+				'type'     => 'integer',
+				'default'  => 1,
+			],
+		];
+	}
+
+
+
+	/*───────────────────────────────────────────────────────────────
+		MAIN REST API HANDLER
+	───────────────────────────────────────────────────────────────*/
+
+	public function handle_request( WP_REST_Request $request ): WP_REST_Response {
+
+		$template = $request->get_param( 'template' );
+		$query_raw = $request->get_param( 'query' );
+		$page = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
+
+		if ( empty($template) || ! is_string($template) ) {
+			return $this->error('Invalid template.');
 		}
 
-		if ( $this->is_current ) {
-			global $wp_query;
-
-			return $wp_query;
+		if ( ! is_array( $query_raw ) ) {
+			return $this->error('Query must be an object.');
 		}
 
-		if ( $this->is_related ) {
+		// sanitize all query settings
+		$query = $this->sanitize_query( $query_raw );
 
-			$id        = get_queried_object()?->term_id ?? get_the_id();
-			$term      = is_tax() ? get_term( $id ) : false;
-			$field_ref = $term ? "{$term->taxonomy}_{$term->term_id}" : $id;
-			$post_ids  = get_field( 'wpbs_related_posts', $field_ref ) ?: get_field( 'wpbs_related' ) ?: [];
+		// run SSR loop
+		$output = $this->render_loop( $template, $query, $page );
 
-			return new WP_Query( array_filter( [
-				'post_type'      => $query['post_type_filter'] ?? 'any',
-				'post__in'       => $post_ids,
-				'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
-				'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? 'post__in',
-				'order'          => $query['order'] ?? null,
-				'post__not_in'   => $query['post__not_in'] ?? [],
-				'paged'          => $query['paged'] ?? $page ?: 1,
-			] ) );
+		return rest_ensure_response( $output );
+	}
+
+
+
+	/*───────────────────────────────────────────────────────────────
+		QUERY SANITIZATION
+	───────────────────────────────────────────────────────────────*/
+
+	private function sanitize_query( array $q ): array {
+
+		$clean = [];
+
+		// post_type (supports "current")
+		$public_pts = get_post_types([ 'public' => true ], 'names');
+
+		if ( isset( $q['post_type'] ) ) {
+			$pt = sanitize_key($q['post_type']);
+
+			if ( $pt === 'current' ) {
+				$clean['post_type'] = 'current';
+			}
+			elseif ( in_array($pt, $public_pts, true) ) {
+				$clean['post_type'] = $pt;
+			}
+			else {
+				$clean['post_type'] = 'post';
+			}
 		}
 
-		if ( is_a( $query, 'WP_Query' ) ) {
-			return $query;
+		// posts_per_page
+		if ( isset($q['posts_per_page']) ) {
+			$clean['posts_per_page'] = max(-1, intval($q['posts_per_page']));
 		}
 
-		if ( ! empty( $query['loop_terms'] ) ) {
-
-			return get_terms( array_filter( [
-				'taxonomy'   => $query['taxonomy'] ?? false,
-				'hide_empty' => true,
-				'orderby'    => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? null,
-				'order'      => $query['order'] ?? null,
-			] ) );
+		// taxonomy
+		if ( ! empty($q['taxonomy']) ) {
+			$tax = sanitize_key($q['taxonomy']);
+			if ( taxonomy_exists($tax) ) {
+				$clean['taxonomy'] = $tax;
+			}
 		}
 
-		$query_args = [
-			'post_type'      => $query['post_type'] ?? 'post',
-			'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
-			'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? 'post__in',
-			'order'          => $query['order'] ?? 'DESC',
-			'post__in'       => $query['post__in'] ?? [],
-			'post__not_in'   => $query['post__not_in'] ?? [],
-			'paged'          => $query['paged'] ?? $page ?: 1,
+		// term
+		if ( ! empty($q['term']) ) {
+			$clean['term'] = intval($q['term']);
+		}
+
+		// orderby
+		if ( ! empty($q['orderby']) ) {
+			$clean['orderby'] = sanitize_key($q['orderby']);
+		}
+
+		// order
+		if ( ! empty($q['order']) ) {
+			$order = strtoupper($q['order']);
+			$clean['order'] = in_array($order, ['ASC', 'DESC'], true) ? $order : 'DESC';
+		}
+
+		// include / exclude
+		if ( ! empty($q['post__in']) && is_array($q['post__in']) ) {
+			$clean['post__in'] = array_map('intval', $q['post__in']);
+		}
+		if ( ! empty($q['post__not_in']) && is_array($q['post__not_in']) ) {
+			$clean['post__not_in'] = array_map('intval', $q['post__not_in']);
+		}
+
+		return $clean;
+	}
+
+
+
+	/*───────────────────────────────────────────────────────────────
+		MAIN LOOP RENDERING
+	───────────────────────────────────────────────────────────────*/
+
+	private function render_loop( string $template_html, array $query, int $page ): array {
+
+		$template_blocks = parse_blocks( $template_html );
+
+		// Build WP_Query args
+		$args = $this->build_query_args( $query, $page );
+
+		$wpq = new WP_Query( $args );
+
+		$total = intval($wpq->found_posts);
+		$pages = $args['posts_per_page'] > 0
+			? max(1, (int) ceil($total / $args['posts_per_page']))
+			: 1;
+
+		$html = '';
+
+		// Loop through posts
+		while ( $wpq->have_posts() ) {
+			$wpq->the_post();
+			$post_id = get_the_ID();
+
+			$html .= $this->render_card( $template_blocks, $post_id );
+		}
+		wp_reset_postdata();
+
+		return [
+			'html'  => $html,
+			'total' => $total,
+			'pages' => $pages,
+			'page'  => $page,
+		];
+	}
+
+
+
+	/*───────────────────────────────────────────────────────────────
+		QUERY ARG BUILDER (supports "current")
+	───────────────────────────────────────────────────────────────*/
+
+	private function build_query_args( array $q, int $page ): array {
+
+		// special “current” mode
+		if ( ($q['post_type'] ?? '') === 'current' ) {
+
+			$queried = get_queried_object();
+
+			// singular post/page
+			if ( $id = get_queried_object_id() ) {
+				return [
+					'post_type'      => 'any',
+					'post_status'    => 'publish',
+					'p'              => $id,
+					'posts_per_page' => 1,
+					'paged'          => 1,
+				];
+			}
+
+			// term archive
+			if ( $queried instanceof WP_Term ) {
+				return [
+					'post_type'      => 'any',
+					'post_status'    => 'publish',
+					'posts_per_page' => $q['posts_per_page'] ?? 12,
+					'paged'          => $page,
+					'tax_query'      => [[
+						'taxonomy' => $queried->taxonomy,
+						'field'    => 'term_id',
+						'terms'    => [$queried->term_id],
+					]],
+				];
+			}
+		}
+
+		// normal mode
+		$args = [
+			'post_type'      => $q['post_type'] ?? 'post',
+			'post_status'    => 'publish',
+			'posts_per_page' => $q['posts_per_page'] ?? 12,
+			'paged'          => $page,
 		];
 
-		if ( ! empty( $query['taxonomy'] ) && ! empty( $query['term'] ) ) {
+		if (!empty($q['orderby'])) $args['orderby'] = $q['orderby'];
+		if (!empty($q['order']))   $args['order'] = $q['order'];
 
-			$query_args['tax_query'] = [
-				[
-					'taxonomy' => $query['taxonomy'],
-					'field'    => 'term_id',
-					'terms'    => $query['term'],
-				]
-			];
-
+		if (!empty($q['taxonomy']) && !empty($q['term'])) {
+			$args['tax_query'] = [[
+				'taxonomy' => $q['taxonomy'],
+				'field'    => 'term_id',
+				'terms'    => intval($q['term']),
+			]];
 		}
 
+		if (!empty($q['post__in']))     $args['post__in'] = $q['post__in'];
+		if (!empty($q['post__not_in'])) $args['post__not_in'] = $q['post__not_in'];
 
-		return new WP_Query( $query_args );
-
+		return $args;
 	}
 
-	public function pagination( $query, $settings ): string|bool {
 
-		if ( ! $this->is_pagination || ! is_a( $query, 'WP_Query' ) ) {
-			return false;
+
+	/*───────────────────────────────────────────────────────────────
+		CARD RENDERING
+	───────────────────────────────────────────────────────────────*/
+
+	private function render_card( array $blocks, int $post_id ): string {
+
+		$output = '';
+
+		foreach ( $blocks as $block ) {
+
+			$context = array_merge(
+				$block['context'] ?? [],
+				['wpbs/postId' => $post_id]
+			);
+
+			$b = $block;
+			$b['context'] = $context;
+
+			$output .= render_block( $b );
 		}
 
-		if ( ! $this->is_current && ! $this->is_last ) {
-			echo ( new WP_Block( [
-				'blockName' => 'wpbs/loop-pagination-button',
-			], [
-				'label' => $this->pagination_label ?? null
-			] ) )->render();
-		}
-
-
-		if ( ! $this->is_current ) {
-			return false;
-		}
-		$big = 999999999;
-
-		$current_page = max( 1, get_query_var( 'paged' ) );
-
-		$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
-
-		$pagination = paginate_links( [
-			'base'      => $base,
-			'format'    => '/page/%#%/',
-			'current'   => $current_page,
-			'total'     => $query->max_num_pages,
-			'prev_next' => ! empty( $settings['icon_next'] ?? $this->icon_next ?? false ),
-			'mid_size'  => 4,
-			'end_size'  => 1,
-			'type'      => 'array',
-			'prev_text' => $settings['icon_prev'] ?? $this->icon_prev,
-			'next_text' => $settings['icon_next'] ?? $this->icon_next,
-		] );
-
-		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
-			return str_replace( [ '<span', '</span>', 'current', 'next page-numbers', 'prev page-numbers' ], [
-				'<button type="button" disabled',
-				'</button>',
-				'current wp-element-button ',
-				'next wp-block-query-pagination-next material-symbols-outlined',
-				'prev wp-block-query-pagination-previous material-symbols-outlined',
-			], $link );
-		}, $pagination ?? [] );
-
-		if ( ! empty( $pagination_links ) ) {
-			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
-
-			return implode( ' ', [
-				'<nav class="wp-block-query-pagination relative z-20" aria-label="Pagination">',
-				'<div class="wp-block-query-pagination-numbers inline-flex w-max items-center">' . implode( '', $pagination_links ) . '</div>',
-				'</nav>'
-			] );
-		} else {
-			return false;
-		}
+		return $output;
 	}
 
+
+
+	/*───────────────────────────────────────────────────────────────
+		ERROR HELPERS
+	───────────────────────────────────────────────────────────────*/
+
+	private function error( string $msg, int $code = 400 ): WP_REST_Response {
+		return new WP_REST_Response([ 'error' => $msg ], $code);
+	}
 
 }
-
-

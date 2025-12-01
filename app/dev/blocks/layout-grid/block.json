@@ -7,6 +7,13 @@
   "allowedBlocks": [
     "wpbs/layout-grid-container"
   ],
+  "styles": [
+    {
+      "name": "loop",
+      "label": "Loop",
+      "isDefault": false
+    }
+  ],
   "supports": {
     "innerBlocks": true,
     "alignWide": true,

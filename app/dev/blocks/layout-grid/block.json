@@ -14,6 +14,11 @@
       "isDefault": false
     }
   ],
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
   "supports": {
     "innerBlocks": true,
     "alignWide": true,

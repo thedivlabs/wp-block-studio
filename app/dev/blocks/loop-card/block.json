@@ -10,13 +10,15 @@
     "uniqueId": {
       "type": "string"
     },
-    "wpbs/postId": {"type": "string"}
+    "postId": {
+      "type": "string"
+    }
   },
   "usesContext": [
     "wpbs/postId"
   ],
   "providesContext": {
-
+    "wpbs/postId": "postId"
   },
   "supports": {
     "interactivity": true,

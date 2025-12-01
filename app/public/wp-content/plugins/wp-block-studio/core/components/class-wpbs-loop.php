@@ -73,9 +73,114 @@ class WPBS_Loop {
 	/*───────────────────────────────────────────────────────────────
 		MAIN LOOP RENDERING
 	───────────────────────────────────────────────────────────────*/
+	/*───────────────────────────────────────────────────────────────
+		MAIN LOOP RENDERING
+	───────────────────────────────────────────────────────────────*/
 	private function render_loop( array $template_block, array $query, int $page ): array {
 
-		// Build query
+		$html  = '';
+		$index = 0;
+
+		/*
+		 * ===============================================================
+		 * 1. TAXONOMY LOOP MODE (loopTerms = true)
+		 * ===============================================================
+		 */
+		if ( ! empty( $query['loopTerms'] ) && ! empty( $query['taxonomy'] ) ) {
+
+			$taxonomy = sanitize_key( $query['taxonomy'] );
+
+			// Fetch all non-empty terms for this taxonomy.
+			$terms = get_terms( [
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => true,
+			] );
+
+			if ( is_wp_error( $terms ) ) {
+				return [
+					'html'  => '',
+					'total' => 0,
+					'pages' => 1,
+					'page'  => 1,
+				];
+			}
+
+			foreach ( $terms as $term ) {
+
+				// Pass termId into the card renderer.
+				$html .= $this->render_card_from_ast(
+					$template_block,
+					$query,
+					null,            // post_id = null for term-based loops
+					$index,
+					$term->term_id   // ⭐ NEW argument
+				);
+
+				$index ++;
+			}
+
+			return [
+				'html'  => $html,
+				'total' => count( $terms ),
+				'pages' => 1,
+				'page'  => 1,
+			];
+		}
+
+		/*
+		 * ===============================================================
+		 * 2. CURRENT QUERY MODE (post_type === "current")
+		 * ===============================================================
+		 */
+		if ( ( $query['post_type'] ?? null ) === 'current' ) {
+
+			global $wp_query;
+
+			// Avoid fatal if WP_Query not set
+			if ( ! ( $wp_query instanceof WP_Query ) ) {
+				return [
+					'html'  => '',
+					'total' => 0,
+					'pages' => 1,
+					'page'  => 1,
+				];
+			}
+
+			$total_posts = intval( $wp_query->found_posts );
+			$total_pages = max( 1, intval( $wp_query->max_num_pages ) );
+
+			while ( $wp_query->have_posts() ) {
+				$wp_query->the_post();
+				$post_id = get_the_ID();
+
+				$html .= $this->render_card_from_ast(
+					$template_block,
+					$query,
+					$post_id,
+					$index,
+					null // termId not used in normal post loops
+				);
+
+				$index ++;
+			}
+
+			wp_reset_postdata();
+
+			return [
+				'html'  => $html,
+				'total' => $total_posts,
+				'pages' => $total_pages,
+				'page'  => max( 1, $page ),
+			];
+		}
+
+		/*
+		 * ===============================================================
+		 * 3. NORMAL QUERY MODE (default behavior)
+		 * ===============================================================
+		 */
+
+		// Build query args from incoming FE query params
 		$args = $this->build_query_args( $query, $page );
 		$wpq  = new WP_Query( $args );
 
@@ -84,16 +189,18 @@ class WPBS_Loop {
 			? max( 1, (int) ceil( $total_posts / $args['posts_per_page'] ) )
 			: 1;
 
-		$html = '';
-
-		// Loop over posts
-		$index = 0;
-
 		while ( $wpq->have_posts() ) {
 			$wpq->the_post();
 			$post_id = get_the_ID();
 
-			$html .= $this->render_card_from_ast( $template_block, $post_id, $index );
+			$html .= $this->render_card_from_ast(
+				$template_block,
+				$query,
+				$post_id,
+				$index,
+				null // termId not used here unless template logic needs it
+			);
+
 			$index ++;
 		}
 
@@ -111,22 +218,48 @@ class WPBS_Loop {
 	/*───────────────────────────────────────────────────────────────
 		CARD RENDERING FROM AST
 	───────────────────────────────────────────────────────────────*/
-	private function render_card_from_ast( array $template, int $post_id, int $index ): string {
+	private function render_card_from_ast(
+		array $template,
+		array $query,
+		?int $post_id,
+		int $index,
+		?int $term_id = null
+	): string {
 
-		// Clone so we can mutate safely
+		// Clone template so mutation is safe
 		$block = $template;
 
-		// Override attributes
-		$block['attrs']['postId'] = $post_id;
-		$block['attrs']['index']  = $index;
+		// Preserve inner blocks
+		$block['innerBlocks'] = $template['innerBlocks'] ?? [];
 
-		// Provide context
+		// Inject dynamic attributes
+		if ( $post_id !== null ) {
+			$block['attrs']['postId'] = $post_id;
+		}
+
+		if ( $term_id !== null ) {
+			$block['attrs']['termId'] = $term_id;
+		}
+
+		$block['attrs']['index'] = $index;
+
+		// Extract taxonomy from FE query (only if provided)
+		$taxonomy = $query['taxonomy'] ?? null;
+
+		// Build context (the secret sauce)
 		$context = [
-			'wpbs/postId' => $post_id,
-			'wpbs/index'  => $index,
+			'postId'        => $post_id,
+			'termId'        => $term_id,
+			'taxonomy'      => $taxonomy,
+
+			// your custom namespaced values
+			'wpbs/postId'   => $post_id,
+			'wpbs/termId'   => $term_id,
+			'wpbs/taxonomy' => $taxonomy,
+			'wpbs/index'    => $index,
 		];
 
-		// Create new block instance
+		// Instantiate block with context
 		$instance = new WP_Block( $block, $context );
 
 		return $instance->render();

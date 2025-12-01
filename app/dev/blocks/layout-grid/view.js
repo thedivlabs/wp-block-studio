@@ -52,7 +52,12 @@ store("wpbs/layout-grid", {
             const {ref: el} = getElement();
             const context = getContext();
 
-            state.containerEl = el;
+            /***********************************************************
+             * ⭐ FIX: the element is the BLOCK root, not the card container.
+             * We must select `.loop-container` INSIDE the block.
+             ***********************************************************/
+            const container = el.querySelector(".loop-container");
+            state.containerEl = container ?? el; // fallback just in case
 
             /***********************************************************
              * ⭐ Extract JSON template from <script data-wpbs-loop-template>
@@ -70,6 +75,8 @@ store("wpbs/layout-grid", {
                 console.error("WPBS Loop Error: Failed to parse template JSON.", err);
                 return;
             }
+
+            console.log(JSON.parse(JSON.stringify(state.templateJSON)));
 
             // Remove <script> tag from DOM
             templateScript.remove();

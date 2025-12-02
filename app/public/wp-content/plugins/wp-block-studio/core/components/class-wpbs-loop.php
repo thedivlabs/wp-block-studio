@@ -266,7 +266,8 @@ class WPBS_Loop {
 
 		$instance = new WP_Block( $block, $context );
 
-		$instance->context['termId'] = $term_id;
+		$instance->context['termId']    = $term_id;
+		$instance->attributes['termId'] = $term_id;
 
 		return $instance->render();
 	}

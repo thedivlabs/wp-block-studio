@@ -5,7 +5,7 @@ export function gridDividers(element, args = {}, uniqueId = false) {
 
     console.log(args);
 
-    const {divider} = args;
+    const { divider, breakpoints = {} } = args;
     if (!divider) {
         return;
     }
@@ -13,36 +13,36 @@ export function gridDividers(element, args = {}, uniqueId = false) {
     const settings = WPBS?.settings ?? {};
     const themeBreakpoints = settings.breakpoints ?? {};
 
-    // Expect something like:
-    // args.columns = { xs: 1, sm: 2, md: 3, lg: 4 }
-    // args.breakpointMap (optional) = { mobile: 'xs', tablet: 'md' } etc.
-    const columnsConfig = args.columns ?? {};
+    // New: derive columns per breakpoint from args.breakpoints[bpKey].props.columns
+    const breakpointEntries = Object.entries(breakpoints || {});
 
-    // No columns = nothing to do
-    const columnKeys = Object.keys(columnsConfig);
-    if (!columnKeys.length) {
+    if (!breakpointEntries.length) {
         return;
     }
 
-    const container = element.querySelector(':scope > .loop-container');
+    const container = element.querySelector(":scope > .loop-container");
     if (!container) {
         return;
     }
 
-    const cards = container.querySelectorAll('.loop-card');
+    const cards = container.querySelectorAll(".loop-card");
     const total = cards.length;
 
     if (!total) {
         return;
     }
 
-    const selector = '.' + uniqueId;
+    const selector = "." + uniqueId;
 
     // Build an array of breakpoint configs, sorted by min width
-    const breakpointConfigs = columnKeys
-        .map((key) => {
-            // Allow a mapping layer if needed, otherwise use the key directly
-            const bpKey = (args.breakpointMap && args.breakpointMap[key]) || key;
+    const breakpointConfigs = breakpointEntries
+        .map(([bpKey, bpData]) => {
+            const colsRaw = bpData?.props?.columns;
+            const cols = parseInt(colsRaw, 10) || 0;
+            if (!cols) {
+                return null;
+            }
+
             const rawValue = themeBreakpoints[bpKey];
 
             // If this breakpoint doesn't exist in theme.json, skip it
@@ -50,14 +50,11 @@ export function gridDividers(element, args = {}, uniqueId = false) {
                 return null;
             }
 
-            const cols = parseInt(columnsConfig[key], 10) || 1;
-
             // Extract numeric value for sorting (e.g. "768px" -> 768)
             const numeric = parseFloat(String(rawValue)) || 0;
 
             return {
-                key,          // original key
-                bpKey,        // theme.json key
+                bpKey,
                 value: rawValue,
                 numeric,
                 cols,
@@ -82,25 +79,29 @@ export function gridDividers(element, args = {}, uniqueId = false) {
     const wrapWithMedia = (rules, min, max) => {
         if (min && max) {
             return [
-                '@media screen and (min-width: ' + min + ') and (max-width: calc(' + max + ' - 1px)) {',
+                "@media screen and (min-width: " +
+                min +
+                ") and (max-width: calc(" +
+                max +
+                " - 1px)) {",
                 rules,
-                '}',
-            ].join('\n');
+                "}",
+            ].join("\n");
         }
         if (!min && max) {
             // Smallest range: only max
             return [
-                '@media screen and (max-width: calc(' + max + ' - 1px)) {',
+                "@media screen and (max-width: calc(" + max + " - 1px)) {",
                 rules,
-                '}',
-            ].join('\n');
+                "}",
+            ].join("\n");
         }
         // Largest range: only min
         return [
-            '@media screen and (min-width: ' + min + ') {',
+            "@media screen and (min-width: " + min + ") {",
             rules,
-            '}',
-        ].join('\n');
+            "}",
+        ].join("\n");
     };
 
     // Helper to generate the divider CSS rules for a given column count
@@ -110,50 +111,87 @@ export function gridDividers(element, args = {}, uniqueId = false) {
 
         return [
             // Remove vertical divider on first column
-            selector + ' .loop-container > .loop-card:nth-of-type(' + n + 'n+1):after { content: none !important; }',
+            selector +
+            " .loop-container > .loop-card:nth-of-type(" +
+            n +
+            "n+1):after { content: none !important; }",
 
             // General vertical divider height for items not in first row
-            selector + ' .loop-container > .loop-card:nth-of-type(n+' + (n + 1) + '):after {' +
-            ' height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));' +
-            ' top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));' +
-            ' }',
+            selector +
+            " .loop-container > .loop-card:nth-of-type(n+" +
+            (n + 1) +
+            "):after {" +
+            " height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));" +
+            " top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));" +
+            " }",
 
             // Enable horizontal dividers when we have more than one row
-            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (n + 1) + ')) > .loop-card:before { content:""; }',
+            selector +
+            " .loop-container:has(> .loop-card:nth-of-type(" +
+            (n + 1) +
+            ")) > .loop-card:before { content:\"\"; }",
 
             // First row: top alignment
-            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (n + 1) + ')) > .loop-card:nth-of-type(-n+' + (n + 1) + '):after {' +
-            ' height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));' +
-            ' top: 0;' +
-            ' }',
+            selector +
+            " .loop-container:has(> .loop-card:nth-of-type(" +
+            (n + 1) +
+            ")) > .loop-card:nth-of-type(-n+" +
+            (n + 1) +
+            "):after {" +
+            " height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));" +
+            " top: 0;" +
+            " }",
 
             // Middle rows: full height dividers
-            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (n + 1) + ')) > .loop-card:nth-of-type(n+' + (n + 2) + '):after {' +
-            ' height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));' +
-            ' top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));' +
-            ' }',
+            selector +
+            " .loop-container:has(> .loop-card:nth-of-type(" +
+            (n + 1) +
+            ")) > .loop-card:nth-of-type(n+" +
+            (n + 2) +
+            "):after {" +
+            " height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));" +
+            " top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));" +
+            " }",
 
             // Horizontal divider width on last column of each row
-            selector + ' .loop-container > .loop-card:nth-of-type(' + n + 'n):before {' +
-            ' width: calc(100% + calc(var(--grid-col-gap) / 2));' +
-            ' }',
+            selector +
+            " .loop-container > .loop-card:nth-of-type(" +
+            n +
+            "n):before {" +
+            " width: calc(100% + calc(var(--grid-col-gap) / 2));" +
+            " }",
 
             // Horizontal divider width on first column of each row
-            selector + ' .loop-container > .loop-card:nth-of-type(' + n + 'n+1):before {' +
-            ' width: ' + (n > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + ';' +
-            ' left: 0;' +
-            ' }',
+            selector +
+            " .loop-container > .loop-card:nth-of-type(" +
+            n +
+            "n+1):before {" +
+            " width: " +
+            (n > 1
+                ? "calc(100% + calc(var(--grid-col-gap) / 2))"
+                : "100%") +
+            ";" +
+            " left: 0;" +
+            " }",
 
             // Last row: clamp vertical dividers and remove horizontal bottom dividers
-            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (n + 1) + ')) > .loop-card:nth-last-of-type(-n+' + last + '):after {' +
-            ' height: calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;' +
-            ' top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));' +
-            ' }',
+            selector +
+            " .loop-container:has(> .loop-card:nth-of-type(" +
+            (n + 1) +
+            ")) > .loop-card:nth-last-of-type(-n+" +
+            last +
+            "):after {" +
+            " height: calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;" +
+            " top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));" +
+            " }",
 
-            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + last + '):before {' +
-            ' content: none !important;' +
-            ' }',
-        ].join('\n');
+            selector +
+            " .loop-container > .loop-card:nth-last-of-type(-n+" +
+            last +
+            "):before {" +
+            " content: none !important;" +
+            " }",
+        ].join("\n");
     };
 
     const styleChunks = [];
@@ -169,10 +207,7 @@ export function gridDividers(element, args = {}, uniqueId = false) {
         const isFirst = index === 0;
         const isLast = index === breakpointConfigs.length - 1;
 
-        const min = isFirst ? null : breakpointConfigs[index].value;
-        const max = isLast ? null : breakpointConfigs[index + 1]?.value;
-
-        // small correction: for middle tiers, min is current, max is next
+        // For middle tiers, min is current, max is next
         const mediaMin = isFirst ? null : value;
         const mediaMax = isLast ? null : breakpointConfigs[index + 1]?.value;
 
@@ -184,18 +219,18 @@ export function gridDividers(element, args = {}, uniqueId = false) {
         return;
     }
 
-    const styleCss = styleChunks.join('\n\n');
+    const styleCss = styleChunks.join("\n\n");
 
-    const styleTag = document.createElement('style');
-    const styleSelector = [uniqueId, 'divider-styles'].join('-');
+    const styleTag = document.createElement("style");
+    const styleSelector = [uniqueId, "divider-styles"].join("-");
 
     // Remove any existing tag for this instance
-    document.querySelectorAll('.' + styleSelector).forEach(tag => tag.remove());
+    document.querySelectorAll("." + styleSelector).forEach((tag) => tag.remove());
 
     styleTag.classList.add(styleSelector);
     styleTag.textContent = styleCss;
 
     document.head.appendChild(styleTag);
 
-    element.classList.add('--divider');
+    element.classList.add("--divider");
 }

@@ -6,7 +6,7 @@ $is_rest = function_exists( 'wp_is_rest_request' )
 	: ( defined( 'REST_REQUEST' ) && REST_REQUEST );
 
 
-if ( ! empty( $attributes['isLoop'] ) ) {
+if ( ! empty( $block->context['wpbs/isLoop'] ) ) {
 
 	if ( ! empty( $block->context['wpbs/termId'] ) ) {
 		$term_link = get_term_link( $block->context['wpbs/termId'] );

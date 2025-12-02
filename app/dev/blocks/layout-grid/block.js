@@ -320,8 +320,6 @@ registerBlockType(metadata.name, {
                     value={gridSettings.divider}
                     onChange={(next) => {
 
-                        console.log(next);
-
                         updateGridSettings({
                             ...gridSettings,
                             divider: next,
@@ -379,8 +377,6 @@ registerBlockType(metadata.name, {
                 />
             </PanelBody>
         );
-
-        console.log(Math.max(parseInt((gridSettings?.query?.posts_per_page || 0), 10) - 1, 0));
 
         return (
             <>

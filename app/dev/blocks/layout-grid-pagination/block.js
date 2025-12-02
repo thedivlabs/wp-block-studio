@@ -51,5 +51,5 @@ registerBlockType(metadata.name, {
             hasBackground: false,
         }),
 
-    save: null,
+    save: () => null,
 });

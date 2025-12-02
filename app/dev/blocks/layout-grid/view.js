@@ -44,6 +44,9 @@ store("wpbs/layout-grid", {
             const {ref: el} = getElement();
             const context = getContext();
 
+            console.log(JSON.parse(JSON.stringify(context)));
+
+
             /* Create per-instance storage on the block element */
             el._wpbs = {
                 container: el.querySelector(".loop-container") ?? el,
@@ -94,7 +97,7 @@ store("wpbs/layout-grid", {
             if (!instance) return;
 
             const {template} = instance;
-            const {query = {}, uniqueId, divider} = context;
+            const {query = {}, uniqueId, divider, breakpoints} = context;
 
             if (!template) {
                 console.error("WPBS Loop Error: Template missing.");
@@ -139,7 +142,11 @@ store("wpbs/layout-grid", {
 
                 store("wpbs/layout-grid").callbacks.revealCards(el);
 
-                gridDividers(el, divider, uniqueId);
+                gridDividers(el, JSON.parse(JSON.stringify({
+                    uniqueId,
+                    divider,
+                    breakpoints
+                })), uniqueId);
 
             } catch (err) {
                 console.error("WPBS Loop Fetch Exception:", err);

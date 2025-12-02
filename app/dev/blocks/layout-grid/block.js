@@ -202,6 +202,8 @@ registerBlockType(metadata.name, {
             [rawGrid]
         );
 
+        console.log(gridSettings);
+
         const classNames = getClassNames(attributes, gridSettings);
 
         const isLoop = attributes?.className?.includes("is-style-loop");
@@ -401,6 +403,7 @@ registerBlockType(metadata.name, {
                     "data-wp-context": JSON.stringify({
                         query: gridSettings.query || {},
                         divider: gridSettings.divider || {},
+                        breakpoints: gridSettings.breakpoints || {},
                         uniqueId: attributes.uniqueId || null,
                     }),
                 })}

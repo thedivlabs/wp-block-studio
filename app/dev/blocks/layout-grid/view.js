@@ -44,9 +44,6 @@ store("wpbs/layout-grid", {
             const {ref: el} = getElement();
             const context = getContext();
 
-            console.log(JSON.parse(JSON.stringify(context)));
-
-
             /* Create per-instance storage on the block element */
             el._wpbs = {
                 container: el.querySelector(".loop-container") ?? el,

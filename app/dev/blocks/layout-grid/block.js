@@ -98,7 +98,7 @@ const getCssProps = (settings) => {
     const baseColumns = baseProps.columns ?? null;
     if (baseColumns != null) {
         css.props["--columns"] = baseColumns;
-        css.props["--divider"] = Object.entries(settings?.divider?.border ?? {}).join(' ');
+        css.props["--divider"] = Object.values(settings?.divider?.border ?? {}).join(' ');
     }
 
     // Breakpoint columns

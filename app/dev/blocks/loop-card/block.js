@@ -54,6 +54,8 @@ registerBlockType(metadata.name, {
                 }
             }, [isLoop]);
 
+            console.log(settings);
+
             return (
                 <>
                     <InspectorControls group="styles">
@@ -67,6 +69,7 @@ registerBlockType(metadata.name, {
                                     }
                                 })
                             }
+                            isLoop={isLoop}
                         />
                     </InspectorControls>
                     <BlockWrapper
@@ -85,10 +88,6 @@ registerBlockType(metadata.name, {
         const classNames = getClassNames(attributes, styleData);
 
         const {isLoop = false, 'wpbs-loop-card': settings} = attributes;
-
-        if (isLoop && settings?.link) {
-            settings.link.url = '%%__POST_LINK_URL__%%'
-        }
 
         return (
             <BlockWrapper

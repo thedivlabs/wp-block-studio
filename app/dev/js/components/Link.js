@@ -15,16 +15,14 @@ import {BlockControls} from "@wordpress/block-editor";
 import {customLink} from "@wordpress/icons";
 import LinkField from "Components/LinkField";
 
-export default function Link({defaultValue = {}, callback}) {
+export default function Link({defaultValue = {}, callback, isLoop = false}) {
 
-    // unified link state
     const [link, setLink] = useState(defaultValue);
 
-    // one update fn for everything — now object-only
     function update(next) {
         const merged = {...link, ...next};
         setLink(merged);
-        callback?.(merged ? {...merged} : {}); // ALWAYS object
+        callback?.({...merged});
     }
 
     const sharedProps = {
@@ -67,6 +65,22 @@ export default function Link({defaultValue = {}, callback}) {
                                         initialOpen={false}
                                         className="is-style-unstyled"
                                     >
+
+                                        {isLoop && (
+                                            <Grid
+                                                columns={2}
+                                                columnGap={15}
+                                                rowGap={20}
+                                                style={{marginTop: '15px'}}
+                                            >
+                                                <ToggleControl
+                                                    label="Link current post"
+                                                    checked={!!link.linkPost}
+                                                    onChange={(v) => update({linkPost: v})}
+                                                />
+                                            </Grid>
+                                        )}
+
                                         <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '15px'}}>
                                             <ToggleControl
                                                 label="Open in new tab"
@@ -142,6 +156,7 @@ export default function Link({defaultValue = {}, callback}) {
 export function getAnchorProps(settings = {}) {
     const {
         url = "",
+        linkPost = false,
         linkNewTab = false,
         title = "",
         ariaLabel = "",
@@ -152,7 +167,13 @@ export function getAnchorProps(settings = {}) {
 
     const props = {};
 
-    if (url) props.href = url;
+    // Determine href
+    if (linkPost) {
+        props.href = "%%__POST_LINK_URL__%%";
+    } else if (url) {
+        props.href = url;
+    }
+
     if (id) props.id = id;
     if (title) props.title = title;
     if (ariaLabel) props['aria-label'] = ariaLabel;
@@ -170,3 +191,4 @@ export function getAnchorProps(settings = {}) {
 
     return props;
 }
+

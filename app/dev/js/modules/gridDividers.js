@@ -198,6 +198,7 @@ ${selector} {
     --divider-icon-size: ${icon.size ? icon.size + 'px' : '1em'};
     --divider-icon-color: ${icon.color || 'currentColor'};
     --divider-icon-variation: ${icon.css || "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24'"};
+    --divider-size: ${divider?.border?.size};
 }
 `;
     }

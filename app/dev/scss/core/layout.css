@@ -46,6 +46,7 @@
   text-align: center;
   font-family: 'Material Symbols Outlined', sans-serif;
   color: var(--divider-icon-color, currentColor);
+  letter-spacing: var(--divider-size, normal);
 }
 
 /* ============================================================
@@ -55,7 +56,7 @@
   content: "";
   left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
   width: calc(100% + var(--grid-col-gap, var(--grid-row-gap, 0px)));
-  height:1px;
+  height: 1px;
   border-bottom: var(--divider, none);
   bottom: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
 }
@@ -67,7 +68,7 @@
   left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
   top: 0;
   height: 100%;
-  width:1px;
+  width: 1px;
   border-left: var(--divider, none);
 
   /* The icon — your JS injects --divider-icon */

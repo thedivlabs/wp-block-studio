@@ -42,7 +42,7 @@ registerBlockType(metadata.name, {
                         props={props}
                         className={classNames}
                     >
-                        PAGINATION
+                        PAGINATION FPO
                     </BlockWrapper>
                 </>
             );

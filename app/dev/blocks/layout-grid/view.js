@@ -94,7 +94,7 @@ store("wpbs/layout-grid", {
             if (!instance) return;
 
             const {template} = instance;
-            const {query = {}, uniqueId} = context;
+            const {query = {}, uniqueId, divider} = context;
 
             if (!template) {
                 console.error("WPBS Loop Error: Template missing.");
@@ -139,7 +139,7 @@ store("wpbs/layout-grid", {
 
                 store("wpbs/layout-grid").callbacks.revealCards(el);
 
-                gridDividers(el, {}, uniqueId)
+                gridDividers(el, divider, uniqueId);
 
             } catch (err) {
                 console.error("WPBS Loop Fetch Exception:", err);

@@ -13,17 +13,19 @@ export function gridDividers(element, args = {}, uniqueId = false) {
 
     const selector = '.' + uniqueId;
 
-    // Base columns (desktop) — keep current behavior
+    // Base columns (desktop) — from base props
     const colBase = parseInt(args?.props?.columns ?? '3', 10) || 1;
-    //    const colBase = parseInt(args?.props?.columns ?? "3");
     const lastRowBase = total % colBase || colBase;
 
     const themeBreakpoints = (window.WPBS?.settings?.breakpoints) || {};
 
-    // Normalize theme breakpoint -> { key, sizeNumber, sizeCss, cols }
+    // ------------------------------------------------------------------
+    // Normalize theme + config breakpoints into sorted array:
+    // [ { key, sizeNumber, sizeCss, cols }, ... ]   (smallest first)
+    // ------------------------------------------------------------------
     const bpDefs = Object.entries(bpConfig)
         .map(([key, entry = {}]) => {
-            const cols = parseInt(entry?.props?.columns ?? 1, 10) || 0;
+            const cols = parseInt(entry?.props?.columns ?? 0, 10) || 0;
             const raw = themeBreakpoints[key];
 
             // raw may be "768px", 768, or { size: 768 }
@@ -55,6 +57,9 @@ export function gridDividers(element, args = {}, uniqueId = false) {
         .filter((bp) => bp.cols > 0 && bp.sizeCss) // must have columns + usable size
         .sort((a, b) => a.sizeNumber - b.sizeNumber); // smallest first
 
+    // ------------------------------------------------------------------
+    // Original rule generator (unchanged)
+    // ------------------------------------------------------------------
     const buildRules = (cols, lastRow) => [
         `${selector} .loop-container > .loop-card:nth-of-type(${cols}n+1):after { 
             content: none !important; 
@@ -103,64 +108,82 @@ export function gridDividers(element, args = {}, uniqueId = false) {
         }`,
     ];
 
+    // ------------------------------------------------------------------
+    // Build media queries for ANY number of breakpoints
+    // ------------------------------------------------------------------
     let styleCss = '';
 
     if (bpDefs.length === 0) {
-        // ------------------------------------------
-        // NO BREAKPOINTS — keep existing base-only behavior
-        // ------------------------------------------
+        // No breakpoints: global rules with base columns
         styleCss = buildRules(colBase, lastRowBase).join('\n');
-    } else if (bpDefs.length === 1) {
-        // ------------------------------------------
-        // ONE BREAKPOINT
-        // < bp1 => bp1.cols
-        // >= bp1 => base cols
-        // ------------------------------------------
-        const bp1 = bpDefs[0];
-        const colMobile = bp1.cols;
-        const lastRowMobile = total % colMobile || colMobile;
-
-        styleCss = [
-            `@media screen and (max-width: calc(${bp1.sizeCss} - 1px)) {`,
-            ...buildRules(colMobile, lastRowMobile),
-            `}`,
-
-            `@media screen and (min-width: ${bp1.sizeCss}) {`,
-            ...buildRules(colBase, lastRowBase),
-            `}`,
-        ].join('\n');
     } else {
-        // ------------------------------------------
-        // TWO OR MORE BREAKPOINTS
-        // < bp1 => bp1.cols   (mobile)
-        // bp1–bp2 => bp2.cols (small)
-        // >= bp2 => base cols
-        // ------------------------------------------
-        const bp1 = bpDefs[0];
-        const bp2 = bpDefs[1];
+        const segments = [];
 
-        const colMobile = bp1.cols;
-        const colSmall = bp2.cols;
+        // Segment 0: < first breakpoint  => first bp's columns
+        {
+            const bp0 = bpDefs[0];
+            const cols = bp0.cols;
+            const lastRow = total % cols || cols;
 
-        const lastRowMobile = total % colMobile || colMobile;
-        const lastRowSmall = total % colSmall || colSmall;
+            segments.push({
+                min: null,
+                max: `calc(${bp0.sizeCss} - 1px)`,
+                cols,
+                lastRow,
+            });
+        }
 
-        styleCss = [
-            `@media screen and (max-width: calc(${bp1.sizeCss} - 1px)) {`,
-            ...buildRules(colMobile, lastRowMobile),
-            `}`,
+        // Middle segments: between breakpoints
+        for (let i = 0; i < bpDefs.length - 1; i++) {
+            const bpCurrent = bpDefs[i];
+            const bpNext = bpDefs[i + 1];
 
-            `@media screen and (min-width: ${bp1.sizeCss}) and (max-width: calc(${bp2.sizeCss} - 1px)) {`,
-            ...buildRules(colSmall, lastRowSmall),
-            `}`,
+            // Convention: in range [bpCurrent, bpNext) we use bpNext's columns
+            const cols = bpNext.cols;
+            const lastRow = total % cols || cols;
 
-            `@media screen and (min-width: ${bp2.sizeCss}) {`,
-            ...buildRules(colBase, lastRowBase),
-            `}`,
-        ].join('\n');
+            segments.push({
+                min: bpCurrent.sizeCss,
+                max: `calc(${bpNext.sizeCss} - 1px)`,
+                cols,
+                lastRow,
+            });
+        }
+
+        // Final segment: >= last breakpoint => base columns
+        {
+            const lastBp = bpDefs[bpDefs.length - 1];
+            segments.push({
+                min: lastBp.sizeCss,
+                max: null,
+                cols: colBase,
+                lastRow: lastRowBase,
+            });
+        }
+
+        // Turn segments into @media blocks
+        styleCss = segments
+            .map(({ min, max, cols, lastRow }) => {
+                let open = '';
+                if (min && max) {
+                    open = `@media screen and (min-width: ${min}) and (max-width: ${max}) {`;
+                } else if (!min && max) {
+                    open = `@media screen and (max-width: ${max}) {`;
+                } else if (min && !max) {
+                    open = `@media screen and (min-width: ${min}) {`;
+                } // no (min,max) case not used here
+
+                const rules = buildRules(cols, lastRow).join('\n');
+                const close = open ? '}' : '';
+
+                return [open, rules, close].filter(Boolean).join('\n');
+            })
+            .join('\n');
     }
 
-    // Inject style tag
+    // ------------------------------------------------------------------
+    // Inject style tag (unchanged)
+    // ------------------------------------------------------------------
     const styleTag = document.createElement('style');
     const styleSelector = `${uniqueId}-divider-styles`;
 

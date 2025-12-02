@@ -62,50 +62,58 @@ export function gridDividers(element, args = {}, uniqueId = false) {
     // ------------------------------------------------------------------
     const buildRules = (cols, lastRow) => [
         `${selector} .loop-container > .loop-card:nth-of-type(${cols}n+1):after { 
-            content: none !important; 
-        }`,
+        content: none !important; 
+    }`,
 
         `${selector} .loop-container > .loop-card:nth-of-type(n+${cols + 1}):after { 
-            height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));
-            top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
-        }`,
+        height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));
+        top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
+    }`,
 
         `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) > .loop-card:before { 
-            content: ""; 
-        }`,
+        content: ""; 
+    }`,
 
         `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) 
-            > .loop-card:nth-of-type(-n+${cols + 1}):after { 
-            height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));
-            top: 0;
-        }`,
+        > .loop-card:nth-of-type(-n+${cols + 1}):after { 
+        height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));
+        top: 0;
+    }`,
 
         `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) 
-            > .loop-card:nth-of-type(n+${cols + 2}):after { 
-            height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));
-            top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
-        }`,
+        > .loop-card:nth-of-type(n+${cols + 2}):after { 
+        height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));
+        top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
+    }`,
 
         `${selector} .loop-container > .loop-card:nth-of-type(${cols}n):before {
-            width: calc(100% + calc(var(--grid-col-gap) / 2));
-        }`,
+        width: calc(100% + calc(var(--grid-col-gap) / 2));
+    }`,
 
         `${selector} .loop-container > .loop-card:nth-of-type(${cols}n+1):before {
-            width: ${cols > 1
+        width: ${cols > 1
             ? 'calc(100% + calc(var(--grid-col-gap) / 2))'
             : '100%'};
-            left: 0;
-        }`,
+        left: 0;
+    }`,
 
+        // HORIZONTAL LAST ROW
         `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) 
-            > .loop-card:nth-last-of-type(-n+${lastRow}):after {
-            height: calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;
-            top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
-        }`,
+        > .loop-card:nth-last-of-type(-n+${lastRow}):after {
+        height: calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;
+        top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
+    }`,
 
         `${selector} .loop-container > .loop-card:nth-last-of-type(-n+${lastRow}):before { 
-            content: none !important; 
-        }`,
+        content: none !important; 
+    }`,
+
+        // 🔥 NEW — REMOVE VERTICAL LINE + ICON FROM LAST ROW
+        `${selector} .loop-container > .loop-card:nth-last-of-type(-n+${lastRow}):after {
+        content: "" !important;
+        border-left: none !important;
+        height: 0 !important;
+    }`,
     ];
 
     // ------------------------------------------------------------------

@@ -108,10 +108,11 @@ export function gridDividers(element, args = {}, uniqueId = false) {
     }`,
 
         // ✅ NEW: keep the vertical line, but remove the icon on the last row
-        `${selector} .loop-container > .loop-card:nth-last-of-type(-n+${lastRow}):after {
+        `${selector} .loop-container > .loop-card:nth-last-of-type(-n+${lastRow - 1}):after {
         content: "" !important;
     }`,
     ];
+
     // ------------------------------------------------------------------
     // Build media queries for ANY number of breakpoints
     // ------------------------------------------------------------------

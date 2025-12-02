@@ -9,27 +9,7 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
-    },
-    "postId": {
-      "type": "string"
-    },
-    "termId": {
-      "type": "string"
-    },
-    "isLoop": {
-      "type": "boolean"
     }
-  },
-  "usesContext": [
-    "wpbs/postId",
-    "termId",
-    "wpbs/termId",
-    "wpbs/postType"
-  ],
-  "providesContext": {
-    "wpbs/postId": "postId",
-    "wpbs/termId": "termId",
-    "termId": "termId"
   },
   "supports": {
     "interactivity": true,

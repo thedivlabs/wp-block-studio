@@ -5,7 +5,8 @@
   "icon": "grid-view",
   "description": "Displays a content grid",
   "allowedBlocks": [
-    "wpbs/layout-grid-container"
+    "wpbs/layout-grid-container",
+    "wpbs/layout-grid-pagination"
   ],
   "styles": [
     {

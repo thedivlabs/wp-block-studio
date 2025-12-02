@@ -45,7 +45,9 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                    />
+                    >
+                        PAGINATION
+                    </BlockWrapper>
                 </>
             );
         }, {
@@ -53,20 +55,5 @@ registerBlockType(metadata.name, {
             hasBackground: false,
         }),
 
-    save: withStyleSave((props) => {
-        const {attributes, styleData, BlockWrapper} = props;
-        const classNames = getClassNames(attributes, styleData);
-
-        const {'wpbs-layout-grid-pagination': settings} = attributes;
-
-        return (
-            <BlockWrapper
-                props={props}
-                className={classNames}
-            />
-        );
-    }, {
-        hasChildren: false,
-        hasBackground: false,
-    }),
+    save: null,
 });

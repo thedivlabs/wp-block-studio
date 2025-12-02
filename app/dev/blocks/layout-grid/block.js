@@ -26,12 +26,10 @@ import {
     withStyleSave,
 } from "Components/Style";
 
-import {QueryConfigPanel} from "Components/QueryConfigPanel";
 import {BreakpointPanels} from "Components/BreakpointPanels";
 import {DividerOptions} from "Components/DividerOptions";
 
 const selector = "wpbs-layout-grid";
-
 
 
 /* --------------------------------------------------------------

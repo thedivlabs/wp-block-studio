@@ -99,6 +99,9 @@ const getCssProps = (settings) => {
     if (baseColumns != null) {
         css.props["--columns"] = baseColumns;
         css.props["--divider"] = Object.values(settings?.divider?.border ?? {}).join(' ');
+        css.props["--divider-icon"] = settings?.divider?.icon?.name;
+        css.props["--divider-icon-size"] = settings?.divider?.icon?.size && `${settings?.divider?.icon?.size}px`;
+        css.props["--divider-icon-color"] = settings?.divider?.icon?.color;
     }
 
     // Breakpoint columns

@@ -31,6 +31,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
   font-family: 'Material Symbols Outlined', sans-serif;
   color: var(--divider-icon-color, currentColor);
 }

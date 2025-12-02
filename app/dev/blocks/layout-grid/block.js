@@ -405,6 +405,7 @@ registerBlockType(metadata.name, {
                     "data-wp-interactive": "wpbs/layout-grid",
                     "data-wp-init": "actions.init",
                     "data-wp-context": JSON.stringify({
+                        props: gridSettings.props || {},
                         query: gridSettings.query || {},
                         divider: gridSettings.divider || {},
                         breakpoints: gridSettings.breakpoints || {},

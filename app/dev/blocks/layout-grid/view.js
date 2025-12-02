@@ -97,7 +97,7 @@ store("wpbs/layout-grid", {
             if (!instance) return;
 
             const {template} = instance;
-            const {query = {}, uniqueId, divider, breakpoints} = context;
+            const {query = {}, uniqueId, divider, breakpoints, props} = context;
 
             if (!template) {
                 console.error("WPBS Loop Error: Template missing.");
@@ -145,6 +145,7 @@ store("wpbs/layout-grid", {
                 gridDividers(el, JSON.parse(JSON.stringify({
                     uniqueId,
                     divider,
+                    props,
                     breakpoints
                 })), uniqueId);
 

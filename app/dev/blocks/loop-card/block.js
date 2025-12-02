@@ -84,6 +84,10 @@ registerBlockType(metadata.name, {
 
         const {isLoop = false, 'wpbs-loop-card': settings} = attributes;
 
+        if (isLoop && settings?.link?.url) {
+            settings.link.url = '%%__POST_LINK_URL__%%'
+        }
+
         return (
             <BlockWrapper
                 props={props}

@@ -5,6 +5,8 @@ $is_rest = function_exists( 'wp_is_rest_request' )
 	: ( defined( 'REST_REQUEST' ) && REST_REQUEST );
 
 
+$content = str_replace( '%%__POST_LINK_URL__%%', get_permalink(), $content ?? '' );
+
 if (
 	! empty( $attributes['isLoop'] ) &&
 	! $is_rest

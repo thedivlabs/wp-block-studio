@@ -97,7 +97,6 @@ export function gridDividers(element, args = {}, uniqueId = false) {
         left: 0;
     }`,
 
-        // HORIZONTAL LAST ROW
         `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) 
         > .loop-card:nth-last-of-type(-n+${lastRow}):after {
         height: calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;
@@ -108,14 +107,11 @@ export function gridDividers(element, args = {}, uniqueId = false) {
         content: none !important; 
     }`,
 
-        // 🔥 NEW — REMOVE VERTICAL LINE + ICON FROM LAST ROW
+        // ✅ NEW: keep the vertical line, but remove the icon on the last row
         `${selector} .loop-container > .loop-card:nth-last-of-type(-n+${lastRow}):after {
         content: "" !important;
-        border-left: none !important;
-        height: 0 !important;
     }`,
     ];
-
     // ------------------------------------------------------------------
     // Build media queries for ANY number of breakpoints
     // ------------------------------------------------------------------

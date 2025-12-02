@@ -414,6 +414,7 @@ registerBlockType(metadata.name, {
                 })}
             >
                 <InnerBlocks.Content/>
+                {}
             </BlockWrapper>
         );
     }, {

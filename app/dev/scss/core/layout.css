@@ -45,7 +45,7 @@
   text-align: center;
   font-family: 'Material Symbols Outlined', sans-serif;
   color: var(--divider-icon-color, currentColor);
-  letter-spacing: var(--divider-size, normal);
+  letter-spacing: calc(var(--divider-size, 1px) / 1);
   line-height: calc(0px - (var(--divider-size, 1em) / 2))
 }
 

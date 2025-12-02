@@ -15,11 +15,7 @@ const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-grid-pagination": settings} = attributes;
 
     return [
-        selector,
-        'loop-card',
-        "w-full",
-        "block",
-        "relative",
+        selector
     ]
         .filter(Boolean)
         .join(' ');
@@ -43,35 +39,9 @@ registerBlockType(metadata.name, {
             const {'wpbs-layout-grid-pagination': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 
-            const {'wpbs/isLoop': isLoop} = context;
-
-            useEffect(() => {
-
-                if (!isLoop && attributes.isLoop === undefined) {
-                    return;
-                }
-
-                if (attributes.isLoop !== isLoop) {
-                    setAttributes({isLoop: isLoop});
-                }
-            }, [isLoop]);
 
             return (
                 <>
-                    <InspectorControls group="styles">
-                        <Link
-                            defaultValue={settings?.link}
-                            callback={(val) =>
-                                setAttributes({
-                                    'wpbs-layout-grid-pagination': {
-                                        ...settings,
-                                        link: val,
-                                    }
-                                })
-                            }
-                            isLoop={isLoop}
-                        />
-                    </InspectorControls>
                     <BlockWrapper
                         props={props}
                         className={classNames}
@@ -79,29 +49,24 @@ registerBlockType(metadata.name, {
                 </>
             );
         }, {
-            hasChildren: true,
-            hasBackground: true,
+            hasChildren: false,
+            hasBackground: false,
         }),
 
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
-        const {isLoop = false, 'wpbs-layout-grid-pagination': settings} = attributes;
+        const {'wpbs-layout-grid-pagination': settings} = attributes;
 
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
-            >
-                <InnerBlocks.Content/>
-                {settings?.link && (
-                    <a {...getAnchorProps(settings.link)} className={'wpbs-layout-grid-pagination__link'}><span
-                        className={'screen-reader-text'}>{settings?.link?.title ?? 'Learn more'}</span> </a>)}
-            </BlockWrapper>
+            />
         );
     }, {
-        hasChildren: true,
-        hasBackground: true,
+        hasChildren: false,
+        hasBackground: false,
     }),
 });

@@ -401,6 +401,7 @@ registerBlockType(metadata.name, {
                     "data-wp-context": JSON.stringify({
                         query: gridSettings.query || {},
                         divider: gridSettings.divider || {},
+                        uniqueId: attributes.uniqueId || null,
                     }),
                 })}
             >

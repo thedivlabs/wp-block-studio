@@ -4,6 +4,8 @@
 
 import {store, getContext, getElement} from "@wordpress/interactivity";
 
+const {gridDividers} = window?.WPBS ?? {};
+
 store("wpbs/layout-grid", {
     callbacks: {
         /* -----------------------------------------------------------
@@ -29,6 +31,8 @@ store("wpbs/layout-grid", {
                     newCards.forEach((card) => card.classList.add("--visible"));
                 }, 50);
             });
+
+
         },
     },
 
@@ -90,7 +94,7 @@ store("wpbs/layout-grid", {
             if (!instance) return;
 
             const {template} = instance;
-            const {query = {}} = context;
+            const {query = {}, uniqueId} = context;
 
             if (!template) {
                 console.error("WPBS Loop Error: Template missing.");
@@ -134,6 +138,8 @@ store("wpbs/layout-grid", {
                 instance.hasMore = page < instance.totalPages;
 
                 store("wpbs/layout-grid").callbacks.revealCards(el);
+
+                gridDividers(el, {}, uniqueId)
 
             } catch (err) {
                 console.error("WPBS Loop Fetch Exception:", err);

@@ -38,7 +38,7 @@ registerBlockType(metadata.name, {
         (props) => {
 
             const {attributes, styleData, BlockWrapper, context, setAttributes} = props;
-            const {'wpbs-style': settings = {}} = attributes;
+            const {'wpbs-loop-car': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 
             const {'wpbs/isLoop': isLoop} = context;
@@ -84,7 +84,7 @@ registerBlockType(metadata.name, {
 
         const {isLoop = false, 'wpbs-loop-card': settings} = attributes;
 
-        if (isLoop && settings?.link?.url) {
+        if (isLoop && settings?.link) {
             settings.link.url = '%%__POST_LINK_URL__%%'
         }
 

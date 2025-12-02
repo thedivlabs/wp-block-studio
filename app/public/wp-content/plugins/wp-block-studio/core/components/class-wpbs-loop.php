@@ -184,7 +184,14 @@ class WPBS_Loop {
 
 		// Build query args from incoming FE query params
 		$args = $this->build_query_args( $query, $page );
-		$wpq  = new WP_Query( $args );
+
+		$args['post_status']         = 'publish';
+		$args['ignore_sticky_posts'] = true;
+		$args['has_password']        = false;
+
+		$args['perm'] = 'readable';
+
+		$wpq = new WP_Query( $args );
 
 		$total_posts = intval( $wpq->found_posts );
 		$total_pages = $args['posts_per_page'] > 0

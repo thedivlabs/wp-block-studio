@@ -20,10 +20,14 @@
     },
     "isLoop": {
       "type": "boolean"
+    },
+    "query": {
+      "type": "object"
     }
   },
   "providesContext": {
-    "wpbs/isLoop": "isLoop"
+    "wpbs/isLoop": "isLoop",
+    "wpbs/query": "query"
   },
   "supports": {
     "innerBlocks": true,

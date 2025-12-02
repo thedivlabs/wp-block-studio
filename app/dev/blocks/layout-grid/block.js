@@ -32,6 +32,8 @@ import {DividerOptions} from "Components/DividerOptions";
 
 const selector = "wpbs-layout-grid";
 
+
+
 /* --------------------------------------------------------------
  * Normalize wpbs-grid settings
  * Must preserve props, breakpoints, AND query, AND divider.
@@ -208,15 +210,28 @@ registerBlockType(metadata.name, {
         const isLoop = attributes?.className?.includes("is-style-loop");
 
         useEffect(() => {
-
+            // Only run if loop mode is relevant
             if (!isLoop && attributes.isLoop === undefined) {
                 return;
             }
 
+            const updates = {};
+
+            // Sync the isLoop flag
             if (attributes.isLoop !== isLoop) {
-                setAttributes({isLoop: isLoop});
+                updates.isLoop = isLoop;
             }
-        }, [isLoop]);
+
+            // Persist query settings ONLY when loop mode is active
+            if (isLoop && !isEqual(attributes.query, gridSettings.query)) {
+                updates.query = gridSettings.query || {};
+            }
+
+            if (Object.keys(updates).length > 0) {
+                setAttributes(updates);
+            }
+
+        }, [isLoop, gridSettings.query]);
 
 
         /* --------------------------------------------
@@ -303,7 +318,7 @@ registerBlockType(metadata.name, {
             () => (
                 <DividerOptions
                     value={gridSettings.divider}
-                    onChange={(next) =>{
+                    onChange={(next) => {
 
                         console.log(next);
 
@@ -365,6 +380,8 @@ registerBlockType(metadata.name, {
             </PanelBody>
         );
 
+        console.log(Math.max(parseInt((gridSettings?.query?.posts_per_page || 0), 10) - 1, 0));
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -374,7 +391,8 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                />
+                >
+                </BlockWrapper>
             </>
         );
     }, {
@@ -414,7 +432,7 @@ registerBlockType(metadata.name, {
                 })}
             >
                 <InnerBlocks.Content/>
-                {}
+
             </BlockWrapper>
         );
     }, {

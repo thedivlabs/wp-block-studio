@@ -7,6 +7,24 @@ import {getCSSFromStyle, normalizeGapVal} from "Includes/helper";
 
 const selector = "wpbs-layout-grid-container";
 
+const LoopPlaceholders = ({count = 0}) => {
+    if (!count || count < 1) return null;
+
+    const items = [];
+    for (let i = 0; i < count; i++) {
+        items.push(
+            <div
+                key={`placeholder-${i}`}
+                className="loop-card --placeholder"
+                aria-hidden="true"
+                style={{width: '100%'}}
+            />
+        );
+    }
+
+    return <>{items}</>;
+};
+
 const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-grid-container": settings} = attributes;
 
@@ -88,8 +106,10 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, styleData, BlockWrapper, setCss} = props;
+            const {attributes, styleData, BlockWrapper, setCss, context} = props;
             const classNames = getClassNames(attributes, styleData);
+
+            const {'wpbs/isLoop': isLoop, 'wpbs/query': query} = context;
 
             const gapCss = useMemo(() => buildGapCSS(attributes), [JSON.stringify(attributes?.style?.spacing?.blockGap), attributes?.['wpbs-style']]);
 
@@ -102,7 +122,13 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                    />
+                    >
+                        {/*{isLoop && query?.posts_per_page && (
+                            <LoopPlaceholders
+                                count={Math.max(parseInt((query?.posts_per_page || 0), 10) - 1, 0)}
+                            />
+                        )}*/}
+                    </BlockWrapper>
                 </>
             );
         }, {

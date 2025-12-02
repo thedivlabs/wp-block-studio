@@ -11,6 +11,12 @@
       "type": "string"
     }
   },
+  "styles": [
+    {
+      "name": "button",
+      "label": "Button"
+    }
+  ],
   "usesContext": [
     "wpbs/query",
     "wpbs/grid",

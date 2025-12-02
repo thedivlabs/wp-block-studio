@@ -7,10 +7,6 @@ $is_current     = ( $query_settings['post_type'] ?? false ) === 'current' && $is
 $settings       = $block->attributes['wpbs-layout-grid-pagination'] ?? [];
 $is_button      = str_contains( $block->attributes['className'] ?? '', 'is-style-button' );
 
-WPBS::console_log( $block->context ?? false );
-WPBS::console_log( $is_loop );
-WPBS::console_log( $grid_settings );
-
 $button_label = $settings['buttonLabel'] ?? 'Show More';
 $icon_next    = $settings['iconNext'] ?? false;
 $icon_prev    = $settings['iconPrev'] ?? false;
@@ -18,7 +14,7 @@ $output       = '';
 
 $block_class = implode( ' ', array_filter( [
 	'wpbs-layout-grid-pagination',
-	$is_button ? 'wp-element-button button' : null,
+	$is_button ? 'wp-element-button button loop-button' : null,
 ] ) );
 
 $block_attributes = get_block_wrapper_attributes( [

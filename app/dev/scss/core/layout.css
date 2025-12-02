@@ -42,7 +42,6 @@
   z-index: 10;
   display: flex;
   justify-content: center;
-  align-items: center;
   text-align: center;
   font-family: 'Material Symbols Outlined', sans-serif;
   color: var(--divider-icon-color, currentColor);
@@ -60,6 +59,7 @@
   height: 1px;
   border-bottom: var(--divider, none);
   bottom: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
+  align-items: center;
 }
 
 /* ============================================================
@@ -71,6 +71,7 @@
   height: 100%;
   width: 1px;
   border-left: var(--divider, none);
+  align-items: flex-end;
 
   /* The icon — your JS injects --divider-icon */
   content: var(--divider-icon, "");

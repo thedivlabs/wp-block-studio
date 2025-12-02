@@ -38,7 +38,7 @@ registerBlockType(metadata.name, {
         (props) => {
 
             const {attributes, styleData, BlockWrapper, context, setAttributes} = props;
-            const {'wpbs-loop-car': settings = {}} = attributes;
+            const {'wpbs-loop-card': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 
             const {'wpbs/isLoop': isLoop} = context;
@@ -60,9 +60,11 @@ registerBlockType(metadata.name, {
                         <Link
                             defaultValue={settings?.link}
                             callback={(val) =>
-                                settings({
-                                    ...settings,
-                                    link: val,
+                                setAttributes({
+                                    'wpbs-loop-card': {
+                                        ...settings,
+                                        link: val,
+                                    }
                                 })
                             }
                         />

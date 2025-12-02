@@ -13,6 +13,10 @@
     "wpbs/postType"
   ],
   "attributes": {
+    "termId": {
+      "type": "string",
+      "show_in_rest": true
+    },
     "uniqueId": {
       "type": "string",
       "show_in_rest": true

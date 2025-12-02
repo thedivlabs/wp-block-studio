@@ -1,5 +1,5 @@
 <?php
-WPBS::console_log( $block ?? false );
+
 $term_id = ! empty( $block->context['wpbs/termId'] ) ? $block->context['wpbs/termId'] : get_queried_object()?->term_id ?? false;
 
 if ( ! $term_id ) {

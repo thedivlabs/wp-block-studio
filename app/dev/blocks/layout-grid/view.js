@@ -58,7 +58,7 @@ store("wpbs/layout-grid", {
 
             try {
                 el._wpbs.template = JSON.parse(templateScript.textContent);
-                console.log(JSON.parse(JSON.stringify(el._wpbs.template)));
+
             } catch (err) {
                 console.error("WPBS Loop Error: Invalid template JSON.", err);
                 return;

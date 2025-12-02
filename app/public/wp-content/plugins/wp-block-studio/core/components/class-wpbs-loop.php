@@ -120,10 +120,11 @@ class WPBS_Loop {
 			}
 
 			return [
-				'html'  => $html,
-				'total' => count( $terms ),
-				'pages' => 1,
-				'page'  => 1,
+				'html'   => $html,
+				'total'  => count( $terms ),
+				'pages'  => 1,
+				'page'   => 1,
+				'$query' => $query,
 			];
 		}
 
@@ -208,10 +209,11 @@ class WPBS_Loop {
 		wp_reset_postdata();
 
 		return [
-			'html'  => $html,
-			'total' => $total_posts,
-			'pages' => $total_pages,
-			'page'  => $page,
+			'html'   => $html,
+			'total'  => $total_posts,
+			'pages'  => $total_pages,
+			'page'   => $page,
+			'$query' => $query,
 		];
 	}
 
@@ -256,6 +258,8 @@ class WPBS_Loop {
 
 		$instance = new WP_Block( $block, $context );
 
+		$instance->context['termId'] = $term_id;
+
 		return $instance->render();
 	}
 
@@ -281,7 +285,7 @@ class WPBS_Loop {
 		}
 
 		if ( isset( $q['posts_per_page'] ) ) {
-			$clean['posts_per_page'] = max( - 1, intval( $q['posts_per_page'] ) );
+			$clean['posts_per_page'] = max( - 1, (int) $q['posts_per_page'] );
 		}
 
 		if ( ! empty( $q['taxonomy'] ) && taxonomy_exists( $q['taxonomy'] ) ) {
@@ -289,7 +293,7 @@ class WPBS_Loop {
 		}
 
 		if ( ! empty( $q['term'] ) ) {
-			$clean['term'] = intval( $q['term'] );
+			$clean['term'] = (int) $q['term'];
 		}
 
 		if ( ! empty( $q['orderby'] ) ) {
@@ -302,11 +306,17 @@ class WPBS_Loop {
 		}
 
 		if ( ! empty( $q['include'] ) ) {
-			$clean['post__in'] = array_map( 'intval', $q['include'] );
+			$clean['post__in'] = array_map( 'intval', (array) $q['include'] );
 		}
 
 		if ( ! empty( $q['exclude'] ) ) {
-			$clean['post__not_in'] = array_map( 'intval', $q['exclude'] );
+			$clean['post__not_in'] = array_map( 'intval', (array) $q['exclude'] );
+		}
+
+		// ⭐ Preserve loopTerms flag (even if it's falsey-ish like "false"/"0")
+		if ( array_key_exists( 'loopTerms', $q ) ) {
+			// FILTER_VALIDATE_BOOLEAN handles "true"/"false"/1/0/"1"/"0"
+			$clean['loopTerms'] = filter_var( $q['loopTerms'], FILTER_VALIDATE_BOOLEAN );
 		}
 
 		return $clean;

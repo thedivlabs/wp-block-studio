@@ -13,6 +13,9 @@
     "postId": {
       "type": "string"
     },
+    "termId": {
+      "type": "string"
+    },
     "isLoop": {
       "type": "boolean"
     }
@@ -22,7 +25,9 @@
     "wpbs/isLoop"
   ],
   "providesContext": {
-    "wpbs/postId": "postId"
+    "wpbs/postId": "postId",
+    "wpbs/termId": "termId",
+    "termId": "termId"
   },
   "supports": {
     "interactivity": true,

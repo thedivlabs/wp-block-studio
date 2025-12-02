@@ -98,7 +98,7 @@ const getCssProps = (settings) => {
     const baseColumns = baseProps.columns ?? null;
     if (baseColumns != null) {
         css.props["--columns"] = baseColumns;
-        css.props["--divider"] = settings?.divider;
+        css.props["--divider"] = Object.entries(settings?.divider?.border ?? {}).join(' ');
     }
 
     // Breakpoint columns
@@ -202,8 +202,6 @@ registerBlockType(metadata.name, {
             () => normalizeGridSettings(rawGrid),
             [rawGrid]
         );
-
-        console.log(gridSettings);
 
         const classNames = getClassNames(attributes, gridSettings);
 

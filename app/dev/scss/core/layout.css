@@ -21,39 +21,50 @@
   }
 }
 
-/* Divider styles for loop-card */
+/* ============================================================
+   Base shared styles (positioning + font baseline)
+   ============================================================ */
 .--divider .loop-card::before,
 .--divider .loop-card::after {
-  left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
-  color: var(--divider-color, lightgray);
   position: absolute;
   z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Material Symbols Outlined',sans-serif;
+  font-family: 'Material Symbols Outlined', sans-serif;
+  color: var(--divider-icon-color, currentColor);
 }
 
-/* Divider horizontal line */
+/* ============================================================
+   Horizontal line (::before)
+   ============================================================ */
 .--divider .loop-card::before {
   content: "";
+  left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
   width: calc(100% + var(--grid-col-gap, var(--grid-row-gap, 0px)));
   border-bottom: var(--divider, none);
-  font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-row-gap, var(--grid-col-gap, 0px)) - 1rem)));
   bottom: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
-  color: var(--divider-icon-color, inherit);
 }
 
-/* Divider vertical icon */
+/* ============================================================
+   Vertical divider + icon (::after)
+   ============================================================ */
 .--divider .loop-card::after {
+  left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
   top: 0;
   height: 100%;
   border-left: var(--divider, none);
-  content: var(--divider-icon, '');
+
+  /* The icon — your JS injects --divider-icon */
+  content: var(--divider-icon, "");
+
   font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-col-gap, var(--grid-row-gap, 0px)) - 1rem)));
+  font-variation-settings: var(--divider-icon-variation);
 }
 
-
+/* ============================================================
+   Line clamp utility
+   ============================================================ */
 .--line-clamp,
 .--line-clamp > p {
   line-clamp: var(--line-clamp, 6);

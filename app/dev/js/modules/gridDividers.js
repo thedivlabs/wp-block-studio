@@ -1,7 +1,7 @@
 export function gridDividers(element, args = {}, uniqueId = false) {
     if (!element || !uniqueId) return;
 
-    const { divider, breakpoints: bpConfig = {} } = args;
+    const {divider, breakpoints: bpConfig = {}} = args;
     if (!divider) return;
 
     const container = element.querySelector(':scope > .loop-container');
@@ -163,7 +163,7 @@ export function gridDividers(element, args = {}, uniqueId = false) {
 
         // Turn segments into @media blocks
         styleCss = segments
-            .map(({ min, max, cols, lastRow }) => {
+            .map(({min, max, cols, lastRow}) => {
                 let open = '';
                 if (min && max) {
                     open = `@media screen and (min-width: ${min}) and (max-width: ${max}) {`;
@@ -179,6 +179,27 @@ export function gridDividers(element, args = {}, uniqueId = false) {
                 return [open, rules, close].filter(Boolean).join('\n');
             })
             .join('\n');
+    }
+
+    // ------------------------------------------------------
+// ICON CUSTOM PROPERTIES (applied globally to selector)
+// ------------------------------------------------------
+    if (divider?.icon) {
+        const icon = divider.icon;
+
+        // ensure the icon name becomes a valid CSS string for 'content'
+        const iconContent = icon.name ? `"${icon.name}"` : '""';
+
+        styleCss += `
+
+/* Divider Icon Variables */
+${selector} {
+    --divider-icon: ${iconContent};
+    --divider-icon-size: ${icon.size ? icon.size + 'px' : '1em'};
+    --divider-icon-color: ${icon.color || 'currentColor'};
+    --divider-icon-variation: ${icon.css || "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24'"};
+}
+`;
     }
 
     // ------------------------------------------------------------------

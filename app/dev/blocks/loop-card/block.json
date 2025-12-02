@@ -21,10 +21,10 @@
     }
   },
   "usesContext": [
+    "wpbs/postId",
     "termId",
     "wpbs/termId",
-    "wpbs/postId",
-    "wpbs/isLoop"
+    "wpbs/postType"
   ],
   "providesContext": {
     "wpbs/postId": "postId",

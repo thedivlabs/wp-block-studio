@@ -2,6 +2,8 @@
 
 WPBS::console_log( $block->context ?? false );
 
+return;
+
 // Extract settings from block attributes
 $settings         = $attributes['wpbs-layout-grid-pagination'] ?? [];
 $query_settings   = $settings['query'] ?? [];

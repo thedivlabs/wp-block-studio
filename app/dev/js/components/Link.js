@@ -20,6 +20,7 @@ export default function Link({defaultValue = {}, callback, isLoop = false}) {
     const [link, setLink] = useState(defaultValue);
 
     function update(next) {
+        console.log(next);
         const merged = {...link, ...next};
         setLink(merged);
         callback?.({...merged});
@@ -35,7 +36,7 @@ export default function Link({defaultValue = {}, callback, isLoop = false}) {
             <LinkField
                 label="Link"
                 value={link?.url ?? ''}
-                onChange={(url) => update({url})}
+                onChange={(url) => update({url: url})}
             />
         ),
         [link?.url]
@@ -74,9 +75,14 @@ export default function Link({defaultValue = {}, callback, isLoop = false}) {
                                                 style={{marginTop: '15px'}}
                                             >
                                                 <ToggleControl
-                                                    label="Link current post"
+                                                    label="Link post"
                                                     checked={!!link.linkPost}
                                                     onChange={(v) => update({linkPost: v})}
+                                                />
+                                                <ToggleControl
+                                                    label="Link term"
+                                                    checked={!!link.linkTerm}
+                                                    onChange={(v) => update({linkTerm: v})}
                                                 />
                                             </Grid>
                                         )}
@@ -157,6 +163,7 @@ export function getAnchorProps(settings = {}) {
     const {
         url = "",
         linkPost = false,
+        linkTerm = false,
         linkNewTab = false,
         title = "",
         ariaLabel = "",
@@ -170,6 +177,8 @@ export function getAnchorProps(settings = {}) {
     // Determine href
     if (linkPost) {
         props.href = "%%__POST_LINK_URL__%%";
+    } else if (linkTerm) {
+        props.href = "%%__TERM_LINK_URL__%%";
     } else if (url) {
         props.href = url;
     }

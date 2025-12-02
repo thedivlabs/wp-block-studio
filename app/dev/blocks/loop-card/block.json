@@ -21,6 +21,8 @@
     }
   },
   "usesContext": [
+    "termId",
+    "wpbs/termId",
     "wpbs/postId",
     "wpbs/isLoop"
   ],

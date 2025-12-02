@@ -245,7 +245,8 @@ class WPBS_Loop {
 		}
 
 		if ( $term_id !== null ) {
-			$block['attrs']['termId'] = $term_id;
+			$block['attrs']['termId']      = $term_id;
+			$block['attrs']['wpbs/termId'] = $term_id;
 		}
 
 		$block['attrs']['index'] = $index;

@@ -12,6 +12,7 @@
     }
   },
   "usesContext": [
+    "wpbs/termId",
     "wpbs/isLoop",
     "wpbs/query"
   ],

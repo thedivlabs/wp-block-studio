@@ -64,7 +64,7 @@ export default function LinkField({value = "", onChange}) {
     }, [query]);
 
     function apply(url) {
-        onChange?.({url});  // wrapped
+        onChange?.(url);  // wrapped
         setQuery(url);
         setResults([]);
         setOpen(false);

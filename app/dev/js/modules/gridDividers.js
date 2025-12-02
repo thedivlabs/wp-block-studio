@@ -15,7 +15,7 @@ export function gridDividers(element, args = {}, uniqueId = false) {
 
     // Base columns (desktop) — keep current behavior
     const colBase = parseInt(args?.props?.columns ?? '3', 10) || 1;
-
+    //    const colBase = parseInt(args?.props?.columns ?? "3");
     const lastRowBase = total % colBase || colBase;
 
     const themeBreakpoints = (window.WPBS?.settings?.breakpoints) || {};
@@ -23,7 +23,7 @@ export function gridDividers(element, args = {}, uniqueId = false) {
     // Normalize theme breakpoint -> { key, sizeNumber, sizeCss, cols }
     const bpDefs = Object.entries(bpConfig)
         .map(([key, entry = {}]) => {
-            const cols = parseInt(entry?.props?.columns ?? 0, 10) || 0;
+            const cols = parseInt(entry?.props?.columns ?? 1, 10) || 0;
             const raw = themeBreakpoints[key];
 
             // raw may be "768px", 768, or { size: 768 }

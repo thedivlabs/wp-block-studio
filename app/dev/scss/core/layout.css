@@ -22,6 +22,18 @@
 }
 
 /* ============================================================
+   Line clamp utility
+   ============================================================ */
+.--line-clamp,
+.--line-clamp > p {
+  line-clamp: var(--line-clamp, 6);
+  -webkit-line-clamp: var(--line-clamp, 6);
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================================
    Base shared styles (positioning + font baseline)
    ============================================================ */
 .--divider .loop-card::before,
@@ -63,16 +75,4 @@
 
   font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-col-gap, var(--grid-row-gap, 0px)) - 1rem)));
   font-variation-settings: var(--divider-icon-variation);
-}
-
-/* ============================================================
-   Line clamp utility
-   ============================================================ */
-.--line-clamp,
-.--line-clamp > p {
-  line-clamp: var(--line-clamp, 6);
-  -webkit-line-clamp: var(--line-clamp, 6);
-  display: -webkit-box !important;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }

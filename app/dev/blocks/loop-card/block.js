@@ -1,8 +1,11 @@
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
+import Link, {getAnchorProps} from "Components/Link";
+
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useEffect} from "@wordpress/element";
+import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
 
 const selector = "wpbs-loop-card";
 
@@ -53,6 +56,17 @@ registerBlockType(metadata.name, {
 
             return (
                 <>
+                    <InspectorControls group="styles">
+                        <Link
+                            defaultValue={settings?.link}
+                            callback={(val) =>
+                                settings({
+                                    ...settings,
+                                    link: val,
+                                })
+                            }
+                        />
+                    </InspectorControls>
                     <BlockWrapper
                         props={props}
                         className={classNames}
@@ -68,17 +82,17 @@ registerBlockType(metadata.name, {
         const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
-        const {isLoop = false} = attributes;
-
-        if (!!isLoop) {
-            //return null;
-        }
+        const {isLoop = false, 'wpbs-loop-card': settings} = attributes;
 
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
-            />
+            >
+                <InnerBlocks.Content/>
+                {settings?.link && (<a {...getAnchorProps(settings.link)} className={'wpbs-loop-card__link'}><span
+                    className={'screen-reader-text'}>{settings?.link?.title ?? 'Learn more'}</span> </a>)}
+            </BlockWrapper>
         );
     }, {
         hasChildren: true,

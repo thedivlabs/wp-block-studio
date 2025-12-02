@@ -12,7 +12,9 @@
     }
   },
   "usesContext": [
-    "wpbs/query"
+    "wpbs/query",
+    "wpbs/grid",
+    "wpbs/isLoop"
   ],
   "supports": {
     "color": {

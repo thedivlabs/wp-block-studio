@@ -1,22 +1,30 @@
 <?php
 
+$is_loop        = ! empty( $block->context['wpbs/isLoop'] );
+$grid_settings  = $block->context['wpbs/grid']['props'] ?? [];
+$query_settings = $block->context['wpbs/query'] ?? [];
+$settings       = $block->attributes['wpbs-layout-grid-pagination'] ?? [];
+
 WPBS::console_log( $block->context ?? false );
+WPBS::console_log( $is_loop );
+WPBS::console_log( $grid_settings );
 
-return;
-
-// Extract settings from block attributes
-$settings         = $attributes['wpbs-layout-grid-pagination'] ?? [];
-$query_settings   = $settings['query'] ?? [];
-$pagination_label = $settings['paginationLabel'] ?? 'Show More';
+$pagination_label = $grid_settings['buttonLabel'] ?? 'Show More';
 $icon_next        = $settings['iconNext'] ?? false;
 $icon_prev        = $settings['iconPrev'] ?? false;
+$is_current       = ( $query_settings['post_type'] ?? false ) === 'current' && ! empty( $block->context['wpbs/isLoop'] );
 
-// Build query
-if ( empty( $query_settings ) ) {
-	return '';
+
+if ( empty( $conext['isLoop'] ) ) {
+	return;
 }
 
-$is_current = ( $query_settings['post_type'] ?? false ) === 'current';
+
+if ( ! $is_current ) {
+	echo $content ?? '';
+
+	return;
+}
 
 $paged = max( 1, get_query_var( 'paged', 1 ) );
 
@@ -58,7 +66,7 @@ if ( ! $is_current && $query->max_num_pages > $paged ) {
 
 	$output .= $button_block->render();
 
-	return $output;
+	echo $output;
 }
 
 // Standard paginate_links

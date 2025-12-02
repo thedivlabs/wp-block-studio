@@ -179,11 +179,6 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
-
-        "wpbs-grid": {
-            type: "object",
-            default: {},
-        },
     },
 
     /* ----------------------------------------------------------
@@ -270,31 +265,6 @@ registerBlockType(metadata.name, {
         /* --------------------------------------------
          * Tabs Content
          * -------------------------------------------- */
-        const tabOptions = useMemo(
-            () => (
-                <Grid
-                    columns={1}
-                    columnGap={10}
-                    rowGap={16}
-                >
-                    <TextControl
-                        label="Button Label"
-                        value={gridSettings.props.buttonLabel || ""}
-                        onChange={(val) =>
-                            updateGridSettings({
-                                ...gridSettings,
-                                props: {
-                                    ...gridSettings.props,
-                                    buttonLabel: val,
-                                },
-                            })
-                        }
-                        __next40pxDefaultSize
-                    />
-                </Grid>
-            ),
-            [gridSettings, updateGridSettings]
-        );
 
         const tabLoop = useMemo(
             () => (
@@ -346,15 +316,12 @@ registerBlockType(metadata.name, {
                         className="wpbs-editor-tabs wpbs-block-settings__panel"
                         initialTabName="options"
                         tabs={[
-                            {name: "options", title: "Options"},
                             ...(isLoop ? [{name: "loop", title: "Loop"}] : []),
                             {name: "divider", title: "Divider"},
                         ]}
                     >
                         {(tab) => {
                             switch (tab.name) {
-                                case "options":
-                                    return tabOptions;
                                 case "loop":
                                     return isLoop ? tabLoop : null;
                                 case "divider":

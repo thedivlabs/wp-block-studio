@@ -24,9 +24,13 @@
     },
     "query": {
       "type": "object"
+    },
+    "wpbs-grid": {
+      "type": "object"
     }
   },
   "providesContext": {
+    "wpbs/grid": "wpbs-grid",
     "wpbs/isLoop": "isLoop",
     "wpbs/query": "query"
   },

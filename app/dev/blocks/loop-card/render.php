@@ -4,7 +4,6 @@ $is_rest = function_exists( 'wp_is_rest_request' )
 	? wp_is_rest_request()
 	: ( defined( 'REST_REQUEST' ) && REST_REQUEST );
 
-WPBS::console_log( $block ?? false );
 $content = str_replace( '%%__POST_LINK_URL__%%', get_permalink(), $content ?? '' );
 $content = str_replace( '%%__TERM_LINK_URL__%%', get_permalink(), $content ?? '' );
 

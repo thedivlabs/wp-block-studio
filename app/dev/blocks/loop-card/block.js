@@ -1,3 +1,5 @@
+import "./scss/block.scss";
+
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 import Link, {getAnchorProps} from "Components/Link";
@@ -53,8 +55,6 @@ registerBlockType(metadata.name, {
                     setAttributes({isLoop: isLoop});
                 }
             }, [isLoop]);
-
-            console.log(settings);
 
             return (
                 <>

@@ -2,12 +2,8 @@ import "./scss/block.scss";
 
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
-import Link, {getAnchorProps} from "Components/Link";
 
-
-import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
-import {useEffect} from "@wordpress/element";
-import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
+import {STYLE_ATTRIBUTES, withStyle} from 'Components/Style';
 
 const selector = "wpbs-layout-grid-pagination";
 
@@ -35,7 +31,7 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, styleData, BlockWrapper, context, setAttributes} = props;
+            const {attributes, styleData, BlockWrapper, setAttributes} = props;
             const {'wpbs-layout-grid-pagination': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 

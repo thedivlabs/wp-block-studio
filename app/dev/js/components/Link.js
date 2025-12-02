@@ -34,7 +34,7 @@ export default function Link({defaultValue = {}, callback, isLoop = false}) {
         () => (
             <LinkField
                 label="Link"
-                value={link.url}
+                value={link?.url ?? ''}
                 onChange={(url) => update({url})}
             />
         ),

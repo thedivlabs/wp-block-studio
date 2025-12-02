@@ -90,7 +90,7 @@ class WPBS_Loop {
 
 			$taxonomy = sanitize_key( $query['taxonomy'] );
 
-			// Fetch all non-empty terms for this taxonomy.
+			// Fetch all non-empty terms (can switch to hide_empty = false if needed)
 			$terms = get_terms( [
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => true,
@@ -105,17 +105,17 @@ class WPBS_Loop {
 				];
 			}
 
-			foreach ( $terms as $term ) {
+			$html  = '';
+			$index = 0;
 
-				// Pass termId into the card renderer.
+			foreach ( $terms as $term ) {
 				$html .= $this->render_card_from_ast(
 					$template_block,
 					$query,
-					null,            // post_id = null for term-based loops
+					null,              // post_id = null
 					$index,
-					$term->term_id   // ⭐ NEW argument
+					$term->term_id     // ⭐ pass termId
 				);
-
 				$index ++;
 			}
 
@@ -126,6 +126,7 @@ class WPBS_Loop {
 				'page'  => 1,
 			];
 		}
+
 
 		/*
 		 * ===============================================================
@@ -226,13 +227,10 @@ class WPBS_Loop {
 		?int $term_id = null
 	): string {
 
-		// Clone template so mutation is safe
 		$block = $template;
 
-		// Preserve inner blocks
 		$block['innerBlocks'] = $template['innerBlocks'] ?? [];
 
-		// Inject dynamic attributes
 		if ( $post_id !== null ) {
 			$block['attrs']['postId'] = $post_id;
 		}
@@ -243,23 +241,19 @@ class WPBS_Loop {
 
 		$block['attrs']['index'] = $index;
 
-		// Extract taxonomy from FE query (only if provided)
 		$taxonomy = $query['taxonomy'] ?? null;
 
-		// Build context (the secret sauce)
 		$context = [
-			'postId'        => $post_id,
-			'termId'        => $term_id,
-			'taxonomy'      => $taxonomy,
+			'postId'   => $post_id,
+			'termId'   => $term_id,
+			'taxonomy' => $taxonomy,
 
-			// your custom namespaced values
 			'wpbs/postId'   => $post_id,
 			'wpbs/termId'   => $term_id,
 			'wpbs/taxonomy' => $taxonomy,
 			'wpbs/index'    => $index,
 		];
 
-		// Instantiate block with context
 		$instance = new WP_Block( $block, $context );
 
 		return $instance->render();

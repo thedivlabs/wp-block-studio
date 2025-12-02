@@ -1,33 +1,24 @@
 /**************************************************************************
- * WPBS LAYOUT GRID — FRONT-END LOOP ENGINE (JSON-based template system)
+ * WPBS LAYOUT GRID — FRONT-END LOOP ENGINE (Instance-based, no global state)
  **************************************************************************/
 
 import {store, getContext, getElement} from "@wordpress/interactivity";
 
 store("wpbs/layout-grid", {
-    state: {
-        containerEl: null,
-        isLoaded: false,
-        page: 1,
-        hasMore: false,
-        totalPages: 1,
-
-        // ⭐ JSON template extracted from <script data-wpbs-loop-template>
-        templateJSON: null,
-    },
-
     callbacks: {
         /* -----------------------------------------------------------
          * Staggered reveal animation
          * ----------------------------------------------------------- */
-        revealCards() {
-            const {state} = store("wpbs/layout-grid");
-            const container = state.containerEl;
+        revealCards(el) {
+            const instance = el._wpbs;
+            if (!instance) return;
+
+            const {container} = instance;
             if (!container) return;
 
             requestAnimationFrame(() => {
                 const newCards = container.querySelectorAll(
-                    ".wpbs-loop-card:not(.--visible)"
+                    ".loop-card:not(.--visible)"
                 );
 
                 newCards.forEach((card, i) => {
@@ -35,9 +26,7 @@ store("wpbs/layout-grid", {
                 });
 
                 setTimeout(() => {
-                    newCards.forEach((card) => {
-                        card.classList.add("--visible");
-                    });
+                    newCards.forEach((card) => card.classList.add("--visible"));
                 }, 50);
             });
         },
@@ -45,52 +34,45 @@ store("wpbs/layout-grid", {
 
     actions: {
         /* -----------------------------------------------------------
-         * INIT
+         * INIT — run once per block
          * ----------------------------------------------------------- */
         init() {
-            const {state, actions} = store("wpbs/layout-grid");
             const {ref: el} = getElement();
             const context = getContext();
 
-            /***********************************************************
-             * ⭐ FIX: the element is the BLOCK root, not the card container.
-             * We must select `.loop-container` INSIDE the block.
-             ***********************************************************/
-            const container = el.querySelector(".loop-container");
-            state.containerEl = container ?? el; // fallback just in case
+            /* Create per-instance storage on the block element */
+            el._wpbs = {
+                container: el.querySelector(".loop-container") ?? el,
+                template: null,
+                page: 1,
+                hasMore: false,
+                totalPages: 1,
+            };
 
-            /***********************************************************
-             * ⭐ Extract JSON template from <script data-wpbs-loop-template>
-             ***********************************************************/
+            /* Load the template */
             const templateScript = el.querySelector("script[data-wpbs-loop-template]");
-
             if (!templateScript) {
-                console.error("WPBS Loop Error: Missing loop template script tag.");
+                console.error("WPBS Loop Error: Missing template script.");
                 return;
             }
 
             try {
-                state.templateJSON = JSON.parse(templateScript.textContent);
+                el._wpbs.template = JSON.parse(templateScript.textContent);
+                console.log(JSON.parse(JSON.stringify(el._wpbs.template)));
             } catch (err) {
-                console.error("WPBS Loop Error: Failed to parse template JSON.", err);
+                console.error("WPBS Loop Error: Invalid template JSON.", err);
                 return;
             }
 
-            console.log(JSON.parse(JSON.stringify(state.templateJSON)));
-
-            // Remove <script> tag from DOM
             templateScript.remove();
 
-
-            /***********************************************************
-             * Lazy-load when entering viewport
-             ***********************************************************/
+            /* Lazy-load using viewport observer */
             const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
+                entries => {
+                    entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             observer.unobserve(entry.target);
-                            actions.fetchQuery(context, 1);
+                            store("wpbs/layout-grid").actions.fetchQuery(el, context, 1);
                         }
                     });
                 },
@@ -101,26 +83,22 @@ store("wpbs/layout-grid", {
         },
 
         /* -----------------------------------------------------------
-         * FETCH SSR LOOP RESULTS
+         * FETCH SSR LOOP RESULTS — now instance-driven
          * ----------------------------------------------------------- */
-        async fetchQuery(context, page = 1) {
-            const {state, callbacks} = store("wpbs/layout-grid");
+        async fetchQuery(el, context, page = 1) {
+            const instance = el._wpbs;
+            if (!instance) return;
+
+            const {template} = instance;
             const {query = {}} = context;
 
-            try {
-                /***********************************************************
-                 * ⭐ Ensure templateJSON exists
-                 ***********************************************************/
-                if (!state.templateJSON) {
-                    console.error("WPBS Loop Error: Missing templateJSON.");
-                    return;
-                }
+            if (!template) {
+                console.error("WPBS Loop Error: Template missing.");
+                return;
+            }
 
-                const payload = {
-                    template: state.templateJSON,
-                    query,
-                    page,
-                };
+            try {
+                const payload = {template, query, page};
 
                 const res = await fetch("/wp-json/wpbs/v1/loop", {
                     method: "POST",
@@ -134,40 +112,28 @@ store("wpbs/layout-grid", {
                 }
 
                 const data = await res.json();
-                const html = data?.html || "";
 
-                /***********************************************************
-                 * Convert SSR HTML → DOM Nodes
-                 ***********************************************************/
                 const temp = document.createElement("div");
-                temp.innerHTML = html;
+                temp.innerHTML = data?.html ?? "";
                 const cards = Array.from(temp.children);
 
-                /***********************************************************
-                 * Replace old cards with new SSR-rendered cards
-                 ***********************************************************/
-                const container = state.containerEl;
+                const {container} = instance;
 
-                // Remove old cards
-                container
-                    .querySelectorAll(".wpbs-loop-card")
-                    .forEach((old) => old.remove());
+                /* Clear existing cards */
+                container.querySelectorAll(".loop-card").forEach(old => old.remove());
 
-                // Append new cards
-                cards.forEach((card) => {
+                /* Add new cards */
+                cards.forEach(card => {
                     card.classList.remove("--visible");
                     container.appendChild(card);
                 });
 
-                /***********************************************************
-                 * Update pagination state
-                 ***********************************************************/
-                state.page = page;
-                state.totalPages = data.pages || 1;
-                state.hasMore = page < state.totalPages;
-                state.isLoaded = true;
+                /* Update instance pagination state */
+                instance.page = page;
+                instance.totalPages = data.pages || 1;
+                instance.hasMore = page < instance.totalPages;
 
-                callbacks.revealCards();
+                store("wpbs/layout-grid").callbacks.revealCards(el);
 
             } catch (err) {
                 console.error("WPBS Loop Fetch Exception:", err);
@@ -175,17 +141,17 @@ store("wpbs/layout-grid", {
         },
 
         /* -----------------------------------------------------------
-         * LOAD MORE
+         * LOAD MORE — instance-driven
          * ----------------------------------------------------------- */
         async loadMore() {
-            const {state, actions} = store("wpbs/layout-grid");
-
-            if (!state.hasMore) return;
-
-            const nextPage = state.page + 1;
-
+            const {ref: el} = getElement();
             const context = getContext();
-            await actions.fetchQuery(context, nextPage);
+
+            const instance = el._wpbs;
+            if (!instance || !instance.hasMore) return;
+
+            const nextPage = instance.page + 1;
+            await store("wpbs/layout-grid").actions.fetchQuery(el, context, nextPage);
         },
     },
 });

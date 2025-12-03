@@ -41,7 +41,12 @@ WPBS::console_log($loop_data);
 /**
  * Output the grid wrapper and loop cards
  */
-echo str_replace('%%__BLOCK_CONTENT_AREA__%%', $loop_data['html'] ?? '', $content ?? '');
+$open_tag  = substr($content ?? '', 0, strpos($content, '>') + 1);
+$close_tag = preg_match('/<\/([a-z0-9\-]+)>$/i', $content, $matches) ? $matches[0] : '';
+
+echo $open_tag;
+echo $loop_data['html'] ?? '';
+echo $close_tag;
 
 if ( $is_loop ) {
 	echo '<script type="application/json" data-wpbs-loop-template>';

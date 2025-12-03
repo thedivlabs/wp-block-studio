@@ -15,17 +15,6 @@ class WPBS_Loop {
 
 	private function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoint' ] );
-
-
-		add_action('wp_footer', function(){
-
-			global $wp_query;
-
-			WPBS::console_log($wp_query);
-			WPBS::console_log(get_queried_object());
-
-		});
-
 	}
 
 	/*───────────────────────────────────────────────────────────────

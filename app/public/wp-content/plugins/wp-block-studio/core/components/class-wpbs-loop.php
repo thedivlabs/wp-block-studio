@@ -351,84 +351,105 @@ class WPBS_Loop {
 
 		$clean = [];
 
-		// Get all public post types
-		$public_pts = get_post_types( [ 'public' => true ], 'names' );
+		// Allowed safe keys for our loop system
+		$allowed = [
+			'post_type',
+			'posts_per_page',
+			'paged',
+			'orderby',
+			'order',
+			'taxonomy',
+			'term',
+			'include',
+			'exclude',
+			'post__in',
+			'post__not_in',
+			'loopTerms',
+		];
 
-		// ----------------------------
-		// POST TYPE
-		// ----------------------------
-		if ( isset( $q['post_type'] ) ) {
-			$pt = sanitize_key( $q['post_type'] );
+		// Strip obviously dangerous keys
+		$forbidden_patterns = [
+			'/request/i',
+			'/sql/i',
+			'/meta_query/i',
+			'/meta_key/i',
+			'/meta_value/i',
+			'/cache/i',
+			'/suppress_filters/i',
+			'/tax_query/i', // never trust FE tax_query
+		];
 
-			if ( $pt === 'current' ) {
-				// main query mode
-				$clean['post_type'] = 'current';
-
-				// Replace posts_per_page with WP option if available
-				$clean['posts_per_page'] = (int) get_option( 'posts_per_page', 10 );
-
-			} elseif ( in_array( $pt, $public_pts, true ) ) {
-				$clean['post_type'] = $pt;
-
-				// fallback posts_per_page
-				if ( isset( $q['posts_per_page'] ) ) {
-					$clean['posts_per_page'] = max( -1, (int) $q['posts_per_page'] );
+		foreach ( $q as $key => $value ) {
+			foreach ( $forbidden_patterns as $pattern ) {
+				if ( preg_match( $pattern, $key ) ) {
+					continue 2; // skip this key entirely
 				}
-			} else {
-				$clean['post_type'] = 'post';
 			}
-		} else {
-			$clean['post_type'] = 'post';
-		}
 
-		// ----------------------------
-		// PAGINATION
-		// ----------------------------
-		if ( isset( $q['paged'] ) ) {
-			$paged = max( 1, (int) $q['paged'] );
-			$clean['paged'] = $paged;
-		}
+			// Only allow keys we explicitly support
+			if ( ! in_array( $key, $allowed, true ) ) {
+				continue;
+			}
 
-		if ( isset( $q['posts_per_page'] ) && ($clean['post_type'] !== 'current') ) {
-			$clean['posts_per_page'] = max( -1, (int) $q['posts_per_page'] );
-		}
+			// General cleaning
+			switch ( $key ) {
+				case 'post_type':
+					$pt = sanitize_key( $value );
 
-		// ----------------------------
-		// ORDERING
-		// ----------------------------
-		if ( ! empty( $q['orderby'] ) ) {
-			$clean['orderby'] = sanitize_key( $q['orderby'] );
-		}
-		if ( ! empty( $q['order'] ) ) {
-			$order          = strtoupper( $q['order'] );
-			$clean['order'] = in_array( $order, [ 'ASC', 'DESC' ], true ) ? $order : 'DESC';
-		}
+					// Current = main query cloning
+					if ( $pt === 'current' ) {
+						$clean['post_type']        = 'current';
+						$clean['posts_per_page']   = (int) get_option( 'posts_per_page', 10 );
+					} else {
+						$public = get_post_types( [ 'public' => true ], 'names' );
+						$clean['post_type'] = in_array( $pt, $public, true ) ? $pt : 'post';
+					}
+					break;
 
-		// ----------------------------
-		// TAXONOMY FILTERS
-		// ----------------------------
-		if ( ! empty( $q['taxonomy'] ) && taxonomy_exists( $q['taxonomy'] ) ) {
-			$clean['taxonomy'] = sanitize_key( $q['taxonomy'] );
-		}
-		if ( ! empty( $q['term'] ) ) {
-			$clean['term'] = (int) $q['term'];
-		}
+				case 'posts_per_page':
+					// Only used for non-current queries
+					if ( ( $clean['post_type'] ?? null ) !== 'current' ) {
+						$clean['posts_per_page'] = max( -1, (int) $value );
+					}
+					break;
 
-		// ----------------------------
-		// INCLUDE / EXCLUDE POSTS
-		// ----------------------------
-		if ( ! empty( $q['include'] ) ) {
-			$clean['post__in'] = array_map( 'intval', (array) $q['include'] );
-		}
-		if ( ! empty( $q['exclude'] ) ) {
-			$clean['post__not_in'] = array_map( 'intval', (array) $q['exclude'] );
-		}
+				case 'paged':
+					$clean['paged'] = max( 1, (int) $value );
+					break;
 
-		// ----------------------------
-		// LOOP TERMS FLAG
-		// ----------------------------
-		if ( array_key_exists( 'loopTerms', $q ) ) {
-			$clean['loopTerms'] = filter_var( $q['loopTerms'], FILTER_VALIDATE_BOOLEAN );
+				case 'orderby':
+					$clean['orderby'] = sanitize_key( $value );
+					break;
+
+				case 'order':
+					$order = strtoupper( $value );
+					$clean['order'] = in_array( $order, [ 'ASC', 'DESC' ], true ) ? $order : 'DESC';
+					break;
+
+				case 'taxonomy':
+					if ( taxonomy_exists( $value ) ) {
+						$clean['taxonomy'] = sanitize_key( $value );
+					}
+					break;
+
+				case 'term':
+					$clean['term'] = (int) $value;
+					break;
+
+				case 'include':
+				case 'post__in':
+					$clean['post__in'] = array_map( 'intval', (array) $value );
+					break;
+
+				case 'exclude':
+				case 'post__not_in':
+					$clean['post__not_in'] = array_map( 'intval', (array) $value );
+					break;
+
+				case 'loopTerms':
+					$clean['loopTerms'] = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+					break;
+			}
 		}
 
 		return $clean;

@@ -17,9 +17,11 @@ $block_class = implode( ' ', array_filter( [
 	$is_button ? 'wp-element-button button loop-button' : null,
 ] ) );
 
-$block_attributes = get_block_wrapper_attributes( [
-	'class' => $block_class
-] );
+$block_attributes = get_block_wrapper_attributes( array_filter( [
+	'class'               => $block_class,
+	'data-wp-interactive' => $is_loop ? 'wpbs/layout-grid' : null,
+	'data-wp-on--click'   => $is_loop ? 'actions.loadMore' : null,
+] ) );
 
 $tag_name = $is_button ? 'button' : 'div';
 

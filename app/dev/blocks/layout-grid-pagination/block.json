@@ -23,6 +23,7 @@
     "wpbs/isLoop"
   ],
   "supports": {
+    "interactivity": true,
     "color": {
       "background": true,
       "text": true,

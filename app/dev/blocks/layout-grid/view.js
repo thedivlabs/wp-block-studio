@@ -89,7 +89,7 @@ store("wpbs/layout-grid", {
         /* -----------------------------------------------------------
          * FETCH SSR LOOP RESULTS — now instance-driven
          * ----------------------------------------------------------- */
-        async fetchQuery(el, context, page = 1) {
+        async fetchQuery(el, context, page = 1, button = null) {
             const instance = el._wpbs;
             if (!instance) return;
 
@@ -124,7 +124,7 @@ store("wpbs/layout-grid", {
                 const {container} = instance;
 
                 /* Clear existing cards */
-                container.querySelectorAll(".loop-card").forEach(old => old.remove());
+                //container.querySelectorAll(".loop-card").forEach(old => old.remove());
 
                 /* Add new cards */
                 cards.forEach(card => {
@@ -136,6 +136,10 @@ store("wpbs/layout-grid", {
                 instance.page = page;
                 instance.totalPages = data.pages || 1;
                 instance.hasMore = page < instance.totalPages;
+
+                if (!instance.hasMore && button) {
+                    button?.remove()
+                }
 
                 store("wpbs/layout-grid").callbacks.revealCards(el);
 
@@ -157,12 +161,13 @@ store("wpbs/layout-grid", {
         async loadMore() {
             const {ref: el} = getElement();
             const context = getContext();
+            const grid = el.closest(".wpbs-layout-grid");
+            const instance = grid?._wpbs;
 
-            const instance = el._wpbs;
             if (!instance || !instance.hasMore) return;
 
             const nextPage = instance.page + 1;
-            await store("wpbs/layout-grid").actions.fetchQuery(el, context, nextPage);
+            await store("wpbs/layout-grid").actions.fetchQuery(grid, context, nextPage, el);
         },
     },
 });

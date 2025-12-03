@@ -184,9 +184,11 @@ function getCssProps(settings = {}) {
 }
 
 function getPreload(settings = {}) {
+    
     if (!settings.eager) return [];
 
     const poster = settings.poster;
+
     if (poster?.id) {
         return [
             poster,

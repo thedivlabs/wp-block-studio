@@ -77,63 +77,80 @@ class WPBS_Blocks {
 		// Gather all items reported from blocks
 		$items = apply_filters( 'wpbs_preload_media', [] );
 
+		WPBS::console_log( $items );
+
 		if ( empty( $items ) || ! is_array( $items ) ) {
 			return;
 		}
 
-		// Load breakpoints from theme.json
+		// Load breakpoints from theme.json (still available if needed for images)
 		$settings    = wp_get_global_settings();
 		$breakpoints = $settings['custom']['breakpoints'] ?? [];
 
-		// Group by block (requires item['group'])
+		// Group by block (optional, for editor use only)
 		$groups = [];
 		foreach ( $items as $item ) {
 			if ( ! is_array( $item ) ) {
 				continue;
 			}
-
 			$group = $item['group'] ?? null;
 			if ( ! $group ) {
-				continue;
+				$group = 'default';
 			}
-
 			$groups[ $group ][] = $item;
 		}
 
-		// Build one preload link per group
 		foreach ( $groups as $group_key => $group_items ) {
 
 			$attrs = [
-				'href'          => '',
-				'rel'           => '',
-				'as'            => 'image',
+				'rel'           => 'preload',
+				'as'            => 'image', // default; may be overridden per item
 				'data-group'    => $group_key,
 				'fetchpriority' => 'high',
 			];
+
+			$href_set = false;
 
 			foreach ( $group_items as $item ) {
 
 				$id    = $item['id'] ?? null;
 				$type  = $item['type'] ?? null;
-				$bpKey = $item['media'] ?? null;
 				$size  = $item['resolution'] ?? 'large';
+				$bpKey = $item['media'] ?? null;
 
 				if ( ! $id || ! $type ) {
 					continue;
 				}
 
-				// Resolve URL
-				$src = $this->resolve_image_url( $id, $size );
+				// Resolve URL and set as type
+				if ( $type === 'video' ) {
+					$attrs['as'] = 'video';
+					$src         = $this->resolve_video_url( $id ); // implement this method
+				} else {
 
-				if ( ! $src || $src == '#' ) {
+					$attrs['as'] = 'image';
+					$src         = $this->resolve_image_url( $id, $size );
+				}
+
+				if ( ! $src || $src === '#' ) {
 					continue;
 				}
 
-				// Determine the attribute name (data-sm, data-md, or data-default)
-				$attrKey = $bpKey ?: 'default';
+				// Set href to the first valid URL
+				if ( ! $href_set ) {
+					$attrs['href'] = esc_url( $src );
+					$href_set      = true;
+				}
 
-				// Convert breakpoint keys into usable media names if needed
-				$attrs["data-{$attrKey}"] = esc_url( $src );
+				// Add breakpoint/resolution attributes for images only
+				if ( $type === 'image' ) {
+					$attrKey                  = $bpKey ?: 'default';
+					$attrs["data-{$attrKey}"] = esc_url( $src );
+				}
+			}
+
+			if ( empty( $attrs['href'] ) ) {
+				continue;
 			}
 
 			// Output final link tag
@@ -143,8 +160,18 @@ class WPBS_Blocks {
 			}
 			$html .= '/>';
 
+			WPBS::console_log( [ $html ] );
+
 			echo $html . "\n";
 		}
+	}
+
+
+	private function resolve_video_url( int $id ): ?string {
+		// Example: use wp_get_attachment_url() for video attachments
+		$url = wp_get_attachment_url( $id );
+
+		return $url ?: null;
 	}
 
 	public static function parse_block_styles( array $attributes, string $name = '' ): string {

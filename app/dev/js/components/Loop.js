@@ -77,7 +77,7 @@ export const Loop = ({value = {}, onChange}) => {
 
     const postTypeOptions = [
         {value: "", label: "Select a post type"},
-        {value: "current", label: "Current Post"},
+        {value: "current", label: "Archive"},
         {label: "— Registered Post Types", value: "", disabled: true},
         ...(postTypes || []).map((pt) => ({
             value: pt.slug,
@@ -95,7 +95,7 @@ export const Loop = ({value = {}, onChange}) => {
 
     const termOptions = [
         {value: "", label: "Select a term"},
-        {value: "current", label: "Current Term"},
+        {value: "current", label: "Archive"},
         {label: "— Registered Terms", value: "", disabled: true},
         ...(terms || []).map((t) => ({
             value: t.id,

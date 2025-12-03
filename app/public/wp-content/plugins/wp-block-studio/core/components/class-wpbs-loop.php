@@ -139,12 +139,23 @@ class WPBS_Loop {
 			global $wp_query;
 
 			// Avoid fatal if WP_Query not set
-			if ( ! ( $wp_query instanceof WP_Query ) ) {
+			if ( ! ( $wp_query instanceof WP_Query ) || !$wp_query->have_posts() ) {
+
+
+				$current_url = $_SERVER['HTTP_REFERER'] ?? '';
+				$post_id = url_to_postid( $current_url ); // returns 0 if no match
+
+
 				return [
 					'html'  => '',
 					'total' => 0,
 					'pages' => 1,
 					'page'  => 1,
+					'debug' => [
+						'cqo' => get_queried_object(),
+						'postId' => $post_id,
+						'current_url' => $current_url,
+					]
 				];
 			}
 

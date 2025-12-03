@@ -11,7 +11,7 @@
   }
 }
 
-body:not(.wp-admin) {
+body:not(.wp-admin):not(.editor-styles-wrapper) {
   .loop-card {
     opacity: 0;
     transform: translateY(20px);

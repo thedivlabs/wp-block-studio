@@ -76,6 +76,7 @@ const getClassNames = (attributes = {}, settings = {}) => {
         selector,
         attributes.uniqueId ?? "",
         "w-full flex relative",
+        !!attributes?.isLoop ? '--loop' : null,
         isMasonry ? "--masonry" : null,
     ]
         .filter(Boolean)

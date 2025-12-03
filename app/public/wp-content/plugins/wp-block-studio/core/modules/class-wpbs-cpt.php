@@ -105,7 +105,7 @@ final class WPBS_CPT {
 					is_post_type_archive( $slug )
 				) {
 
-					$query->set( 'post_type', $slug );
+					//$query->set( 'post_type', $slug );
 				}
 
 			}, 30 );

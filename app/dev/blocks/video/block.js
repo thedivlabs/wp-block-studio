@@ -184,19 +184,23 @@ function getCssProps(settings = {}) {
 }
 
 function getPreload(settings = {}) {
-    
-    if (!settings.eager) return [];
+    const preloadObj = [];
+
+    if (!settings.eager) return preloadObj;
 
     const poster = settings.poster;
 
-    if (poster?.id) {
-        return [
-            poster,
-        ];
+    if (poster?.id && !poster.isPlaceholder) {
+        preloadObj.push({
+            id: poster.id,
+            type: "video",
+            resolution: settings.resolution || "large",
+        });
     }
 
-    return [];
+    return preloadObj;
 }
+
 
 function getPosterSrc(settings) {
     const {poster, resolution = "medium"} = settings;

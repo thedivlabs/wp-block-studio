@@ -177,6 +177,7 @@ function getPreload(settings) {
         preloadObj.push({
             id: baseImage.id,
             type: "image",
+            resolution: baseProps?.resolution || "large",
         });
     }
 
@@ -190,6 +191,7 @@ function getPreload(settings) {
                 id: bpImage.id,
                 type: "image",
                 breakpoint: bpKey,
+                resolution: bpProps?.resolution || "large",
             });
         }
     }

@@ -9,6 +9,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "isLoop": {
+      "type": "boolean"
     }
   },
   "usesContext": [
@@ -49,6 +52,7 @@
   },
   "editorScript": "file:./block.js",
   "style": "file:./block.css",
+  "render": "file:./render.php",
   "icon": "editor-kitchensink"
 }
 

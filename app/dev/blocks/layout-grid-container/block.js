@@ -105,47 +105,55 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-
-            const {attributes, styleData, BlockWrapper, setCss, context} = props;
+            const {attributes, setAttributes, styleData, BlockWrapper, setCss, context} = props;
             const classNames = getClassNames(attributes, styleData);
 
-            const {'wpbs/isLoop': isLoop, 'wpbs/query': query} = context;
+            const {'wpbs/isLoop': isLoopFromContext, 'wpbs/query': query} = context;
 
-            const gapCss = useMemo(() => buildGapCSS(attributes), [JSON.stringify(attributes?.style?.spacing?.blockGap), attributes?.['wpbs-style']]);
+            // Only update attributes if different
+            useEffect(() => {
+                if (attributes.isLoop !== isLoopFromContext) {
+                    setAttributes({isLoop: isLoopFromContext});
+                }
+            }, [isLoopFromContext, attributes.isLoop, setAttributes]);
+
+            const gapCss = useMemo(() => buildGapCSS(attributes), [
+                JSON.stringify(attributes?.style?.spacing?.blockGap),
+                attributes?.['wpbs-style']
+            ]);
 
             useEffect(() => {
                 setCss(gapCss);
-            }, [gapCss])
+            }, [gapCss]);
 
             return (
-                <>
-                    <BlockWrapper
-                        props={props}
-                        className={classNames}
-                    >
-                        {/*{isLoop && query?.posts_per_page && (
-                            <LoopPlaceholders
-                                count={Math.max(parseInt((query?.posts_per_page || 0), 10) - 1, 0)}
-                            />
-                        )}*/}
-                    </BlockWrapper>
-                </>
+                <BlockWrapper props={props} className={classNames}/>
             );
-        }, {
-            hasChildren: true
-        }),
-
+        },
+        {
+            hasChildren: true,
+            hasBackground: false
+        }
+    ),
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
+        const isLoop = !!attributes?.isLoop;
+
         return (
-            <BlockWrapper
+            !!isLoop ? <BlockWrapper
+                props={props}
+                className={classNames}
+            >
+                {'%%__BLOCK_CONTENT_AREA__%%'}
+            </BlockWrapper> : <BlockWrapper
                 props={props}
                 className={classNames}
             />
         );
     }, {
-        hasChildren: true
+        hasChildren: true,
+        hasBackground: false
     }),
 });

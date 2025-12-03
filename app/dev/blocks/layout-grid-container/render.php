@@ -3,9 +3,8 @@ declare( strict_types=1 );
 
 WPBS::console_log( $block ?? false );
 
-$is_loop        = ! empty( $block->attributes['isLoop'] );
-$grid_settings  = $block->attributes['wpbs-grid']['props'] ?? [];
-$query_settings = $block->attributes['query'] ?? [];
+$is_loop        = ! empty( $block->context['wpbs/isLoop'] );
+$query_settings = $block->context['wpbs/query'] ?? [];
 $is_current     = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
 
@@ -26,7 +25,7 @@ $default_query = [
 	'order'          => 'DESC',
 ];
 
-$merged_query = array_merge( $default_query, $block['attrs']['query'] ?? [] );
+$merged_query = array_merge( $default_query, $query_settings );
 
 /**
  * Initialize loop instance and render cards
@@ -34,30 +33,14 @@ $merged_query = array_merge( $default_query, $block['attrs']['query'] ?? [] );
 $loop_instance = WPBS_Loop::init();
 
 $loop_data = $loop_instance->render_from_php(
-	$block,                       // full block AST
+	$block->parsed_block['innerBlocks'][0] ?? [],                       // full block AST
 	$merged_query,                 // merged query
 	max( 1, get_query_var( 'paged', 1 ) ) // current page
 );
-
-/**
- * Build block wrapper attributes
- */
-$block_class = implode( ' ', array_filter( [
-	'wpbs-layout-grid',
-	'wpbs-layout-grid-0',
-	$block['attrs']['className'] ?? '',
-] ) );
-
-$block_attributes = get_block_wrapper_attributes( [
-	'class'               => $block_class,
-	'data-wp-interactive' => $is_loop && !$is_current ? 'wpbs/layout-grid' : null,
-] );
 
 WPBS::console_log($loop_data);
 
 /**
  * Output the grid wrapper and loop cards
  */
-echo "<div {$block_attributes}>";
-echo $loop_data['html'] ?? '';
-echo '</div>';
+echo str_replace('%%__BLOCK_CONTENT_AREA__%%', $loop_data['html'] ?? '', $content ?? '');

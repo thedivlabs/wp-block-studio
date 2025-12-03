@@ -11,7 +11,7 @@
   }
 }
 
-body:not(.wp-admin):not(.editor-styles-wrapper) {
+body:not(.wp-admin):not(.editor-styles-wrapper) .wpbs-layout-grid-container.--loop {
   .loop-card {
     opacity: 0;
     transform: translateY(20px);

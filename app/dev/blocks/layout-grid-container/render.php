@@ -36,7 +36,9 @@ $loop_data = $loop_instance->render_from_php(
 	max( 1, get_query_var( 'paged', 1 ) ) // current page
 );
 
+global $wp_query;
 WPBS::console_log($loop_data);
+WPBS::console_log($wp_query);
 
 /**
  * Output the grid wrapper and loop cards

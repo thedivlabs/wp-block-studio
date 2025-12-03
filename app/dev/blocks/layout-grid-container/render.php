@@ -1,8 +1,6 @@
 <?php
 declare( strict_types=1 );
 
-WPBS::console_log( $block ?? false );
-
 $is_loop        = ! empty( $block->context['wpbs/isLoop'] );
 $query_settings = $block->context['wpbs/query'] ?? [];
 $is_current     = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
@@ -44,3 +42,14 @@ WPBS::console_log($loop_data);
  * Output the grid wrapper and loop cards
  */
 echo str_replace('%%__BLOCK_CONTENT_AREA__%%', $loop_data['html'] ?? '', $content ?? '');
+
+if ( $is_loop ) {
+	echo '<script type="application/json" data-wpbs-loop-template>';
+	echo wp_json_encode(
+		$block->parsed_block['innerBlocks'][0] ?? [],
+		JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+	);
+	echo '</script>';
+
+	return;
+}

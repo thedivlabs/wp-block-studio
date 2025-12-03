@@ -19,7 +19,7 @@
   }
 
   --space: calc(var(--column-gap, 0px) * (var(--columns, 1) - 1));
-  --column-width:calc((100% - var(--space, 0px)) / var(--columns, 3));
+  --column-width: calc((100% - var(--space, 0px)) / var(--columns, 3));
 
   .af-loop-card {
     width: 100%;
@@ -33,10 +33,14 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: inherit;
-    margin-top:25px;
+    margin-top: 25px;
 
     &.hidden {
       display: none;
     }
+  }
+
+  &:not(.active) .loop-button {
+    display: none;
   }
 }

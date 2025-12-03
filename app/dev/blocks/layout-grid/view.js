@@ -132,6 +132,8 @@ store("wpbs/layout-grid", {
                     container.appendChild(card);
                 });
 
+                el.classList.add("active");
+
                 /* Update instance pagination state */
                 instance.page = page;
                 instance.totalPages = data.pages || 1;

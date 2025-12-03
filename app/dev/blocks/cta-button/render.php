@@ -24,6 +24,7 @@ $CTA = new class {
 		// Term loop
 		if ( $item instanceof WP_Term ) {
 			$url = get_term_link( $item );
+
 			return is_wp_error( $url ) ? '#' : $url;
 		}
 

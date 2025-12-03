@@ -61,5 +61,6 @@
   },
   "viewScriptModule": "file:./view.js",
   "editorScript": "file:./block.js",
+  "render": "file:./render.php",
   "style": "file:./block.css"
 }

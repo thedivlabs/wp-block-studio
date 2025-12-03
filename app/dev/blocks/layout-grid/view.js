@@ -117,8 +117,8 @@ store("wpbs/layout-grid", {
 
                 const data = await res.json();
 
-                console.log(data);
-                console.log(JSON.parse(JSON.stringify(payload)));
+                //console.log(data);
+                //console.log(JSON.parse(JSON.stringify(payload)));
 
                 const temp = document.createElement("div");
                 temp.innerHTML = data?.html ?? "";

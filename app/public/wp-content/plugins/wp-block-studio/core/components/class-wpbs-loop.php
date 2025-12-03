@@ -15,7 +15,44 @@ class WPBS_Loop {
 
 	private function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoint' ] );
+
+
+		add_action('wp_footer', function(){
+
+			global $wp_query;
+
+			WPBS::console_log($wp_query);
+			WPBS::console_log(get_queried_object());
+
+		});
+
 	}
+
+	/*───────────────────────────────────────────────────────────────
+    PUBLIC ENTRY POINT FOR PHP RENDER
+───────────────────────────────────────────────────────────────*/
+	public function render_from_php( array $template, array $query = [], int $page = 1 ): array {
+		// Validate template
+		if ( empty( $template['blockName'] ) ) {
+			return [
+				'html'  => '',
+				'total' => 0,
+				'pages' => 1,
+				'page'  => 1,
+				'error' => 'Invalid template passed to render_from_php.',
+			];
+		}
+
+		// Sanitize query
+		$query_clean = $this->sanitize_query( $query );
+
+		// Ensure page is at least 1
+		$page = max( 1, $page );
+
+		// Render
+		return $this->render_loop( $template, $query_clean, $page );
+	}
+
 
 	/*───────────────────────────────────────────────────────────────
 		REST ENDPOINT

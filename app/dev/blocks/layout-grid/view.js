@@ -49,17 +49,24 @@ store("wpbs/layout-grid", {
             const template = data.template;
             const pagination = data.pagination;
 
+            const hasMore = pagination.page < pagination.totalPages;
+
             el._wpbs = {
                 container: el.querySelector('.loop-container') ?? el,
                 template,
                 page: pagination.page,
                 totalPages: pagination.totalPages,
-                hasMore: pagination.page < pagination.totalPages,
+                hasMore: hasMore,
                 query: pagination.query,
             };
 
             // Remove script tag after parsing
             script.remove();
+
+            if (!!hasMore) {
+                el.classList.add("active");
+            }
+
 
             // Fire dividers using actual context
             const {uniqueId, divider, breakpoints, props} = context;
@@ -111,8 +118,6 @@ store("wpbs/layout-grid", {
                     card.classList.add("--loading");
                     container.appendChild(card);
                 });
-
-                el.classList.add("active");
 
                 /* Update instance pagination state */
                 instance.page = page;

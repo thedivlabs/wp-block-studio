@@ -115,7 +115,7 @@ export default function ResponsivePicture({
     // Render <picture>
     // ------------------------------------------------------------
     return (
-        <picture className={cls} style={{...style, objectFit: "inherit"}}>
+        <picture className={cls} style={{...style}}>
             {/* --- Breakpoint <source> tags (xs, sm, md…) --- */}
             {bpEntries.map((entry, i) => {
                 const url = resolveUrl(entry);

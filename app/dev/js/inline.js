@@ -1,8 +1,8 @@
 import MediaWatcher from './modules/MediaWatcher';
 
 (function () {
-    const MAX_WAIT = 5000;  // maximum time to wait for the font
-    const INTERVAL = 50;    // check every 50ms
+    const MAX_WAIT = 5000;
+    const INTERVAL = 100;
 
     function watchIconsFont(startTime = Date.now()) {
         document.fonts.load('24px "Material Symbols Outlined"').then((fonts) => {

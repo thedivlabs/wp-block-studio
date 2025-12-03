@@ -41,7 +41,6 @@ class WPBS_Loop {
 		echo '</script>';
 	}
 
-
 	public function render_from_php( array $template, array $query = [], int $page = 1 ): array {
 		// Validate template
 		if ( empty( $template['blockName'] ) ) {
@@ -64,10 +63,6 @@ class WPBS_Loop {
 		return $this->render_loop( $template, $query_clean, $page );
 	}
 
-
-	/*───────────────────────────────────────────────────────────────
-		REST ENDPOINT
-	───────────────────────────────────────────────────────────────*/
 	public function register_endpoint(): void {
 
 		register_rest_route( 'wpbs/v1', '/loop', [
@@ -92,9 +87,6 @@ class WPBS_Loop {
 		] );
 	}
 
-	/*───────────────────────────────────────────────────────────────
-		REQUEST HANDLER
-	───────────────────────────────────────────────────────────────*/
 	public function handle_request( WP_REST_Request $request ): WP_REST_Response {
 
 		$template  = $request->get_param( 'template' );
@@ -117,13 +109,6 @@ class WPBS_Loop {
 		return rest_ensure_response( $output );
 	}
 
-
-	/*───────────────────────────────────────────────────────────────
-		MAIN LOOP RENDERING
-	───────────────────────────────────────────────────────────────*/
-	/*───────────────────────────────────────────────────────────────
-		MAIN LOOP RENDERING
-	───────────────────────────────────────────────────────────────*/
 	private function render_loop( array $template_block, array $query, int $page ): array {
 
 		$html  = '';
@@ -137,14 +122,22 @@ class WPBS_Loop {
 		if ( ! empty( $query['loopTerms'] ) && ! empty( $query['taxonomy'] ) ) {
 
 			$taxonomy = sanitize_key( $query['taxonomy'] );
+			$per_page = $query['posts_per_page'] ?? 12;
+			$page     = max( 1, $page );
+			$offset   = ( $page - 1 ) * $per_page;
 
-			// Fetch all non-empty terms (can switch to hide_empty = false if needed)
-			$terms = get_terms( [
+			// Query terms with pagination
+			$term_query = new WP_Term_Query( [
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => true,
+				'number'     => $per_page,
+				'offset'     => $offset,
+				'fields'     => 'all',
 			] );
 
-			if ( is_wp_error( $terms ) ) {
+			$terms = $term_query->get_terms();
+
+			if ( is_wp_error( $terms ) || empty( $terms ) ) {
 				return [
 					'html'  => '',
 					'total' => 0,
@@ -153,6 +146,12 @@ class WPBS_Loop {
 				];
 			}
 
+			// Count total terms for pagination
+			$total_terms = (int) wp_count_terms( [
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => true,
+			] );
+
 			$html  = '';
 			$index = 0;
 
@@ -160,18 +159,20 @@ class WPBS_Loop {
 				$html .= $this->render_card_from_ast(
 					$template_block,
 					$query,
-					null,              // post_id = null
+					null,
 					$index,
-					$term->term_id     // ⭐ pass termId
+					$term->term_id
 				);
 				$index ++;
 			}
 
+			$total_pages = $per_page > 0 ? ceil( $total_terms / $per_page ) : 1;
+
 			return [
 				'html'   => $html,
-				'total'  => count( $terms ),
-				'pages'  => 1,
-				'page'   => 1,
+				'total'  => $total_terms,
+				'pages'  => $total_pages,
+				'page'   => $page,
 				'$query' => $query,
 			];
 		}

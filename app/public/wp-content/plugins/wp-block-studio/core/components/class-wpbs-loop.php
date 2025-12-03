@@ -21,18 +21,27 @@ class WPBS_Loop {
 	 * Output loop template JSON for frontend hydration
 	 */
 	public function output_loop_script( array $template_block, array $loop_data, array $query, int $page = 1 ): void {
+		global $wp_query;
 
+		// If using the main query, use its query_vars directly
+		if ( ( $query['post_type'] ?? null ) === 'current' && $wp_query instanceof WP_Query ) {
+			$query = $wp_query->query_vars;
+		}
+
+		// Remove empty keys
+		$query_clean = WPBS::clean_array( $query );
+
+		// Encode template and pagination JSON
 		$template_json = wp_json_encode( $template_block ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-
 		$pagination_data = [
 			'page'       => max( 1, $page ),
 			'totalPages' => $loop_data['pages'] ?? 1,
 			'totalPosts' => $loop_data['total'] ?? 0,
-			'query'      => $query,
+			'query'      => $query_clean,
 		];
-
 		$pagination_json = wp_json_encode( $pagination_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 
+		// Output JSON script tag
 		echo '<script type="application/json" data-wpbs-loop-template>';
 		echo json_encode( [
 			'template'   => json_decode( $template_json ),

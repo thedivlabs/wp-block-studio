@@ -30,20 +30,18 @@ store("wpbs/layout-grid", {
                 }, 50);
             });
         },
-
     },
 
     actions: {
         /* -----------------------------------------------------------
-         * INIT — run once per block (no fetch here)
+         * INIT — run once per block (main query already rendered)
          * ----------------------------------------------------------- */
         init() {
             const {ref: el} = getElement();
-            const context = getContext(); // ✅ get the actual context here
+            const context = getContext();
 
-            // Grab JSON script
             const script = el.querySelector('script[data-wpbs-loop-template]');
-            if (!script) return console.error('Missing loop template JSON');
+            if (!script) return console.error("Missing loop template JSON");
 
             const data = JSON.parse(script.textContent);
             const template = data.template;
@@ -51,24 +49,21 @@ store("wpbs/layout-grid", {
 
             const hasMore = pagination.page < pagination.totalPages;
 
+            // Save instance state
             el._wpbs = {
-                container: el.querySelector('.loop-container') ?? el,
+                container: el.querySelector(".loop-container") ?? el,
                 template,
                 page: pagination.page,
                 totalPages: pagination.totalPages,
-                hasMore: hasMore,
+                hasMore,
                 query: pagination.query,
             };
 
             // Remove script tag after parsing
             script.remove();
 
-            if (!!hasMore) {
-                el.classList.add("active");
-            }
+            if (hasMore) el.classList.add("active");
 
-
-            // Fire dividers using actual context
             const {uniqueId, divider, breakpoints, props} = context;
             gridDividers?.(
                 el,
@@ -84,8 +79,8 @@ store("wpbs/layout-grid", {
             const instance = el._wpbs;
             if (!instance) return;
 
-            const {template} = instance;
-            const {query = {}, uniqueId, divider, breakpoints, props} = context;
+            const {template, query} = instance;
+            const {uniqueId, divider, breakpoints, props} = context;
 
             if (!template) {
                 console.error("WPBS Loop Error: Template missing.");
@@ -113,24 +108,22 @@ store("wpbs/layout-grid", {
 
                 const {container} = instance;
 
-                /* Add new cards */
+                // Append new cards
                 cards.forEach((card) => {
                     card.classList.add("--loading");
                     container.appendChild(card);
                 });
 
-                /* Update instance pagination state */
+                // Update pagination state
                 instance.page = page;
                 instance.totalPages = data.pages || 1;
                 instance.hasMore = page < instance.totalPages;
 
-                if (!instance.hasMore && button) {
-                    button?.remove();
-                }
+                if (!instance.hasMore && button) button?.remove();
 
                 store("wpbs/layout-grid").callbacks.revealCards(el);
 
-                /* Reapply dividers after pagination */
+                // Reapply dividers
                 gridDividers?.(
                     el,
                     JSON.parse(JSON.stringify({uniqueId, divider, props, breakpoints})),
@@ -149,18 +142,11 @@ store("wpbs/layout-grid", {
             const context = getContext();
             const grid = el.closest(".wpbs-layout-grid");
             const instance = grid?._wpbs;
-
             console.log(instance);
-
             if (!instance || !instance.hasMore) return;
 
             const nextPage = instance.page + 1;
-            await store("wpbs/layout-grid").actions.fetchQuery(
-                grid,
-                context,
-                nextPage,
-                el
-            );
+            await store("wpbs/layout-grid").actions.fetchQuery(grid, context, nextPage, el);
         },
     },
 });

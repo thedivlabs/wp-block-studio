@@ -1,10 +1,10 @@
 /**************************************************************************
- * WPBS LAYOUT GRID — FRONT-END LOOP ENGINE (Instance-based, no global state)
+ * WPBS LAYOUT GRID — FRONT-END PAGINATION ONLY
  **************************************************************************/
 
-import {store, getContext, getElement} from "@wordpress/interactivity";
+import { store, getContext, getElement } from "@wordpress/interactivity";
 
-const {gridDividers} = window?.WPBS ?? {};
+const { gridDividers } = window?.WPBS ?? {};
 
 store("wpbs/layout-grid", {
     callbacks: {
@@ -15,7 +15,7 @@ store("wpbs/layout-grid", {
             const instance = el._wpbs;
             if (!instance) return;
 
-            const {container} = instance;
+            const { container } = instance;
             if (!container) return;
 
             requestAnimationFrame(() => {
@@ -31,82 +31,42 @@ store("wpbs/layout-grid", {
                     newCards.forEach((card) => card.classList.add("--visible"));
                 }, 50);
             });
-
-
         },
     },
 
     actions: {
         /* -----------------------------------------------------------
-         * INIT — run once per block
+         * INITIALIZE INSTANCE — run once per block
          * ----------------------------------------------------------- */
-        init() {
-            const {ref: el} = getElement();
-            const context = getContext();
-
-            /* Create per-instance storage on the block element */
-            el._wpbs = {
-                container: el.querySelector(".loop-container") ?? el,
-                template: null,
-                page: 1,
-                hasMore: false,
-                totalPages: 1,
-            };
-
-            /* Load the template */
-            const templateScript = el.querySelector("script[data-wpbs-loop-template]");
-            if (!templateScript) {
-                console.error("WPBS Loop Error: Missing template script.");
-                return;
+        initInstance(el) {
+            if (!el._wpbs) {
+                el._wpbs = {
+                    container: el.querySelector(".loop-container") ?? el,
+                    page: 1,
+                    hasMore: false,
+                    totalPages: 1,
+                };
             }
-
-            try {
-                el._wpbs.template = JSON.parse(templateScript.textContent);
-
-            } catch (err) {
-                console.error("WPBS Loop Error: Invalid template JSON.", err);
-                return;
-            }
-
-            templateScript.remove();
-
-            /* Lazy-load using viewport observer */
-            const observer = new IntersectionObserver(
-                entries => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            observer.unobserve(entry.target);
-                            store("wpbs/layout-grid").actions.fetchQuery(el, context, 1);
-                        }
-                    });
-                },
-                {threshold: 0}
-            );
-
-            observer.observe(el);
         },
 
         /* -----------------------------------------------------------
-         * FETCH SSR LOOP RESULTS — now instance-driven
+         * FETCH NEXT PAGE — instance-driven
          * ----------------------------------------------------------- */
         async fetchQuery(el, context, page = 1, button = null) {
             const instance = el._wpbs;
             if (!instance) return;
 
-            const {template} = instance;
-            const {query = {}, uniqueId, divider, breakpoints, props} = context;
-
-            if (!template) {
-                console.error("WPBS Loop Error: Template missing.");
-                return;
-            }
+            const { query = {}, uniqueId, divider, breakpoints, props } = context;
 
             try {
-                const payload = {template, query, page};
+                const payload = {
+                    query,
+                    page,
+                };
 
                 const res = await fetch("/wp-json/wpbs/v1/loop", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
                 });
 
@@ -117,20 +77,14 @@ store("wpbs/layout-grid", {
 
                 const data = await res.json();
 
-                //console.log(data);
-                //console.log(JSON.parse(JSON.stringify(payload)));
-
                 const temp = document.createElement("div");
                 temp.innerHTML = data?.html ?? "";
                 const cards = Array.from(temp.children);
 
-                const {container} = instance;
-
-                /* Clear existing cards */
-                //container.querySelectorAll(".loop-card").forEach(old => old.remove());
+                const { container } = instance;
 
                 /* Add new cards */
-                cards.forEach(card => {
+                cards.forEach((card) => {
                     card.classList.remove("--visible");
                     container.appendChild(card);
                 });
@@ -143,17 +97,16 @@ store("wpbs/layout-grid", {
                 instance.hasMore = page < instance.totalPages;
 
                 if (!instance.hasMore && button) {
-                    button?.remove()
+                    button?.remove();
                 }
 
                 store("wpbs/layout-grid").callbacks.revealCards(el);
 
-                gridDividers(el, JSON.parse(JSON.stringify({
-                    uniqueId,
-                    divider,
-                    props,
-                    breakpoints
-                })), uniqueId);
+                gridDividers(
+                    el,
+                    JSON.parse(JSON.stringify({ uniqueId, divider, props, breakpoints })),
+                    uniqueId
+                );
 
             } catch (err) {
                 console.error("WPBS Loop Fetch Exception:", err);
@@ -161,10 +114,10 @@ store("wpbs/layout-grid", {
         },
 
         /* -----------------------------------------------------------
-         * LOAD MORE — instance-driven
+         * LOAD MORE — triggers next page fetch
          * ----------------------------------------------------------- */
         async loadMore() {
-            const {ref: el} = getElement();
+            const { ref: el } = getElement();
             const context = getContext();
             const grid = el.closest(".wpbs-layout-grid");
             const instance = grid?._wpbs;

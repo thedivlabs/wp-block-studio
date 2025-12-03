@@ -2,9 +2,9 @@
  * WPBS LAYOUT GRID — FRONT-END LOOP ENGINE (Instance-based, no global state)
  **************************************************************************/
 
-import { store, getContext, getElement } from "@wordpress/interactivity";
+import {store, getContext, getElement} from "@wordpress/interactivity";
 
-const { gridDividers } = window?.WPBS ?? {};
+const {gridDividers} = window?.WPBS ?? {};
 
 store("wpbs/layout-grid", {
     callbacks: {
@@ -15,23 +15,22 @@ store("wpbs/layout-grid", {
             const instance = el._wpbs;
             if (!instance) return;
 
-            const { container } = instance;
+            const {container} = instance;
             if (!container) return;
 
             requestAnimationFrame(() => {
-                const newCards = container.querySelectorAll(
-                    ".loop-card:not(.--visible)"
-                );
+                const newCards = container.querySelectorAll(".loop-card.--loading");
 
                 newCards.forEach((card, i) => {
                     card.style.setProperty("--delay", `${i * 100}ms`);
                 });
 
                 setTimeout(() => {
-                    newCards.forEach((card) => card.classList.add("--visible"));
+                    newCards.forEach((card) => card.classList.remove("--loading"));
                 }, 50);
             });
         },
+
     },
 
     actions: {
@@ -39,44 +38,36 @@ store("wpbs/layout-grid", {
          * INIT — run once per block (no fetch here)
          * ----------------------------------------------------------- */
         init() {
-            const { ref: el } = getElement();
-            const context = getContext();
-            const { uniqueId, divider, breakpoints, props } = context;
+            const {ref: el} = getElement();
+            const context = getContext(); // ✅ get the actual context here
 
-            /* Create per-instance storage on the block element */
+            // Grab JSON script
+            const script = el.querySelector('script[data-wpbs-loop-template]');
+            if (!script) return console.error('Missing loop template JSON');
+
+            const data = JSON.parse(script.textContent);
+            const template = data.template;
+            const pagination = data.pagination;
+
             el._wpbs = {
-                container: el.querySelector(".loop-container") ?? el,
-                template: null,
-                page: 1,
-                hasMore: false,
-                totalPages: 1,
+                container: el.querySelector('.loop-container') ?? el,
+                template,
+                page: pagination.page,
+                totalPages: pagination.totalPages,
+                hasMore: pagination.page < pagination.totalPages,
+                query: pagination.query,
             };
 
-            /* Fire dividers immediately on init */
+            // Remove script tag after parsing
+            script.remove();
+
+            // Fire dividers using actual context
+            const {uniqueId, divider, breakpoints, props} = context;
             gridDividers?.(
                 el,
-                JSON.parse(JSON.stringify({ uniqueId, divider, props, breakpoints })),
+                JSON.parse(JSON.stringify({uniqueId, divider, props, breakpoints})),
                 uniqueId
             );
-
-            /* Find the template script — direct child of the grid block */
-            const templateScript = el.querySelector(
-                ":scope > script[data-wpbs-loop-template]"
-            );
-
-            if (!templateScript) {
-                console.error("WPBS Loop Error: Missing template script.");
-                return;
-            }
-
-            try {
-                el._wpbs.template = JSON.parse(templateScript.textContent);
-            } catch (err) {
-                console.error("WPBS Loop Error: Invalid template JSON.", err);
-                return;
-            }
-
-            templateScript.remove();
         },
 
         /* -----------------------------------------------------------
@@ -86,8 +77,8 @@ store("wpbs/layout-grid", {
             const instance = el._wpbs;
             if (!instance) return;
 
-            const { template } = instance;
-            const { query = {}, uniqueId, divider, breakpoints, props } = context;
+            const {template} = instance;
+            const {query = {}, uniqueId, divider, breakpoints, props} = context;
 
             if (!template) {
                 console.error("WPBS Loop Error: Template missing.");
@@ -95,11 +86,11 @@ store("wpbs/layout-grid", {
             }
 
             try {
-                const payload = { template, query, page };
+                const payload = {template, query, page};
 
                 const res = await fetch("/wp-json/wpbs/v1/loop", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(payload),
                 });
 
@@ -113,11 +104,11 @@ store("wpbs/layout-grid", {
                 temp.innerHTML = data?.html ?? "";
                 const cards = Array.from(temp.children);
 
-                const { container } = instance;
+                const {container} = instance;
 
                 /* Add new cards */
                 cards.forEach((card) => {
-                    card.classList.remove("--visible");
+                    card.classList.add("--loading");
                     container.appendChild(card);
                 });
 
@@ -137,7 +128,7 @@ store("wpbs/layout-grid", {
                 /* Reapply dividers after pagination */
                 gridDividers?.(
                     el,
-                    JSON.parse(JSON.stringify({ uniqueId, divider, props, breakpoints })),
+                    JSON.parse(JSON.stringify({uniqueId, divider, props, breakpoints})),
                     uniqueId
                 );
             } catch (err) {
@@ -149,10 +140,12 @@ store("wpbs/layout-grid", {
          * LOAD MORE — instance-driven
          * ----------------------------------------------------------- */
         async loadMore() {
-            const { ref: el } = getElement();
+            const {ref: el} = getElement();
             const context = getContext();
             const grid = el.closest(".wpbs-layout-grid");
             const instance = grid?._wpbs;
+
+            console.log(instance);
 
             if (!instance || !instance.hasMore) return;
 

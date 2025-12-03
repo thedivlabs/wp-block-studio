@@ -17,9 +17,31 @@ class WPBS_Loop {
 		add_action( 'rest_api_init', [ $this, 'register_endpoint' ] );
 	}
 
-	/*───────────────────────────────────────────────────────────────
-    PUBLIC ENTRY POINT FOR PHP RENDER
-───────────────────────────────────────────────────────────────*/
+	/**
+	 * Output loop template JSON for frontend hydration
+	 */
+	public function output_loop_script( array $template_block, array $loop_data, array $query, int $page = 1 ): void {
+
+		$template_json = wp_json_encode( $template_block ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+
+		$pagination_data = [
+			'page'       => max( 1, $page ),
+			'totalPages' => $loop_data['pages'] ?? 1,
+			'totalPosts' => $loop_data['total'] ?? 0,
+			'query'      => $query,
+		];
+
+		$pagination_json = wp_json_encode( $pagination_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+
+		echo '<script type="application/json" data-wpbs-loop-template>';
+		echo json_encode( [
+			'template'   => json_decode( $template_json ),
+			'pagination' => json_decode( $pagination_json ),
+		], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		echo '</script>';
+	}
+
+
 	public function render_from_php( array $template, array $query = [], int $page = 1 ): array {
 		// Validate template
 		if ( empty( $template['blockName'] ) ) {
@@ -165,11 +187,11 @@ class WPBS_Loop {
 			global $wp_query;
 
 			// Avoid fatal if WP_Query not set
-			if ( ! ( $wp_query instanceof WP_Query ) || !$wp_query->have_posts() ) {
+			if ( ! ( $wp_query instanceof WP_Query ) || ! $wp_query->have_posts() ) {
 
 
 				$current_url = $_SERVER['HTTP_REFERER'] ?? '';
-				$post_id = url_to_postid( $current_url ); // returns 0 if no match
+				$post_id     = url_to_postid( $current_url ); // returns 0 if no match
 
 
 				return [
@@ -178,8 +200,8 @@ class WPBS_Loop {
 					'pages' => 1,
 					'page'  => 1,
 					'debug' => [
-						'cqo' => get_queried_object(),
-						'postId' => $post_id,
+						'cqo'         => get_queried_object(),
+						'postId'      => $post_id,
 						'current_url' => $current_url,
 					]
 				];

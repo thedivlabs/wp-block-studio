@@ -6,8 +6,9 @@ $query_settings = $block->context['wpbs/query'] ?? [];
 $is_current     = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
 
-if(!$is_loop){
+if ( ! $is_loop ) {
 	echo $content ?? null;
+
 	return;
 }
 
@@ -36,27 +37,22 @@ $loop_data = $loop_instance->render_from_php(
 	max( 1, get_query_var( 'paged', 1 ) ) // current page
 );
 
-global $wp_query;
-WPBS::console_log($loop_data);
-WPBS::console_log($wp_query);
-
 /**
  * Output the grid wrapper and loop cards
  */
-$open_tag  = substr($content ?? '', 0, strpos($content, '>') + 1);
-$close_tag = preg_match('/<\/([a-z0-9\-]+)>$/i', $content, $matches) ? $matches[0] : '';
+$open_tag  = substr( $content ?? '', 0, strpos( $content, '>' ) + 1 );
+$close_tag = preg_match( '/<\/([a-z0-9\-]+)>$/i', $content, $matches ) ? $matches[0] : '';
 
 echo $open_tag;
 echo $loop_data['html'] ?? '';
 echo $close_tag;
 
-if ( $is_loop ) {
-	echo '<script type="application/json" data-wpbs-loop-template>';
-	echo wp_json_encode(
-		$block->parsed_block['innerBlocks'][0] ?? [],
-		JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-	);
-	echo '</script>';
+$loop_instance->output_loop_script(
+	$block->parsed_block['innerBlocks'][0] ?? [],
+	$loop_data,
+	$merged_query,
+	max( 1, get_query_var( 'paged', 1 ) )
+);
 
-	return;
-}
+
+

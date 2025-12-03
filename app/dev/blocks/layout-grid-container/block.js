@@ -14,7 +14,7 @@ const getClassNames = (attributes = {}, styleData) => {
         selector,
         'loop-container w-full flex flex-wrap relative z-20',
         "block",
-        "relative"
+        "relative",
     ]
         .filter(Boolean)
         .join(' ');

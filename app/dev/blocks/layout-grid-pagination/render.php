@@ -8,8 +8,8 @@ $settings       = $block->attributes['wpbs-layout-grid-pagination'] ?? [];
 $is_button      = str_contains( $block->attributes['className'] ?? '', 'is-style-button' );
 
 $button_label = $settings['buttonLabel'] ?? 'Show More';
-$icon_next    = $settings['iconNext'] ?? false;
-$icon_prev    = $settings['iconPrev'] ?? false;
+$icon_next    = $settings['iconNext'] ?? 'arrow_forward';
+$icon_prev    = $settings['iconPrev'] ?? 'arrow_back';
 $output       = '';
 
 $block_class = implode( ' ', array_filter( [

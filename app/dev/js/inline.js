@@ -1,13 +1,28 @@
 import MediaWatcher from './modules/MediaWatcher';
 
+(function () {
+    const MAX_WAIT = 5000;  // maximum time to wait for the font
+    const INTERVAL = 50;    // check every 50ms
+
+    function watchIconsFont(startTime = Date.now()) {
+        document.fonts.load('24px "Material Symbols Outlined"').then((fonts) => {
+            if (fonts.length > 0) {
+                document.body.classList.add('icons-loaded');
+            } else if (Date.now() - startTime < MAX_WAIT) {
+                setTimeout(() => watchIconsFont(startTime), INTERVAL);
+            }
+        });
+    }
+
+    // start watching
+    watchIconsFont();
+})();
+
+
 document.addEventListener("DOMContentLoaded", () => {
     if (!document.body.classList.contains('wp-admin')) {
         MediaWatcher.init();
     }
-
-    document.fonts.load('24px "Material Symbols Outlined"').then(() => {
-        document.body.classList.add('icons-loaded');
-    });
 
     // PRELOAD FIRST — this needs max priority
     const bp = window.WPBS?.settings?.breakpoints || {};

@@ -30,6 +30,8 @@ import {
 import {cleanObject, getImageUrlForResolution} from "Includes/helper";
 import {isEqual} from "lodash";
 import {MaterialIcon} from "Components/IconControl";
+import ResponsivePicture from "Components/ResponsivePicture";
+
 
 //
 // -------------------------------------------------------------
@@ -216,7 +218,6 @@ function getPosterSrc(settings) {
 //
 
 function renderVideoContent(settings, attributes, isEditor) {
-    const posterSrc = getPosterSrc(settings);
     const titlePosition =
         settings["title-position"] === "bottom" ? "bottom-0" : "top-0";
 
@@ -229,30 +230,31 @@ function renderVideoContent(settings, attributes, isEditor) {
             )}
 
             <div
-                className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
+                className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none"
+            >
                 <span className="screen-reader-text">Play video</span>
-
-                {/*
-                 * OLD:
-                 * <MaterialIcon {...(settings?.['button-icon'] ?? {})} />
-                 *
-                 * NEW:
-                 * Still exactly this — but guaranteed that button-icon now holds the full MaterialIcon object.
-                 */}
                 <MaterialIcon {...(settings?.["button-icon"] ?? {})} />
             </div>
 
-            {posterSrc && (
-                <img
-                    src={posterSrc}
-                    alt=""
-                    className="w-full !h-full absolute top-0 left-0 z-0 object-cover object-center"
+            {/* Replace old <img> with ResponsivePicture */}
+            {settings.poster && (
+                <ResponsivePicture
+                    settings={{
+                        props: {
+                            image: settings.poster,
+                            resolution: settings.resolution || "medium",
+                            alt: settings.title || "",
+                            eager: settings.eager,
+                            className: "w-full !h-full absolute top-0 left-0 z-0 object-cover object-center",
+                        },
+                        breakpoints: {},
+                    }}
+                    editor={isEditor}
                 />
             )}
         </>
     );
 }
-
 
 //
 // -------------------------------------------------------------

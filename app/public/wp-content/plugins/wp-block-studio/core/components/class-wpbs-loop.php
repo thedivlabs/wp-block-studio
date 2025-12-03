@@ -347,58 +347,93 @@ class WPBS_Loop {
 	───────────────────────────────────────────────────────────────*/
 
 	private function sanitize_query( array $q ): array {
+		global $wp_query;
+
 		$clean = [];
 
+		// Get all public post types
 		$public_pts = get_post_types( [ 'public' => true ], 'names' );
 
+		// ----------------------------
+		// POST TYPE
+		// ----------------------------
 		if ( isset( $q['post_type'] ) ) {
 			$pt = sanitize_key( $q['post_type'] );
+
 			if ( $pt === 'current' ) {
+				// main query mode
 				$clean['post_type'] = 'current';
+
+				// Replace posts_per_page with WP option if available
+				$clean['posts_per_page'] = (int) get_option( 'posts_per_page', 10 );
+
 			} elseif ( in_array( $pt, $public_pts, true ) ) {
 				$clean['post_type'] = $pt;
+
+				// fallback posts_per_page
+				if ( isset( $q['posts_per_page'] ) ) {
+					$clean['posts_per_page'] = max( -1, (int) $q['posts_per_page'] );
+				}
 			} else {
 				$clean['post_type'] = 'post';
 			}
+		} else {
+			$clean['post_type'] = 'post';
 		}
 
-		if ( isset( $q['posts_per_page'] ) ) {
-			$clean['posts_per_page'] = max( - 1, (int) $q['posts_per_page'] );
+		// ----------------------------
+		// PAGINATION
+		// ----------------------------
+		if ( isset( $q['paged'] ) ) {
+			$paged = max( 1, (int) $q['paged'] );
+			$clean['paged'] = $paged;
 		}
 
-		if ( ! empty( $q['taxonomy'] ) && taxonomy_exists( $q['taxonomy'] ) ) {
-			$clean['taxonomy'] = sanitize_key( $q['taxonomy'] );
+		if ( isset( $q['posts_per_page'] ) && ($clean['post_type'] !== 'current') ) {
+			$clean['posts_per_page'] = max( -1, (int) $q['posts_per_page'] );
 		}
 
-		if ( ! empty( $q['term'] ) ) {
-			$clean['term'] = (int) $q['term'];
-		}
-
+		// ----------------------------
+		// ORDERING
+		// ----------------------------
 		if ( ! empty( $q['orderby'] ) ) {
 			$clean['orderby'] = sanitize_key( $q['orderby'] );
 		}
-
 		if ( ! empty( $q['order'] ) ) {
 			$order          = strtoupper( $q['order'] );
 			$clean['order'] = in_array( $order, [ 'ASC', 'DESC' ], true ) ? $order : 'DESC';
 		}
 
+		// ----------------------------
+		// TAXONOMY FILTERS
+		// ----------------------------
+		if ( ! empty( $q['taxonomy'] ) && taxonomy_exists( $q['taxonomy'] ) ) {
+			$clean['taxonomy'] = sanitize_key( $q['taxonomy'] );
+		}
+		if ( ! empty( $q['term'] ) ) {
+			$clean['term'] = (int) $q['term'];
+		}
+
+		// ----------------------------
+		// INCLUDE / EXCLUDE POSTS
+		// ----------------------------
 		if ( ! empty( $q['include'] ) ) {
 			$clean['post__in'] = array_map( 'intval', (array) $q['include'] );
 		}
-
 		if ( ! empty( $q['exclude'] ) ) {
 			$clean['post__not_in'] = array_map( 'intval', (array) $q['exclude'] );
 		}
 
-		// ⭐ Preserve loopTerms flag (even if it's falsey-ish like "false"/"0")
+		// ----------------------------
+		// LOOP TERMS FLAG
+		// ----------------------------
 		if ( array_key_exists( 'loopTerms', $q ) ) {
-			// FILTER_VALIDATE_BOOLEAN handles "true"/"false"/1/0/"1"/"0"
 			$clean['loopTerms'] = filter_var( $q['loopTerms'], FILTER_VALIDATE_BOOLEAN );
 		}
 
 		return $clean;
 	}
+
 
 
 	private function build_query_args( array $q, int $page ): array {

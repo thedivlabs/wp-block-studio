@@ -7,24 +7,6 @@ import {getCSSFromStyle, normalizeGapVal} from "Includes/helper";
 
 const selector = "wpbs-layout-grid-container";
 
-const LoopPlaceholders = ({count = 0}) => {
-    if (!count || count < 1) return null;
-
-    const items = [];
-    for (let i = 0; i < count; i++) {
-        items.push(
-            <div
-                key={`placeholder-${i}`}
-                className="loop-card --placeholder"
-                aria-hidden="true"
-                style={{width: '100%'}}
-            />
-        );
-    }
-
-    return <>{items}</>;
-};
-
 const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-grid-container": settings} = attributes;
 

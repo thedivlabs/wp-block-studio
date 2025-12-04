@@ -39,6 +39,9 @@ class WPBS {
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 		add_action( 'wp_print_styles', [ $this, 'critical_css' ], 1 );
 
+		add_action( 'wp_head', [ $this, 'print_theme_vars' ], 12 );
+		add_action( 'admin_head', [ $this, 'print_theme_vars' ], 12 );
+
 		add_action( 'acf/init', [ $this, 'init_theme' ], 30 );
 		add_action( 'acf/init', [ $this, 'init_hook' ] );
 
@@ -102,6 +105,15 @@ class WPBS {
 			return $html;
 		}, 1, 3 );
 
+	}
+
+	public function print_theme_vars(): void {
+
+		$vars = [
+			'settings' => array_merge( self::$theme_vars, apply_filters( 'wpbs_init_vars', [], false ) ?? [] )
+		];
+
+		echo '<script type="text/javascript">window.WPBS = ' . json_encode( $vars ) . ';</script>';
 	}
 
 	public function defer_scripts( $tag, $handle ): string {
@@ -347,7 +359,6 @@ class WPBS {
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-editor' );
 		wp_enqueue_script( 'wpbs-theme-js' );
-		wp_localize_script( 'wpbs-editor', 'WPBS', self::$theme_vars );
 	}
 
 	public function view_assets(): void {
@@ -355,7 +366,7 @@ class WPBS {
 		wp_enqueue_style( 'aos-css' );
 		wp_enqueue_script( 'masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
-		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );
+
 	}
 
 	public function init_theme(): void {
@@ -409,18 +420,16 @@ class WPBS {
 		do_action( 'wpbs_init' );
 
 		self::$theme_vars = [
-			'settings' => apply_filters( 'wpbs_init_vars', [
-				'path'        => [
-					'site'  => home_url(),
-					'ajax'  => admin_url( 'admin-ajax.php' ),
-					'theme' => get_theme_file_uri()
-				],
-				'nonce'       => self::$nonce,
-				'nonce_rest'  => self::$nonce_rest,
-				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
-				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-				'container'   => wp_get_global_settings()['custom']['container'] ?? [],
-			], false )
+			'path'        => [
+				'site'  => home_url(),
+				'ajax'  => admin_url( 'admin-ajax.php' ),
+				'theme' => get_theme_file_uri()
+			],
+			'nonce'       => self::$nonce,
+			'nonce_rest'  => self::$nonce_rest,
+			'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
+			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
+			'container'   => wp_get_global_settings()['custom']['container'] ?? [],
 		];
 	}
 

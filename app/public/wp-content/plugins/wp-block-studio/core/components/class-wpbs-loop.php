@@ -126,7 +126,7 @@ class WPBS_Loop {
 	}
 
 
-	public static function sanitize_block_template( $block, &$counter = 0, $max_blocks = 30 ): array {
+	public function sanitize_block_template( $block, &$counter = 0, $max_blocks = 30 ): array {
 		if ( ++ $counter > $max_blocks ) {
 			return [];
 		}
@@ -142,6 +142,37 @@ class WPBS_Loop {
 				return is_string( $item ) ? wp_kses_post( $item ) : null;          // Allow safe HTML
 			}, $block['innerContent'] ?? [] ),
 		];
+	}
+
+	public function recursive_sanitize( $input ) {
+		if ( is_array( $input ) ) {
+			$sanitized = [];
+
+			foreach ( $input as $key => $value ) {
+				$sanitized_key               = is_string( $key ) ? sanitize_text_field( $key ) : $key;
+				$sanitized[ $sanitized_key ] = self::recursive_sanitize( $value );
+			}
+
+			return $sanitized;
+
+		} elseif ( is_string( $input ) ) {
+			return sanitize_text_field( $input );
+
+		} elseif ( is_int( $input ) ) {
+			return intval( $input );
+
+		} elseif ( is_float( $input ) ) {
+			return floatval( $input );
+
+		} elseif ( is_bool( $input ) ) {
+			return (bool) $input;
+
+		} elseif ( is_null( $input ) ) {
+			return null;
+
+		} else {
+			return $input;
+		}
 	}
 
 	private function render_loop( array $template_block, array $query, int $page ): array {

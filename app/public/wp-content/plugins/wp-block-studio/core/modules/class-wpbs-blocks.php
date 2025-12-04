@@ -115,8 +115,8 @@ class WPBS_Blocks {
 
 		add_filter( 'wpbs_init_vars', function ( $vars ) use ( $deduped ) {
 
+			
 			$vars['preload_media'] = array_merge( $vars['preload_media'] ?? [], $deduped );
-			WPBS::console_log( $vars );
 		}, 10, 1 );
 	}
 

@@ -3,7 +3,7 @@
   object-fit: cover;
   object-position: center;
 
-  &:not(.active){
+  &:not(.active) {
     &.--overlay:hover:after {
       opacity: .2;
       transition: opacity .3s linear;
@@ -22,7 +22,14 @@
     }
   }
 
-
+  picture {
+    img {
+      object-fit: cover;
+      object-position: center;
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
 
 
   .wpbs-video__title {

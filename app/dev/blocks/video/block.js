@@ -193,7 +193,7 @@ function getPreload(settings = {}) {
     if (poster?.id && !poster.isPlaceholder) {
         preloadObj.push({
             id: poster.id,
-            type: "video",
+            type: "image",
             resolution: settings.resolution || "large",
         });
     }

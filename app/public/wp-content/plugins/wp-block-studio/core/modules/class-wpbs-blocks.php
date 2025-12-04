@@ -77,83 +77,82 @@ class WPBS_Blocks {
 		// Gather all items reported from blocks
 		$items = apply_filters( 'wpbs_preload_media', [] );
 
-		WPBS::console_log( $items );
-
 		if ( empty( $items ) || ! is_array( $items ) ) {
 			return;
 		}
 
-		// Load breakpoints from theme.json (still available if needed for images)
-		$settings    = wp_get_global_settings();
-		$breakpoints = $settings['custom']['breakpoints'] ?? [];
+		$deduped = [];
 
-		// Group by block (optional, for editor use only)
-		$groups = [];
+		// Deduplicate items
 		foreach ( $items as $item ) {
-			if ( ! is_array( $item ) ) {
+			if ( ! is_array( $item ) || empty( $item['id'] ) || empty( $item['type'] ) ) {
 				continue;
 			}
+
+			$id    = $item['id'];
+			$type  = $item['type'];
+			$size  = $item['resolution'] ?? 'large';
+			$bpKey = $item['breakpoint'] ?? $item['media'] ?? 'default';
 			$group = $item['group'] ?? null;
-			if ( ! $group ) {
-				$group = 'default';
+
+			// Dedup key
+			$key = implode( '|', [ $id, $bpKey, $size ] );
+
+			// Merge groups if duplicate
+			if ( isset( $deduped[ $key ] ) ) {
+				if ( $group && ! in_array( $group, (array) $deduped[ $key ]['groups'], true ) ) {
+					$deduped[ $key ]['groups'][] = $group;
+				}
+				continue;
 			}
-			$groups[ $group ][] = $item;
+
+			$deduped[ $key ] = [
+				'id'         => $id,
+				'type'       => $type,
+				'size'       => $size,
+				'breakpoint' => $bpKey,
+				'groups'     => $group ? [ $group ] : [],
+			];
 		}
 
-		foreach ( $groups as $group_key => $group_items ) {
+		// Output <link> for each deduped item
+		foreach ( $deduped as $item ) {
+
+			$id     = $item['id'];
+			$type   = $item['type'];
+			$size   = $item['size'];
+			$bpKey  = $item['breakpoint'];
+			$groups = $item['groups'];
+
+			// Resolve URL
+			if ( $type === 'video' ) {
+				$src = $this->resolve_video_url( $id ); // implement this
+				$as  = 'video';
+			} else {
+				$src = $this->resolve_image_url( $id, $size );
+				$as  = 'image';
+			}
+
+			if ( ! $src || $src === '#' ) {
+				continue;
+			}
 
 			$attrs = [
 				'rel'           => 'preload',
-				'as'            => 'image', // default; may be overridden per item
-				'data-group'    => $group_key,
+				'as'            => $as,
+				'href'          => esc_url( $src ),
 				'fetchpriority' => 'high',
 			];
 
-			$href_set = false;
-
-			foreach ( $group_items as $item ) {
-
-				$id    = $item['id'] ?? null;
-				$type  = $item['type'] ?? null;
-				$size  = $item['resolution'] ?? 'large';
-				$bpKey = $item['media'] ?? null;
-
-				if ( ! $id || ! $type ) {
-					continue;
-				}
-
-				// Resolve URL and set as type
-				if ( $type === 'video' ) {
-					$attrs['as'] = 'video';
-					$src         = $this->resolve_video_url( $id ); // implement this method
-				} else {
-
-					$attrs['as'] = 'image';
-					$src         = $this->resolve_image_url( $id, $size );
-				}
-
-				if ( ! $src || $src === '#' ) {
-					continue;
-				}
-
-				// Set href to the first valid URL
-				if ( ! $href_set ) {
-					$attrs['href'] = esc_url( $src );
-					$href_set      = true;
-				}
-
-				// Add breakpoint/resolution attributes for images only
-				if ( $type === 'image' ) {
-					$attrKey                  = $bpKey ?: 'default';
-					$attrs["data-{$attrKey}"] = esc_url( $src );
-				}
+			if ( ! empty( $groups ) ) {
+				$attrs['data-group'] = implode( ' ', $groups );
 			}
 
-			if ( empty( $attrs['href'] ) ) {
-				continue;
+			if ( $type === 'image' ) {
+				$attrs["data-{$bpKey}"] = esc_url( $src );
 			}
 
-			// Output final link tag
+			// Output <link>
 			$html = '<link ';
 			foreach ( $attrs as $key => $value ) {
 				$html .= $key . '="' . esc_attr( $value ) . '" ';
@@ -161,7 +160,6 @@ class WPBS_Blocks {
 			$html .= '/>';
 
 			WPBS::console_log( [ $html ] );
-
 			echo $html . "\n";
 		}
 	}

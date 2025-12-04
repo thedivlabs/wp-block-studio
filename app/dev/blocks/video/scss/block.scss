@@ -1,5 +1,7 @@
 .wpbs-video {
   cursor: pointer;
+  object-fit: cover;
+  object-position: center;
 
   &:not(.active){
     &.--overlay:hover:after {

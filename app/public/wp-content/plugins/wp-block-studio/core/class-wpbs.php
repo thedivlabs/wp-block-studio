@@ -124,8 +124,8 @@ class WPBS {
 		}
 
 		$dont_defer = [
-			'jquery-core',
-			'jquery-migrate',
+			//'jquery-core',
+			//'jquery-migrate',
 			//'wp-polyfill',
 			'wp-hooks',
 			'wp-i18n',

@@ -18,7 +18,16 @@ import MediaWatcher from './modules/MediaWatcher';
 
 
     // start watching
-    watchIconsFont();
+    //watchIconsFont();
+
+
+})();
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (!document.body.classList.contains('wp-admin')) {
+        MediaWatcher.init();
+    }
 
     // NON-CRITICAL LINK HYDRATION — next animation frame
     requestAnimationFrame(() => {
@@ -27,14 +36,5 @@ import MediaWatcher from './modules/MediaWatcher';
             link.removeAttribute('data-href');
         });
     });
-})();
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    if (!document.body.classList.contains('wp-admin')) {
-        MediaWatcher.init();
-
-
-    }
 });
 

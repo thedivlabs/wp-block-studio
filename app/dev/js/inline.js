@@ -24,41 +24,38 @@ document.addEventListener("DOMContentLoaded", () => {
         MediaWatcher.init();
     }
 
-    // PRELOAD FIRST — this needs max priority
     const bp = window.WPBS?.settings?.breakpoints || {};
 
-    document.querySelectorAll('link[rel="preload"][data-group]').forEach(link => {
+    document.querySelectorAll('link[rel="preload"][data-href]').forEach(link => {
 
-        let chosen = link.dataset.default || null;
+        const src = link.dataset.href;
+        const mediaKey = link.dataset.media; // optional
 
-        for (const attr of link.attributes) {
-            const name = attr.name;
-
-            if (!name.startsWith('data-') || name === 'data-default' || name === 'data-group')
-                continue;
-
-            const bpKey = name.replace('data-', '');
-            const config = bp[bpKey];
-
-            if (!config || !config.size) continue;
-
-            const max = config.size;
-            if (window.matchMedia(`(max-width:${max}px)`).matches) {
-                chosen = attr.value;
-                break;
-            }
+        // Case: no media conditions — always keep
+        if (!mediaKey) {
+            link.href = src;
+            return;
         }
 
-        // hydrate preload safely
-        if (chosen && chosen !== "#" && chosen.trim() !== "") {
-            link.href = chosen;
-            link.rel = 'preload';
-        } else {
-            // Prevent Chrome warnings and invalid preloads
-            link.rel = '';
-            link.href = '';
+        // Has media condition → check breakpoint
+        const config = bp[mediaKey];
+
+        // Invalid or missing breakpoint → remove
+        if (!config || !config.size) {
+            link.remove();
+            return;
         }
 
+        const mq = `(max-width:${config.size}px)`;
+
+        // If media matches → keep and apply href
+        if (window.matchMedia(mq).matches) {
+            link.href = src;
+            return;
+        }
+
+        // Media does not match → remove element
+        link.remove();
     });
 
 

@@ -83,7 +83,7 @@ class WPBS_Blocks {
 
 		$deduped = [];
 
-		// Deduplicate items
+		// Deduplicate items by id + breakpoint + resolution
 		foreach ( $items as $item ) {
 			if ( ! is_array( $item ) || empty( $item['id'] ) || empty( $item['type'] ) ) {
 				continue;
@@ -93,17 +93,12 @@ class WPBS_Blocks {
 			$type  = $item['type'];
 			$size  = $item['resolution'] ?? 'large';
 			$bpKey = $item['breakpoint'] ?? $item['media'] ?? 'default';
-			$group = $item['group'] ?? null;
 
 			// Dedup key
 			$key = implode( '|', [ $id, $bpKey, $size ] );
 
-			// Merge groups if duplicate
 			if ( isset( $deduped[ $key ] ) ) {
-				if ( $group && ! in_array( $group, (array) $deduped[ $key ]['groups'], true ) ) {
-					$deduped[ $key ]['groups'][] = $group;
-				}
-				continue;
+				continue; // skip duplicates
 			}
 
 			$deduped[ $key ] = [
@@ -111,21 +106,21 @@ class WPBS_Blocks {
 				'type'       => $type,
 				'size'       => $size,
 				'breakpoint' => $bpKey,
-				'groups'     => $group ? [ $group ] : [],
 			];
 		}
+
+		WPBS::console_log( $deduped );
 
 		// Output <link> for each deduped item
 		foreach ( $deduped as $item ) {
 
-			$id     = $item['id'];
-			$type   = $item['type'];
-			$size   = $item['size'];
-			$bpKey  = $item['breakpoint'];
-			$groups = $item['groups'];
+			$id    = $item['id'];
+			$type  = $item['type'];
+			$size  = $item['size'];
+			$bpKey = $item['breakpoint'];
 
 			// Resolve URL
-			if ( $type === 'video' ) {
+			if ( $type === 'video' || empty( $type ) ) {
 				$src = $this->resolve_video_url( $id ); // implement this
 				$as  = 'video';
 			} else {
@@ -137,17 +132,17 @@ class WPBS_Blocks {
 				continue;
 			}
 
+			// Build attributes
 			$attrs = [
 				'rel'           => 'preload',
 				'as'            => $as,
-				'href'          => esc_url( $src ),
+				'data-href'     => esc_url( $src ),
+				'data-media'    => esc_attr( $bpKey ),
 				'fetchpriority' => 'high',
+				'data-wpbs'     => '',
 			];
 
-			if ( ! empty( $groups ) ) {
-				$attrs['data-group'] = implode( ' ', $groups );
-			}
-
+			// Add breakpoint/resolution attribute for images
 			if ( $type === 'image' ) {
 				$attrs["data-{$bpKey}"] = esc_url( $src );
 			}

@@ -53,6 +53,7 @@ class WPBS {
 		add_action( 'wp_body_open', [ $this, 'body_open_scripts' ], 1 );
 		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
 
+
 		add_action( 'admin_head', [ $this, 'inline_scripts' ], 30 );
 		add_action( 'wp_head', [ $this, 'inline_scripts' ], 4 );
 
@@ -348,6 +349,8 @@ class WPBS {
 		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_style( 'wpbs-bundle-css' );
+
+
 	}
 
 	public function admin_assets(): void {
@@ -357,10 +360,14 @@ class WPBS {
 
 	public function editor_assets(): void {
 
-
+		wp_enqueue_style( 'wpbs-theme-css' );
+		wp_enqueue_style( 'wpbs-admin-css' );
+		wp_enqueue_style( 'wpbs-bundle-css' );
 
 		wp_enqueue_script( 'wpbs-editor' );
 		wp_enqueue_script( 'wpbs-theme-js' );
+
+
 	}
 
 	public function view_assets(): void {
@@ -790,6 +797,7 @@ class WPBS {
 		echo '<script>';
 		include_once self::$path . 'build/inline.js';
 		echo '</script>';
+
 	}
 
 	public function footer_scripts(): void {

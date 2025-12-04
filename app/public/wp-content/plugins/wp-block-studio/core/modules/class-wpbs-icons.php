@@ -7,10 +7,6 @@ final class WPBS_Icons {
 
 	private function __construct() {
 
-		if ( ! is_admin() ) {
-			//add_filter( 'render_block_data', [ $this, 'collect_block_icons' ], 10, 2 );
-		}
-
 		add_filter( 'render_block_data', [ $this, 'collect_block_icons' ], 10, 2 );
 
 		add_action( 'wp_head', [ $this, 'output_icons_stylesheet' ], 40 );

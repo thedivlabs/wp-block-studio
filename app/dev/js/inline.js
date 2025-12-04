@@ -19,8 +19,13 @@ import MediaWatcher from './modules/MediaWatcher';
 
     // start watching
     watchIconsFont();
-    
 
+    // NON-CRITICAL LINK HYDRATION — next animation frame
+    requestAnimationFrame(() => {
+        document.querySelectorAll('link[data-href]:not([rel="preload"])').forEach(link => {
+            link.href = link.dataset.href;
+        });
+    });
 })();
 
 
@@ -28,12 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!document.body.classList.contains('wp-admin')) {
         MediaWatcher.init();
 
-        // NON-CRITICAL LINK HYDRATION — next animation frame
-        requestAnimationFrame(() => {
-            document.querySelectorAll('link[data-href]:not([rel="preload"])').forEach(link => {
-                link.href = link.dataset.href;
-            });
-        });
+
     }
 });
 

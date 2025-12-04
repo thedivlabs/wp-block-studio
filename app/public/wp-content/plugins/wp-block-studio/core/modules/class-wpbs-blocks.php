@@ -113,8 +113,6 @@ class WPBS_Blocks {
 			];
 		}
 
-		WPBS::console_log( $deduped );
-
 		// Output <link> for each deduped item
 		foreach ( $deduped as $item ) {
 
@@ -135,7 +133,7 @@ class WPBS_Blocks {
 			if ( ! $src || $src === '#' ) {
 				continue;
 			}
-			WPBS::console_log( $bpKey );
+			
 			// Build attributes
 			$attrs = array_filter( [
 				'rel'           => 'preload',

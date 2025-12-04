@@ -3,8 +3,10 @@ import MediaWatcher from './modules/MediaWatcher';
 (function () {
     const MAX_WAIT = 5000;
     const INTERVAL = 100;
+    const startTime = Date.now();
 
-    function watchIconsFont(startTime = Date.now()) {
+    function watchIconsFont() {
+
         document.fonts.load('24px "Material Symbols Outlined"').then((fonts) => {
             if (fonts.length > 0) {
                 document.body.classList.add('icons-loaded');
@@ -13,6 +15,7 @@ import MediaWatcher from './modules/MediaWatcher';
             }
         });
     }
+
 
     // start watching
     watchIconsFont();

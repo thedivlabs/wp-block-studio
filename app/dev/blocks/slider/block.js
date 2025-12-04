@@ -35,7 +35,7 @@ const getClassNames = (attributes = {}, settings = {}) => {
 
     return [
         selector,
-        "h-auto w-full max-h-full flex flex-col",
+        "h-auto w-full max-h-full flex flex-col swiper",
     ]
         .filter(Boolean)
         .join(" ");

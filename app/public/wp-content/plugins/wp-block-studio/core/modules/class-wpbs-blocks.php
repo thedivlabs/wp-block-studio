@@ -135,15 +135,15 @@ class WPBS_Blocks {
 			if ( ! $src || $src === '#' ) {
 				continue;
 			}
-
+			WPBS::console_log( $bpKey );
 			// Build attributes
 			$attrs = array_filter( [
-				'rel'           => 'preload',
-				'as'            => $as,
-				'data-href'     => esc_url( $src ),
-				'data-media'    => esc_attr( $bpKey ),
-				'fetchpriority' => 'high',
-				'class'         => 'wpbs-preload',
+				'rel'                             => 'preload',
+				'as'                              => $as,
+				( $bpKey ? 'data-href' : 'href' ) => esc_url( $src ),
+				'data-media'                      => esc_attr( $bpKey ),
+				'fetchpriority'                   => 'high',
+				'class'                           => 'wpbs-preload',
 			] );
 
 			// Output <link>

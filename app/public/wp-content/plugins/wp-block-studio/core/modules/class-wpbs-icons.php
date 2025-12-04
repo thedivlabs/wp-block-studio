@@ -168,13 +168,12 @@ final class WPBS_Icons {
 
 		$url = $this->build_url( $names );
 		if ( $url ) {
-			echo '<link rel="preload" as="style" href="'.esc_url( $url ) .'" crossorigin>' . "\n";
+			echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
+			echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+			echo '<link rel="preload" as="style" href="'.esc_url( $url ) .'" crossorigin fetchpriority="high">' . "\n";
 			echo '<link rel="stylesheet" id="wpbs-material-icons-css" data-href="' . esc_url( $url ) . '">' . "\n";
 		}
 
-
-		echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
-		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 	}
 
 }

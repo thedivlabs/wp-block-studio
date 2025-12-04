@@ -1,5 +1,22 @@
 import _, {merge} from "lodash";
 
+
+export const getBreakpointPropsList = (raw = {}) => {
+    const breakpoints = raw.breakpoints || {};
+    return Object.values(breakpoints).map((bp) => bp?.props || {});
+};
+
+/**
+ * Reads a property from base OR any breakpoint override.
+ */
+export const anyProp = (baseProps = {}, bpPropsList = [], key) => {
+    if (baseProps && baseProps[key]) return true;
+    for (const bp of bpPropsList) {
+        if (bp && bp[key]) return true;
+    }
+    return false;
+};
+
 export function getEditorPalettes() {
     const select = wp?.data?.select;
     if (!select) {

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/slider",
+  "title": "Slider",
+  "description": "Display a slider element",
+  "selectors": {
+    "root": ".wpbs-slider"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    },
+    "wpbs-slider-settings": {
+      "type": "object",
+      "show_in_rest": true
+    }
+  },
+  "allowedBlocks": [
+    "wpbs/slider-wrapper",
+    "wpbs/layout-element",
+    "wpbs/slider-navigation"
+  ],
+  "styles": [
+    {
+      "name": "loop",
+      "label": "Loop"
+    }
+  ],
+  "providesContext": {
+    "wpbs/loopQuery": "loopQuery",
+    "wpbs/settings": "wpbs-slider-settings"
+  },
+  "supports": {
+    "innerBlocks": true,
+    "interactivity": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true,
+      "blockGap": [
+        "horizontal"
+      ]
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    }
+  },
+  "editorScript": ["file:./block.js","swiper-js"],
+  "viewScriptModule": "file:./view.js",
+  "style": [
+    "file:./block.css",
+    "swiper-css"
+  ],
+  "script": [
+    "swiper-js"
+  ],
+  "icon": "slides"
+}
+
+

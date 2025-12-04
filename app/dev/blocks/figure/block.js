@@ -8,8 +8,8 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {getAnchorProps} from "Components/Link";
-import {cleanObject, resolveFeaturedMedia} from "Includes/helper";
-import {getBreakpointPropsList, anyProp, hasAnyImage} from "./utils";
+import {getBreakpointPropsList, anyProp, cleanObject, resolveFeaturedMedia} from "Includes/helper";
+import {hasAnyImage} from "./utils";
 import {isEqual} from "lodash";
 
 const selector = "wpbs-figure";

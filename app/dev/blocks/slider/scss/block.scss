@@ -2,7 +2,7 @@
   overflow: hidden;
   width: 100%;
   height: auto;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
 
   .swiper-wrapper {

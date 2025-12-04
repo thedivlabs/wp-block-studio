@@ -45,15 +45,23 @@ import MediaWatcher from './modules/MediaWatcher';
         }
 
         link.href = url;
-        
+
         document.head.appendChild(link);
     });
+
 })();
 
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!document.body.classList.contains('wp-admin')) {
         MediaWatcher.init();
+
+        // NON-CRITICAL LINK HYDRATION — next animation frame
+        requestAnimationFrame(() => {
+            document.querySelectorAll('link[data-href]:not([rel="preload"])').forEach(link => {
+                link.href = link.dataset.href;
+            });
+        });
     }
 });
 

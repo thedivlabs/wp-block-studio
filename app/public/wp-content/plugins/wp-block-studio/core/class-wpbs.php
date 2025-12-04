@@ -124,9 +124,9 @@ class WPBS {
 		}
 
 		$dont_defer = [
-			//'jquery-core',
-			//'jquery-migrate',
-			//'wp-polyfill',
+			'jquery-core',
+			'jquery-migrate',
+			'wp-polyfill',
 			'wp-hooks',
 			'wp-i18n',
 			'wp-element',
@@ -352,7 +352,6 @@ class WPBS {
 		//wp_enqueue_style( 'swiper-css' );
 		//wp_enqueue_script( 'swiper-js' );
 		//wp_enqueue_style( 'swiper-css' );
-		//wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_style( 'wpbs-bundle-css' );
 
@@ -647,8 +646,9 @@ class WPBS {
 
 		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
 			$url = parse_url( $src );
-			if ( ! empty( $url['host'] ) ) {
-				echo '<link rel="preconnect" href="https://' . $url['host'] . '" fetchpriority="high">';
+
+			if ( ! empty( $url ) ) {
+				echo '<link rel="preconnect" href="https://' . ( $url['host'] ?? $url['path'] ?? '' ) . '" fetchpriority="high">';
 			}
 		}
 

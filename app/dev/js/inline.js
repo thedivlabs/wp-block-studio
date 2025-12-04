@@ -18,7 +18,7 @@ import MediaWatcher from './modules/MediaWatcher';
 
 
     // start watching
-    watchIconsFont();
+    //watchIconsFont();
 
 
 })();
@@ -29,12 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
         MediaWatcher.init();
     }
 
-    // NON-CRITICAL LINK HYDRATION — next animation frame
-    requestAnimationFrame(() => {
-        document.querySelectorAll('link[data-href]:not([rel="preload"])').forEach(link => {
-            link.href = link.dataset.href;
-            link.removeAttribute('data-href');
-        });
+    document.querySelectorAll('link[data-href]:not([rel="preload"])').forEach(link => {
+        link.href = link.dataset.href;
+        link.removeAttribute('data-href');
     });
 });
 

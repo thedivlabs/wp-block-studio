@@ -1,18 +1,17 @@
 // wpbs-slider-navigation block
 
-import { registerBlockType } from "@wordpress/blocks";
+import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import { STYLE_ATTRIBUTES, withStyle, withStyleSave } from "Components/Style";
-import { MaterialIcon } from "Components/IconControl";
+import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
+import {MaterialIcon} from "Components/IconControl";
 
 const selector = "wpbs-slider-navigation";
 
 const getClassNames = (attributes = {}) => {
     return [
         selector,
-        attributes?.uniqueId ?? "",
-        attributes?.className ?? "",
+        'swiper-navigation'
     ]
         .filter(Boolean)
         .join(" ");
@@ -32,17 +31,17 @@ const getStyles = (attributes = {}) => {
 const NavigationContent = ({ options = {} }) => {
     const buttonClass = "wpbs-slider-nav__btn";
 
-    const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev"]
+    const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev swiper-btn-prev"]
         .filter(Boolean)
         .join(" ");
 
-    const nextClass = [buttonClass, "wpbs-slider-nav__btn--next wpbs-slider-btn--next"]
+    const nextClass = [buttonClass, "wpbs-slider-nav__btn--next wpbs-slider-btn--next swiper-btn-next"]
         .filter(Boolean)
         .join(" ");
 
     const paginationClass = "wpbs-slider-nav__pagination swiper-pagination";
 
-    const buttons = (
+    return (
         <>
             <button type="button" className={prevClass}>
                 <MaterialIcon
@@ -67,8 +66,6 @@ const NavigationContent = ({ options = {} }) => {
             </button>
         </>
     );
-
-    return buttons;
 };
 
 const GroupedNavigation = ({ options = {} }) => (

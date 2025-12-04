@@ -23,7 +23,7 @@ class WPBS_WP {
 	}
 
 	public function add_sort_query_string( $query ): void {
-		/*if ( ! is_admin() && $query->is_main_query() ) {
+		if ( ! is_admin() && $query->is_main_query() ) {
 			$sort = $_GET['sort'] ?? '';
 
 			switch ( $sort ) {
@@ -44,7 +44,7 @@ class WPBS_WP {
 					$query->set( 'order', 'DESC' );
 					break;
 			}
-		}*/
+		}
 	}
 
 	public function menu_item_span( $item_output, $item, $depth, $args ): string {

@@ -114,8 +114,6 @@ class WPBS {
 			'settings' => array_merge( self::$theme_vars, apply_filters( 'wpbs_init_vars', [], false ) ?? [] )
 		];
 
-		WPBS::console_log($vars);
-
 		echo '<script type="text/javascript">window.WPBS = ' . json_encode( $vars ) . ';</script>';
 	}
 
@@ -211,7 +209,7 @@ class WPBS {
 
 	public function critical_css(): void {
 
-		if(is_admin()){
+		if ( is_admin() ) {
 			return;
 		}
 
@@ -595,7 +593,7 @@ class WPBS {
 
 	public function pre_load_critical(): void {
 
-		if(is_admin()){
+		if ( is_admin() ) {
 			return;
 		}
 

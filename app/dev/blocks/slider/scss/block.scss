@@ -1,4 +1,12 @@
 .wpbs-slider {
   overflow: hidden;
   width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+
+  .swiper-wrapper {
+    height: auto;
+    flex-grow: 1;
+  }
 }

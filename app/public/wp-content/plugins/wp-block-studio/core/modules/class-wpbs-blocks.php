@@ -128,7 +128,7 @@ class WPBS_Blocks {
 				$media_attr = '(max-width:' . $size . 'px)';
 			}
 
-			echo '<link rel="preload" href="' . esc_url( $media['url'] ) . '" fetchpriority="high"' .
+			echo '<link as="image" rel="preload" href="' . esc_url( $media['url'] ) . '" fetchpriority="high"' .
 			     ( $media_attr ? ' media="' . esc_attr( $media_attr ) . '"' : '' ) .
 			     '>';
 		}

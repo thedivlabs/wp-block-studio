@@ -10,7 +10,7 @@ const getClassNames = (attributes = {}, styleData) => {
 
     return [
         selector,
-        "swiper-wrapper",
+        "swiper-wrapper h-auto grow",
     ]
         .filter(Boolean)
         .join(' ');

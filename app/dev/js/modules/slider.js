@@ -6,6 +6,11 @@ export default class Slider {
 
     static init() {
 
+        [...document.querySelectorAll('.wpbs-slider.swiper')].forEach((swiperEl)=>{
+            this.observe(swiperEl);
+        })
+
+
 
     }
 
@@ -27,7 +32,7 @@ export default class Slider {
                 }
             },
             args);
-        
+
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {

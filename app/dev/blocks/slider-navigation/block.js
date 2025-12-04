@@ -12,6 +12,7 @@ const getClassNames = (attributes = {}) => {
     return [
         selector,
         attributes?.uniqueId ?? "",
+        attributes?.className ?? "",
     ]
         .filter(Boolean)
         .join(" ");
@@ -28,7 +29,7 @@ const getStyles = (attributes = {}) => {
     );
 };
 
-const NavigationContent = ({ props, options = {} }) => {
+const NavigationContent = ({ options = {} }) => {
     const buttonClass = "wpbs-slider-nav__btn";
 
     const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev"]
@@ -41,8 +42,8 @@ const NavigationContent = ({ props, options = {} }) => {
 
     const paginationClass = "wpbs-slider-nav__pagination swiper-pagination";
 
-    return (
-        <div {...props}>
+    const buttons = (
+        <>
             <button type="button" className={prevClass}>
                 <MaterialIcon
                     className="wpbs-slider-nav__icon"
@@ -64,9 +65,17 @@ const NavigationContent = ({ props, options = {} }) => {
                 />
                 <span className="screen-reader-text">Next Slide</span>
             </button>
-        </div>
+        </>
     );
+
+    return buttons;
 };
+
+const GroupedNavigation = ({ options = {} }) => (
+    <div className="wpbs-slider-navigation__group">
+        <NavigationContent options={options} />
+    </div>
+);
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -85,9 +94,15 @@ registerBlockType(metadata.name, {
             const classNames = getClassNames(attributes);
             const styles = getStyles(attributes);
 
+            const isGroup = classNames.includes("is-style-group");
+
             return (
                 <BlockWrapper props={props} className={classNames} style={styles}>
-                    <NavigationContent props={{}} options={attributes[selector]} />
+                    {isGroup ? (
+                        <GroupedNavigation options={attributes[selector]} />
+                    ) : (
+                        <NavigationContent options={attributes[selector]} />
+                    )}
                 </BlockWrapper>
             );
         },
@@ -103,9 +118,15 @@ registerBlockType(metadata.name, {
             const classNames = getClassNames(attributes);
             const styles = getStyles(attributes);
 
+            const isGroup = classNames.includes("is-style-group");
+
             return (
                 <BlockWrapper props={props} className={classNames} style={styles}>
-                    <NavigationContent props={{}} options={attributes[selector]} />
+                    {isGroup ? (
+                        <GroupedNavigation options={attributes[selector]} />
+                    ) : (
+                        <NavigationContent options={attributes[selector]} />
+                    )}
                 </BlockWrapper>
             );
         },

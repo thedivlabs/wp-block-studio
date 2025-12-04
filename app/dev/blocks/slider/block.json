@@ -44,7 +44,7 @@
       "padding": true,
       "margin": true,
       "blockGap": [
-        "horizontal"
+        "vertical"
       ]
     },
     "__experimentalBorder": {

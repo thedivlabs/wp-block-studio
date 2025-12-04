@@ -11,6 +11,27 @@ final class WPBS_Icons {
 
 		add_action( 'wp_head', [ $this, 'output_icons_stylesheet' ], 40 );
 		add_action( 'admin_head', [ $this, 'output_icons_stylesheet' ], 40 );
+
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_stylesheet' ] );
+	}
+
+	public function enqueue_editor_stylesheet(): void {
+		$names = $this->get_default_safelist();
+		$names = array_merge( $names, $this->get_global_icon_names() );
+
+		// Note: Block icons are not yet collected at this point,
+		// but the global/safelist icons are essential for the editor.
+
+		$url = $this->build_url( $names );
+
+		if ( $url ) {
+			wp_enqueue_style(
+				'wpbs-material-icons-editor-css',
+				$url,
+				[], // No dependencies
+				'1.0' // Use a static version number for editor assets
+			);
+		}
 	}
 
 	public static function init(): WPBS_Icons {

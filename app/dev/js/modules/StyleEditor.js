@@ -523,6 +523,7 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
 }
 
 function onStyleChange({css = {}, preload = [], props, styleRef}) {
+
     if (!props) return;
 
     const {clientId, name, attributes} = props;
@@ -663,7 +664,7 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         styleRef.current.textContent = cssText;
     }
 
-    const sameCss = _.isEqual(cleanedLayout, cleanedCss);
+    const sameCss = cleanedCss && _.isEqual(cleanObject(props?.attributes?.['wpbs-css'] ?? {}, true), cleanObject(cleanedCss, true));
 
     if (sameCss) {
         return;

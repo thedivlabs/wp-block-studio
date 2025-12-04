@@ -22,6 +22,7 @@ class WPBS_Blocks {
 	}
 
 	public function handle_block_styles( array $block, array $source_block ): array {
+
 		if ( is_admin() || empty( $block['blockName'] ) || ! str_starts_with( $block['blockName'], 'wpbs/' ) ) {
 			return $block;
 		}

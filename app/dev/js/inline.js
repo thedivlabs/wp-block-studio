@@ -10,7 +10,6 @@ import MediaWatcher from './modules/MediaWatcher';
         document.fonts.load('24px "Material Symbols Outlined"').then((fonts) => {
             if (fonts.length > 0) {
                 document.body.classList.add('icons-loaded');
-                console.log('icons loaded');
             } else if (Date.now() - startTime < MAX_WAIT) {
                 setTimeout(() => watchIconsFont(startTime), INTERVAL);
             }

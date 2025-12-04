@@ -161,6 +161,18 @@ export const withStyle = (Component, config) => (props) => {
         [setAttributes]
     );
 
+    useEffect(() => {
+        if (typeof onStyleChange !== "function") return;
+        if (!styleRef.current) return;
+
+        onStyleChange({
+            css: blockCssRef.current,
+            preload: blockPreloadRef.current,
+            group: uniqueId,
+            props,
+            styleRef,
+        });
+    }, [styleData, blockGapDeps, uniqueId, bgData]);
 
     const applyCss = useCallback(
         (raw) => {
@@ -191,21 +203,6 @@ export const withStyle = (Component, config) => (props) => {
         },
         [cleanObject, onStyleChange, uniqueId]
     );
-
-
-    useEffect(() => {
-        if (typeof onStyleChange !== "function") return;
-        if (!styleRef.current) return;
-
-        onStyleChange({
-            css: blockCssRef.current,
-            preload: blockPreloadRef.current,
-            group: uniqueId,
-            props,
-            styleRef,
-        });
-    }, [styleData, blockGapDeps, uniqueId, bgData]);
-
 
     const applyPreload = useCallback(
         (items) => {

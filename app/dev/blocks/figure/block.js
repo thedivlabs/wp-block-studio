@@ -137,7 +137,6 @@ function getCssProps(settings) {
             "--overlay": overlay,
             "--origin": origin,
             "--blend": blend,
-            "--contain": contain,
         },
         breakpoints: {},
     };
@@ -155,7 +154,6 @@ function getCssProps(settings) {
                 "--overlay": bpOverlay,
                 "--origin": bpOrigin,
                 "--blend": bpBlend,
-                "--contain": bpContain,
             },
         };
     });

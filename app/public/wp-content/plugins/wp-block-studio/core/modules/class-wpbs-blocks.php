@@ -114,12 +114,28 @@ class WPBS_Blocks {
 			];
 		}
 
-		add_filter( 'wpbs_init_vars', function ( $vars ) use ( $deduped ) {
+		$breakpoints_config = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 
-			$vars['preload_media'] = array_merge( [], $vars['preload_media'] ?? [], array_values( $deduped ) );
+		foreach ( $deduped as $media ) {
 
-			return $vars;
-		}, 10, 1 );
+			if ( empty( $media['url'] ) ) {
+				continue;
+			}
+
+			WPBS::console_log( $media );
+			WPBS::console_log( $breakpoints_config );
+
+			$media_attr = '';
+			if ( ! empty( $media['breakpoint'] ) && ! empty( $breakpoints_config[ $media['breakpoint'] ] ) ) {
+				$size       = (int) $breakpoints_config[ $media['breakpoint'] ]['size'];
+				$media_attr = '(max-width:' . $size . 'px)';
+			}
+
+			echo '<link rel="preload" href="' . esc_url( $media['url'] ) . '" fetchpriority="high"' .
+			     ( $media_attr ? ' media="' . esc_attr( $media_attr ) . '"' : '' ) .
+			     '>';
+		}
+
 	}
 
 

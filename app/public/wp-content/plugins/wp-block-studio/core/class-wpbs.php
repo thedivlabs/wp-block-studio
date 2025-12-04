@@ -641,7 +641,7 @@ class WPBS {
 			$url = parse_url( $src );
 
 			if ( ! empty( $url['host'] ) ) {
-				echo '<link rel="preconnect" href="https://' . $url['host'] . '" fetchpriority="high">';
+				//echo '<link rel="preconnect" href="https://' . $url['host'] . '" fetchpriority="high">';
 				echo '<link rel="preload" href="' . $src . '" fetchpriority="high">';
 			}
 		}

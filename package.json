@@ -27,7 +27,6 @@
     "start": "npm-run-all wp-build --parallel wp-dev tailwind-theme-dev tailwind-admin-dev tailwind-bundle-dev",
     "start-blocks": "npm-run-all --parallel blocks-dev tailwind-theme-dev",
     "build": "npm-run-all wp-build tailwind-theme tailwind-admin tailwind-bundle"
-
   },
   "dependencies": {
     "@wordpress/api-fetch": "^7.28.0",

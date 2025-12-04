@@ -293,7 +293,7 @@ class WPBS {
 			wp_register_script(
 				'wpbs-editor',
 				self::$uri . 'build/editor.js',
-				[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post' ],
+				[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post', 'lodash' ],
 				filemtime( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ),
 				false
 			);

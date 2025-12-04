@@ -18,7 +18,7 @@ import MediaWatcher from './modules/MediaWatcher';
 
 
     // start watching
-    //watchIconsFont();
+    watchIconsFont();
 
 
 })();

@@ -9,7 +9,7 @@ final class WPBS_Icons {
 
 		add_filter( 'render_block_data', [ $this, 'collect_block_icons' ], 10, 2 );
 
-		//add_action( 'wp_head', [ $this, 'output_icons_stylesheet' ], 2 );
+		add_action( 'wp_head', [ $this, 'output_icons_stylesheet' ], 2 );
 		add_action( 'admin_head', [ $this, 'output_icons_stylesheet' ], 40 );
 
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_stylesheet' ] );

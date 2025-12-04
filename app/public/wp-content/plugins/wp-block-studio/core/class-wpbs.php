@@ -314,6 +314,7 @@ class WPBS {
 
 		add_filter( 'wpbs_preconnect_sources', function ( $sources ) {
 			//$sources[] = 'https://cdn.jsdelivr.net';
+			$sources[] = 'https://fonts.googleapis.com';
 
 			return $sources;
 		} );

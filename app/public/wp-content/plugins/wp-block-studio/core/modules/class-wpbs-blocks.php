@@ -92,7 +92,7 @@ class WPBS_Blocks {
 			$id    = $item['id'];
 			$type  = $item['type'];
 			$size  = $item['resolution'] ?? 'large';
-			$bpKey = $item['breakpoint'] ?? $item['media'] ?? 'default';
+			$bpKey = $item['breakpoint'] ?? $item['media'] ?? null;
 
 			// Dedup key
 			$key = implode( '|', [ $id, $bpKey, $size ] );

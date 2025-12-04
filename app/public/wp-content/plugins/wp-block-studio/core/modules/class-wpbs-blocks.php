@@ -122,9 +122,6 @@ class WPBS_Blocks {
 				continue;
 			}
 
-			WPBS::console_log( $media );
-			WPBS::console_log( $breakpoints_config );
-
 			$media_attr = '';
 			if ( ! empty( $media['breakpoint'] ) && ! empty( $breakpoints_config[ $media['breakpoint'] ] ) ) {
 				$size       = (int) $breakpoints_config[ $media['breakpoint'] ]['size'];

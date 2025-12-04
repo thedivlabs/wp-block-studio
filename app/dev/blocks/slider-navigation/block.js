@@ -11,7 +11,6 @@ const selector = "wpbs-slider-navigation";
 const getClassNames = (attributes = {}) => {
     return [
         selector,
-        'swiper-navigation'
     ]
         .filter(Boolean)
         .join(" ");
@@ -31,11 +30,11 @@ const getStyles = (attributes = {}) => {
 const NavigationContent = ({ options = {} }) => {
     const buttonClass = "wpbs-slider-nav__btn";
 
-    const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev swiper-btn-prev"]
+    const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev swiper-button-prev"]
         .filter(Boolean)
         .join(" ");
 
-    const nextClass = [buttonClass, "wpbs-slider-nav__btn--next wpbs-slider-btn--next swiper-btn-next"]
+    const nextClass = [buttonClass, "wpbs-slider-nav__btn--next wpbs-slider-btn--next swiper-button-next"]
         .filter(Boolean)
         .join(" ");
 

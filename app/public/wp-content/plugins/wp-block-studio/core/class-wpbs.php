@@ -313,7 +313,7 @@ class WPBS {
 		] );
 
 		add_filter( 'wpbs_preconnect_sources', function ( $sources ) {
-			$sources[] = 'https://cdn.jsdelivr.net';
+			//$sources[] = 'https://cdn.jsdelivr.net';
 
 			return $sources;
 		} );

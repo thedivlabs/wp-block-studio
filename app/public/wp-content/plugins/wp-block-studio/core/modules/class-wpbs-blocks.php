@@ -133,19 +133,14 @@ class WPBS_Blocks {
 			}
 
 			// Build attributes
-			$attrs = [
+			$attrs = array_filter( [
 				'rel'           => 'preload',
 				'as'            => $as,
 				'data-href'     => esc_url( $src ),
 				'data-media'    => esc_attr( $bpKey ),
 				'fetchpriority' => 'high',
-				'data-wpbs'     => '',
-			];
-
-			// Add breakpoint/resolution attribute for images
-			if ( $type === 'image' ) {
-				$attrs["data-{$bpKey}"] = esc_url( $src );
-			}
+				'class'         => 'wpbs-preload',
+			] );
 
 			// Output <link>
 			$html = '<link ';

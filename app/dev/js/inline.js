@@ -16,17 +16,10 @@ import MediaWatcher from './modules/MediaWatcher';
 
     // start watching
     watchIconsFont();
-})();
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    if (!document.body.classList.contains('wp-admin')) {
-        MediaWatcher.init();
-    }
 
     const bp = window.WPBS?.settings?.breakpoints || {};
 
-    document.querySelectorAll('link[rel="preload"][data-href]').forEach(link => {
+    document.querySelectorAll('link[rel="preload"][data-href].wpbs-preload').forEach(link => {
 
         const src = link.dataset.href;
         const mediaKey = link.dataset.media; // optional
@@ -34,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Case: no media conditions — always keep
         if (!mediaKey) {
             link.href = src;
+            link.removeAttribute('data-href');
             return;
         }
 
@@ -57,13 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Media does not match → remove element
         link.remove();
     });
+})();
 
 
-    // NON-CRITICAL LINK HYDRATION — next animation frame
-    requestAnimationFrame(() => {
-        document.querySelectorAll('link[data-href]:not([rel="preload"])').forEach(link => {
-            link.href = link.dataset.href;
-        });
-    });
+document.addEventListener("DOMContentLoaded", () => {
+    if (!document.body.classList.contains('wp-admin')) {
+        MediaWatcher.init();
+    }
 });
 

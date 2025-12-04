@@ -27,14 +27,14 @@ const getStyles = (attributes = {}) => {
     );
 };
 
-const NavigationContent = ({ options = {} }) => {
+const NavigationContent = ({options = {}}) => {
     const buttonClass = "wpbs-slider-nav__btn";
 
-    const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev swiper-button-prev"]
+    const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev"]
         .filter(Boolean)
         .join(" ");
 
-    const nextClass = [buttonClass, "wpbs-slider-nav__btn--next wpbs-slider-btn--next swiper-button-next"]
+    const nextClass = [buttonClass, "wpbs-slider-nav__btn--next wpbs-slider-btn--next"]
         .filter(Boolean)
         .join(" ");
 
@@ -45,7 +45,7 @@ const NavigationContent = ({ options = {} }) => {
             <button type="button" className={prevClass}>
                 <MaterialIcon
                     className="wpbs-slider-nav__icon"
-                    name={options?.["icon-prev"] ?? "chevron_left"}
+                    name={options?.["icon-prev"] ?? "arrow_back"}
                     size={24}
                     style={0}
                 />
@@ -57,7 +57,7 @@ const NavigationContent = ({ options = {} }) => {
             <button type="button" className={nextClass}>
                 <MaterialIcon
                     className="wpbs-slider-nav__icon"
-                    name={options?.["icon-next"] ?? "chevron_right"}
+                    name={options?.["icon-next"] ?? "arrow_forward"}
                     size={24}
                     style={0}
                 />
@@ -67,9 +67,9 @@ const NavigationContent = ({ options = {} }) => {
     );
 };
 
-const GroupedNavigation = ({ options = {} }) => (
+const GroupedNavigation = ({options = {}}) => (
     <div className="wpbs-slider-navigation__group">
-        <NavigationContent options={options} />
+        <NavigationContent options={options}/>
     </div>
 );
 
@@ -86,7 +86,7 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const { attributes, BlockWrapper } = props;
+            const {attributes, BlockWrapper} = props;
             const classNames = getClassNames(attributes);
             const styles = getStyles(attributes);
 
@@ -95,9 +95,9 @@ registerBlockType(metadata.name, {
             return (
                 <BlockWrapper props={props} className={classNames} style={styles}>
                     {isGroup ? (
-                        <GroupedNavigation options={attributes[selector]} />
+                        <GroupedNavigation options={attributes[selector]}/>
                     ) : (
-                        <NavigationContent options={attributes[selector]} />
+                        <NavigationContent options={attributes[selector]}/>
                     )}
                 </BlockWrapper>
             );
@@ -110,7 +110,7 @@ registerBlockType(metadata.name, {
 
     save: withStyleSave(
         (props) => {
-            const { attributes, BlockWrapper } = props;
+            const {attributes, BlockWrapper} = props;
             const classNames = getClassNames(attributes);
             const styles = getStyles(attributes);
 
@@ -119,9 +119,9 @@ registerBlockType(metadata.name, {
             return (
                 <BlockWrapper props={props} className={classNames} style={styles}>
                     {isGroup ? (
-                        <GroupedNavigation options={attributes[selector]} />
+                        <GroupedNavigation options={attributes[selector]}/>
                     ) : (
-                        <NavigationContent options={attributes[selector]} />
+                        <NavigationContent options={attributes[selector]}/>
                     )}
                 </BlockWrapper>
             );

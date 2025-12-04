@@ -7,6 +7,9 @@
   "selectors": {
     "root": ".wpbs-slider-navigation"
   },
+  "parent": [
+    "wpbs/slider"
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string"

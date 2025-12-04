@@ -307,10 +307,8 @@ class WPBS {
 
 
 		/* Swiper */
-		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
-		wp_register_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
-			'strategy' => 'async'
-		] );
+		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css' );
+		wp_register_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js', [], false, [ 'strategy' => 'async' ] );
 
 		add_filter( 'wpbs_preconnect_sources', function ( $sources ) {
 			//$sources[] = 'https://cdn.jsdelivr.net';

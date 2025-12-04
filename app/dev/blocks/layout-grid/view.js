@@ -142,7 +142,7 @@ store("wpbs/layout-grid", {
             const context = getContext();
             const grid = el.closest(".wpbs-layout-grid");
             const instance = grid?._wpbs;
-            console.log(instance);
+            
             if (!instance || !instance.hasMore) return;
 
             const nextPage = instance.page + 1;

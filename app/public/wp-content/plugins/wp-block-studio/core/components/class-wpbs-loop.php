@@ -32,7 +32,7 @@ class WPBS_Loop {
 		$query_clean = WPBS::clean_array( $query );
 
 		// Encode template and pagination JSON
-		$template_json = wp_json_encode( $template_block ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		$template_json   = wp_json_encode( $template_block ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 		$pagination_data = [
 			'page'       => max( 1, $page ),
 			'totalPages' => $loop_data['pages'] ?? 1,
@@ -62,6 +62,9 @@ class WPBS_Loop {
 			];
 		}
 
+		// Sanitize template recursively
+		$template = self::sanitize_block_template( $template );
+
 		// Sanitize query
 		$query_clean = $this->sanitize_query( $query );
 
@@ -71,6 +74,7 @@ class WPBS_Loop {
 		// Render
 		return $this->render_loop( $template, $query_clean, $page );
 	}
+
 
 	public function register_endpoint(): void {
 
@@ -106,6 +110,9 @@ class WPBS_Loop {
 			return $this->error( 'Invalid template.' );
 		}
 
+		// Sanitize template recursively
+		$template = self::sanitize_block_template( $template );
+
 		if ( ! is_array( $query_raw ) ) {
 			return $this->error( 'Invalid query.' );
 		}
@@ -116,6 +123,25 @@ class WPBS_Loop {
 		$output = $this->render_loop( $template, $query, $page );
 
 		return rest_ensure_response( $output );
+	}
+
+
+	public static function sanitize_block_template( $block, &$counter = 0, $max_blocks = 30 ): array {
+		if ( ++ $counter > $max_blocks ) {
+			return [];
+		}
+
+		return [
+			'blockName'    => $block['blockName'] ?? '',
+			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
+			'innerBlocks'  => array_map( function ( $b ) use ( &$counter, $max_blocks ) {
+				return self::sanitize_block_template( $b, $counter, $max_blocks );
+			}, $block['innerBlocks'] ?? [] ),
+			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),          // Allow safe HTML
+			'innerContent' => array_map( function ( $item ) {
+				return is_string( $item ) ? wp_kses_post( $item ) : null;          // Allow safe HTML
+			}, $block['innerContent'] ?? [] ),
+		];
 	}
 
 	private function render_loop( array $template_block, array $query, int $page ): array {
@@ -398,10 +424,10 @@ class WPBS_Loop {
 
 					// Current = main query cloning
 					if ( $pt === 'current' ) {
-						$clean['post_type']        = 'current';
-						$clean['posts_per_page']   = (int) get_option( 'posts_per_page', 10 );
+						$clean['post_type']      = 'current';
+						$clean['posts_per_page'] = (int) get_option( 'posts_per_page', 10 );
 					} else {
-						$public = get_post_types( [ 'public' => true ], 'names' );
+						$public             = get_post_types( [ 'public' => true ], 'names' );
 						$clean['post_type'] = in_array( $pt, $public, true ) ? $pt : 'post';
 					}
 					break;
@@ -409,7 +435,7 @@ class WPBS_Loop {
 				case 'posts_per_page':
 					// Only used for non-current queries
 					if ( ( $clean['post_type'] ?? null ) !== 'current' ) {
-						$clean['posts_per_page'] = max( -1, (int) $value );
+						$clean['posts_per_page'] = max( - 1, (int) $value );
 					}
 					break;
 
@@ -422,7 +448,7 @@ class WPBS_Loop {
 					break;
 
 				case 'order':
-					$order = strtoupper( $value );
+					$order          = strtoupper( $value );
 					$clean['order'] = in_array( $order, [ 'ASC', 'DESC' ], true ) ? $order : 'DESC';
 					break;
 
@@ -454,7 +480,6 @@ class WPBS_Loop {
 
 		return $clean;
 	}
-
 
 
 	private function build_query_args( array $q, int $page ): array {

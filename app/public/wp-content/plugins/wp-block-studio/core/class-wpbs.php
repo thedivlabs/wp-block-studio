@@ -60,7 +60,6 @@ class WPBS {
 		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
 
 		add_action( 'rest_api_init', [ $this, 'lightbox_endpoint' ] );
-		add_action( 'rest_api_init', [ $this, 'grid_endpoint' ] );
 
 		add_action( 'after_setup_theme', [ $this, 'register_image_sizes' ], 1 );
 
@@ -134,17 +133,6 @@ class WPBS {
 
 		return $tag;
 
-	}
-
-	public function filter_sizes( $sizes ): array {
-		return array_intersect_key( $sizes, array_flip( [
-			'thumbnail',
-			'mobile',
-			'small',
-			'medium',
-			'large',
-			'xlarge'
-		] ) );
 	}
 
 	public function register_image_sizes(): void {
@@ -244,7 +232,6 @@ class WPBS {
 		echo '</style>';
 	}
 
-
 	private function minify_css( string $css ): string {
 
 		// Protect url(...) values by temporarily encoding spaces
@@ -270,30 +257,6 @@ class WPBS {
 		return trim( $css );
 	}
 
-
-	private function get_css_vars(): string {
-		$vars           = '';
-		$settings       = wp_get_global_settings()['custom'] ?? [];
-		$header_heights = $settings['header']['height'] ?? [];
-		$breakpoints    = $settings['breakpoints'] ?? [];
-
-		foreach ( $header_heights as $key => $height ) {
-			// Default (no media query)
-			if ( 'xs' === $key ) {
-				$vars .= ":root { --wpbs-header-height: {$height}; }\n";
-				continue;
-			}
-
-			// Look up breakpoint size
-			if ( isset( $breakpoints[ $key ]['size'] ) ) {
-				$min_width = intval( $breakpoints[ $key ]['size'] );
-				$vars      .= "@media (min-width: {$min_width}px) { :root { --wpbs-header-height: {$height}; } }\n";
-			}
-		}
-
-		return trim( $vars );
-	}
-
 	public function theme_assets(): void {
 
 		/* Theme Bundle */
@@ -301,9 +264,6 @@ class WPBS {
 			'wpbs-bundle-css',
 			self::$uri . 'build/bundle.css',
 		);
-
-		//wp_add_inline_style( 'wpbs-bundle-css', $this->get_css_vars() );
-
 
 		/* Odometer */
 		wp_register_style( 'aos-css', 'https://unpkg.com/aos@2.3.1/dist/aos.css', [], false );
@@ -725,41 +685,6 @@ class WPBS {
 		return $array;
 	}
 
-	public static function get_block_template( $block ): array {
-
-		if ( ! is_array( $block ) || empty( $block['blockName'] ) ) {
-			return [];
-		}
-
-		$block = self::sanitize_block_template( $block );
-
-		$template = [
-			'blockName'    => $block['blockName'],
-			'attrs'        => $block['attrs'] ?? [],
-			'innerBlocks'  => [],
-			'innerContent' => [],
-			'innerHTML'    => ''
-		];
-
-		if ( isset( $block['context'] ) ) {
-			$template['context'] = $block['context'];
-		}
-		if ( isset( $block['innerContent'] ) ) {
-			$template['innerContent'] = $block['innerContent'];
-		}
-
-		if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-			foreach ( $block['innerBlocks'] as $inner_block ) {
-				$child = self::get_block_template( $inner_block );
-				if ( $child ) {
-					$template['innerBlocks'][] = $child;
-				}
-			}
-		}
-
-		return $template;
-	}
-
 	public static function init_classes( $dir, $init = true ): void {
 
 		$path = self::$path;
@@ -804,121 +729,6 @@ class WPBS {
 			}
 		}
 
-
-	}
-
-	public static function sanitize_block_template( $block, &$counter = 0, $max_blocks = 30 ): array {
-		if ( ++ $counter > $max_blocks ) {
-			return [];
-		}
-
-		return [
-			'blockName'    => $block['blockName'] ?? '',
-			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
-			'innerBlocks'  => array_map( function ( $b ) use ( &$counter, $max_blocks ) {
-				return self::sanitize_block_template( $b, $counter, $max_blocks );
-			}, $block['innerBlocks'] ?? [] ),
-			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),          // Allow safe HTML
-			'innerContent' => array_map( function ( $item ) {
-				return is_string( $item ) ? wp_kses_post( $item ) : null;          // Allow safe HTML
-			}, $block['innerContent'] ?? [] ),
-		];
-	}
-
-	public static function recursive_sanitize( $input ) {
-		if ( is_array( $input ) ) {
-			$sanitized = [];
-
-			foreach ( $input as $key => $value ) {
-				$sanitized_key               = is_string( $key ) ? sanitize_text_field( $key ) : $key;
-				$sanitized[ $sanitized_key ] = self::recursive_sanitize( $value );
-			}
-
-			return $sanitized;
-
-		} elseif ( is_string( $input ) ) {
-			return sanitize_text_field( $input );
-
-		} elseif ( is_int( $input ) ) {
-			return intval( $input );
-
-		} elseif ( is_float( $input ) ) {
-			return floatval( $input );
-
-		} elseif ( is_bool( $input ) ) {
-			return (bool) $input;
-
-		} elseif ( is_null( $input ) ) {
-			return null;
-
-		} else {
-			return $input;
-		}
-	}
-
-	public static function picture( $mobile_id = false, $large_id = false, $breakpoint = 'normal', $resolution = 'large', $loading = 'lazy' ): string|bool {
-
-		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
-		$bp          = $breakpoints[ $breakpoint ] ?? '768px';
-
-		$mobile_src = wp_get_attachment_image_src( $mobile_id ?: $large_id, $resolution )[0] ?? false;
-		$large_src  = wp_get_attachment_image_src( $large_id ?: $mobile_id, $resolution )[0] ?? false;
-
-		$result = '<picture>';
-
-		$is_lazy     = $loading !== 'eager';
-		$srcset_attr = $is_lazy ? 'data-srcset' : 'srcset';
-
-		if ( $large_id ) {
-			$result .= '<source ' . $srcset_attr . '="' . esc_url( $large_src . '.webp' ) . '" type="image/webp" media="(min-width:' . esc_attr( $bp ) . ')">';
-		}
-		if ( $large_id ) {
-			$result .= '<source ' . $srcset_attr . '="' . esc_url( $large_src ) . '" media="(min-width:' . esc_attr( $bp ) . ')">';
-		}
-
-		if ( $mobile_id ) {
-			$result .= '<source ' . $srcset_attr . '="' . esc_url( $mobile_src . '.webp' ) . '" type="image/webp" media="(min-width:0px)">';
-		}
-		if ( $mobile_id ) {
-			$result .= '<source ' . $srcset_attr . '="' . esc_url( $mobile_src ) . '" media="(min-width:0px)">';
-		}
-
-		$result .= wp_get_attachment_image(
-			$large_id ?: $mobile_id,
-			$resolution,
-			false,
-			[
-				'loading' => $loading,
-				'class'   => 'w-full h-full object-cover'
-			]
-		);
-
-		$result .= '</picture>';
-
-		return $result;
-	}
-
-	public static function youtube_image( $share_link = '', $args = [] ): string|bool {
-
-		if ( ! is_string( $share_link ) || empty( $share_link ) ) {
-			return false;
-		}
-
-		$pattern = '/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/';
-
-		$video_id = preg_match( $pattern, $share_link, $matches ) ? $matches[1] : false;
-
-		if ( empty( $video_id ) ) {
-			return false;
-		}
-
-		if ( ! empty( $args['id_only'] ) ) {
-			return $video_id;
-		}
-
-		$class = $args['class'] ?? 'w-full h-full z-0 relative object-cover object-center';
-
-		return '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="' . $class . '" alt="" loading="' . ( $args['loading'] ?? 'lazy' ) . '" />';
 
 	}
 
@@ -1014,46 +824,6 @@ class WPBS {
 		register_rest_route( 'wpbs/v1', '/lightbox', array(
 			'methods'             => 'POST',
 			'callback'            => [ $this, 'render_lightbox' ],
-			'permission_callback' => '__return_true',
-			'args'                => array(
-				'uniqueId'     => array(
-					'type'              => 'string',
-					'sanitize_callback' => 'sanitize_text_field',
-					'validate_callback' => function ( $param, $request, $key ) {
-						// Basic validation: check if it's not empty
-						return ! empty( $param );
-					},
-				),
-				'blockContext' => array(
-					'type' => 'object',
-				)
-			),
-		) );
-	}
-
-	public function render_grid( WP_REST_Request $request ): WP_REST_Response {
-
-		$uniqueId = $request->get_param( 'uniqueId' );
-		$context  = $request->get_param( 'context' );
-
-		$response_data = array(
-			'success'  => true,
-			'rendered' => ( new WP_Block( [
-				'blockName' => 'wpbs/layout-grid-container',
-				'attrs'     => [
-					'uniqueId' => $uniqueId,
-					'context'  => $context,
-				]
-			] ) )->render(),
-		);
-
-		return new WP_REST_Response( $response_data, 200 );
-	}
-
-	public function grid_endpoint(): void {
-		register_rest_route( 'wpbs/v1', '/layout-grid', array(
-			'methods'             => 'POST',
-			'callback'            => [ $this, 'render_grid' ],
 			'permission_callback' => '__return_true',
 			'args'                => array(
 				'uniqueId'     => array(

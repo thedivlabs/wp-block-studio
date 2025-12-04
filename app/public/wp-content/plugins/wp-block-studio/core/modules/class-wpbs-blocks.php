@@ -113,48 +113,11 @@ class WPBS_Blocks {
 			];
 		}
 
-		// Output <link> for each deduped item
-		foreach ( $deduped as $item ) {
+		add_filter( 'wpbs_init_vars', function ( $vars ) use ( $deduped ) {
 
-			$id    = $item['id'];
-			$type  = $item['type'];
-			$size  = $item['size'];
-			$bpKey = $item['breakpoint'];
-
-			// Resolve URL
-			if ( $type === 'video' || empty( $type ) ) {
-				$src = $this->resolve_video_url( $id ); // implement this
-				$as  = 'video';
-			} else {
-				$src = $this->resolve_image_url( $id, $size );
-				$as  = 'image';
-			}
-
-			if ( ! $src || $src === '#' ) {
-				continue;
-			}
-			
-			// Build attributes
-			$attrs = array_filter( [
-				'rel'           => 'preload',
-				'as'            => $as,
-				//( $bpKey ? 'data-href' : 'href' ) => esc_url( $src ),
-				'data-href'     => esc_url( $src ),
-				'data-media'    => esc_attr( $bpKey ),
-				'fetchpriority' => 'high',
-				'class'         => 'wpbs-preload',
-			] );
-
-			// Output <link>
-			$html = '<link ';
-			foreach ( $attrs as $key => $value ) {
-				$html .= $key . '="' . esc_attr( $value ) . '" ';
-			}
-			$html .= '/>';
-
-			WPBS::console_log( [ $html ] );
-			echo $html . "\n";
-		}
+			$vars['preload_media'] = array_merge( $vars['preload_media'] ?? [], $deduped );
+			WPBS::console_log( $vars );
+		}, 10, 1 );
 	}
 
 

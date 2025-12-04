@@ -51,7 +51,7 @@ class WPBS {
 		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
 
 		add_action( 'admin_head', [ $this, 'inline_scripts' ], 30 );
-		add_action( 'wp_head', [ $this, 'inline_scripts' ], 30 );
+		add_action( 'wp_head', [ $this, 'inline_scripts' ], 2 );
 
 		add_action( 'script_loader_tag', [ $this, 'defer_scripts' ], 10, 2 );
 

@@ -14,7 +14,7 @@ class WPBS_Blocks {
 
 		if ( ! is_admin() ) {
 			add_filter( 'render_block', [ $this, 'render_block' ], 10, 3 );
-			add_action( 'wp_head', [ $this, 'output_preload_media' ] );
+			add_action( 'wp_head', [ $this, 'output_preload_media' ], 1 );
 			add_filter( 'render_block_data', [ $this, 'collect_preload_media' ], 10, 2 );
 			add_filter( 'render_block_data', [ $this, 'handle_block_styles' ], 10, 2 );
 		}
@@ -138,12 +138,13 @@ class WPBS_Blocks {
 			WPBS::console_log( $bpKey );
 			// Build attributes
 			$attrs = array_filter( [
-				'rel'                             => 'preload',
-				'as'                              => $as,
-				( $bpKey ? 'data-href' : 'href' ) => esc_url( $src ),
-				'data-media'                      => esc_attr( $bpKey ),
-				'fetchpriority'                   => 'high',
-				'class'                           => 'wpbs-preload',
+				'rel'           => 'preload',
+				'as'            => $as,
+				//( $bpKey ? 'data-href' : 'href' ) => esc_url( $src ),
+				'data-href'     => esc_url( $src ),
+				'data-media'    => esc_attr( $bpKey ),
+				'fetchpriority' => 'high',
+				'class'         => 'wpbs-preload',
 			] );
 
 			// Output <link>

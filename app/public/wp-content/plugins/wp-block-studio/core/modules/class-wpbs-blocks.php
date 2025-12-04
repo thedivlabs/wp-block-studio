@@ -89,6 +89,10 @@ class WPBS_Blocks {
 				continue;
 			}
 
+			if ( $item['type'] == 'video' ) {
+				continue;
+			}
+
 			$id    = $item['id'];
 			$type  = $item['type'];
 			$size  = $item['resolution'] ?? 'large';

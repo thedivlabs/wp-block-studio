@@ -14,7 +14,7 @@ class WPBS_Blocks {
 
 		if ( ! is_admin() ) {
 			add_filter( 'render_block', [ $this, 'render_block' ], 10, 3 );
-			add_action( 'wp_head', [ $this, 'output_preload_media' ], 1 );
+			add_action( 'wp_head', [ $this, 'output_preload_media' ], 2 );
 			add_filter( 'render_block_data', [ $this, 'collect_preload_media' ], 10, 2 );
 			add_filter( 'render_block_data', [ $this, 'handle_block_styles' ], 10, 2 );
 		}
@@ -110,13 +110,15 @@ class WPBS_Blocks {
 				'type'       => $type,
 				'size'       => $size,
 				'breakpoint' => $bpKey,
+				'url'        => wp_get_attachment_image_url( $id, $size ),
 			];
 		}
 
 		add_filter( 'wpbs_init_vars', function ( $vars ) use ( $deduped ) {
 
-			
-			$vars['preload_media'] = array_merge( $vars['preload_media'] ?? [], $deduped );
+			$vars['preload_media'] = array_merge( [], $vars['preload_media'] ?? [], array_values( $deduped ) );
+
+			return $vars;
 		}, 10, 1 );
 	}
 

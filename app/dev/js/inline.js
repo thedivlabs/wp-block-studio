@@ -20,39 +20,33 @@ import MediaWatcher from './modules/MediaWatcher';
     // start watching
     watchIconsFont();
 
-    const bp = window.WPBS?.settings?.breakpoints || {};
+    const settings = window.WPBS?.settings || {};
+    const bp = settings.breakpoints || {};
+    const preloads = settings.preload_media || [];
 
-    document.querySelectorAll('link[rel="preload"][data-href].wpbs-preload').forEach(link => {
+    preloads.forEach(item => {
+        if (!item.type || !item.id || !item.url) return; // skip invalid entries
 
-        const src = link.dataset.href;
-        const mediaKey = link.dataset.media; // optional
+        // Build URL to media
+        const url = `${item.url}.${item.type === 'image' && 'webp'}`;
 
-        // Case: no media conditions — always keep
-        if (!mediaKey) {
-            link.href = src;
-            link.removeAttribute('data-href');
-            return;
+        // Create link element
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = item.type;
+        link.classList.add('wpbs-preload');
+
+        // Optional breakpoint handling
+        if (item.breakpoint && bp[item.breakpoint] && bp[item.breakpoint].size) {
+            const mq = `(max-width:${bp[item.breakpoint].size}px)`;
+            if (!window.matchMedia(mq).matches) {
+                return; // skip this element if media query doesn't match
+            }
         }
 
-        // Has media condition → check breakpoint
-        const config = bp[mediaKey];
-
-        // Invalid or missing breakpoint → remove
-        if (!config || !config.size) {
-            link.remove();
-            return;
-        }
-
-        const mq = `(max-width:${config.size}px)`;
-
-        // If media matches → keep and apply href
-        if (window.matchMedia(mq).matches) {
-            link.href = src;
-            return;
-        }
-
-        // Media does not match → remove element
-        link.remove();
+        link.href = url;
+        
+        document.head.appendChild(link);
     });
 })();
 

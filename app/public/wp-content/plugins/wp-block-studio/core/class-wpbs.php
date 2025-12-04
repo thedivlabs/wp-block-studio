@@ -39,7 +39,7 @@ class WPBS {
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 		add_action( 'wp_print_styles', [ $this, 'critical_css' ], 1 );
 
-		add_action( 'wp_head', [ $this, 'print_theme_vars' ], 12 );
+		add_action( 'wp_head', [ $this, 'print_theme_vars' ], 3 );
 		add_action( 'admin_head', [ $this, 'print_theme_vars' ], 12 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ], 30 );
@@ -54,7 +54,7 @@ class WPBS {
 		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
 
 		add_action( 'admin_head', [ $this, 'inline_scripts' ], 30 );
-		add_action( 'wp_head', [ $this, 'inline_scripts' ], 2 );
+		add_action( 'wp_head', [ $this, 'inline_scripts' ], 4 );
 
 		add_action( 'script_loader_tag', [ $this, 'defer_scripts' ], 10, 2 );
 

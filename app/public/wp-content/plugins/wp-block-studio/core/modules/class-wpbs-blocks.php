@@ -75,7 +75,6 @@ class WPBS_Blocks {
 
 	public function output_preload_media(): void {
 
-		// Gather all items reported from blocks
 		$items = apply_filters( 'wpbs_preload_media', [] );
 
 		if ( empty( $items ) || ! is_array( $items ) ) {
@@ -84,13 +83,13 @@ class WPBS_Blocks {
 
 		$deduped = [];
 
-		// Deduplicate items by id + breakpoint + resolution
+		// Deduplication
 		foreach ( $items as $item ) {
 			if ( ! is_array( $item ) || empty( $item['id'] ) || empty( $item['type'] ) ) {
 				continue;
 			}
 
-			if ( $item['type'] == 'video' ) {
+			if ( $item['type'] === 'video' ) {
 				continue;
 			}
 
@@ -98,12 +97,12 @@ class WPBS_Blocks {
 			$type  = $item['type'];
 			$size  = $item['resolution'] ?? 'large';
 			$bpKey = $item['breakpoint'] ?? $item['media'] ?? null;
+			$group = $item['group'] ?? null;
 
-			// Dedup key
 			$key = implode( '|', [ $id, $bpKey, $size ] );
 
 			if ( isset( $deduped[ $key ] ) ) {
-				continue; // skip duplicates
+				continue;
 			}
 
 			$deduped[ $key ] = [
@@ -111,29 +110,135 @@ class WPBS_Blocks {
 				'type'       => $type,
 				'size'       => $size,
 				'breakpoint' => $bpKey,
+				'group'      => $group,
 				'url'        => wp_get_attachment_image_url( $id, $size ),
 			];
 		}
 
-		$breakpoints_config = wp_get_global_settings()['custom']['breakpoints'] ?? [];
+		if ( empty( $deduped ) ) {
+			return;
+		}
 
-		foreach ( $deduped as $media ) {
+		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 
+		// Group by "group"
+		$grouped = [];
+		foreach ( $deduped as $key => $item ) {
+			$group = $item['group'] ?? null;
+			if ( $group ) {
+				$grouped[ $group ][ $key ] = $item;
+			} else {
+				$grouped[ null ][ $key ] = $item;
+			}
+		}
+
+		// Resolve media ranges per group
+		$media_attrs = [];
+
+		foreach ( $grouped as $groupKey => $groupItems ) {
+
+			if ( ! $groupKey ) {
+				foreach ( $groupItems as $key => $item ) {
+					$media_attrs[ $key ] = '';
+				}
+				continue;
+			}
+
+			// Detect breakpoints in group
+			$hasBreakpoint = false;
+			foreach ( $groupItems as $item ) {
+				if ( ! empty( $item['breakpoint'] ) && isset( $breakpoints[ $item['breakpoint'] ] ) ) {
+					$hasBreakpoint = true;
+					break;
+				}
+			}
+
+			if ( ! $hasBreakpoint ) {
+				foreach ( $groupItems as $key => $item ) {
+					$media_attrs[ $key ] = '';
+				}
+				continue;
+			}
+
+			// Sort group by breakpoint size (base items last)
+			$sorted = $groupItems;
+			uasort( $sorted, function ( $a, $b ) use ( $breakpoints ) {
+				$aHas = ! empty( $a['breakpoint'] ) && isset( $breakpoints[ $a['breakpoint'] ] );
+				$bHas = ! empty( $b['breakpoint'] ) && isset( $breakpoints[ $b['breakpoint'] ] );
+
+				if ( $aHas && ! $bHas ) {
+					return - 1;
+				}
+				if ( $bHas && ! $aHas ) {
+					return 1;
+				}
+
+				if ( $aHas && $bHas ) {
+					$aSize = (int) $breakpoints[ $a['breakpoint'] ]['size'];
+					$bSize = (int) $breakpoints[ $b['breakpoint'] ]['size'];
+
+					return $aSize <=> $bSize;
+				}
+
+				return 0;
+			} );
+
+			$keys  = array_keys( $sorted );
+			$count = count( $keys );
+
+			for ( $i = 0; $i < $count; $i ++ ) {
+				$key  = $keys[ $i ];
+				$item = $sorted[ $key ];
+
+				$prev = $i > 0 ? $sorted[ $keys[ $i - 1 ] ] : null;
+				$next = $i < $count - 1 ? $sorted[ $keys[ $i + 1 ] ] : null;
+
+				$bp     = $item['breakpoint'] ?? null;
+				$bpSize = $bp && isset( $breakpoints[ $bp ] ) ? (int) $breakpoints[ $bp ]['size'] : null;
+
+				$prevSize = null;
+				if ( $prev && ! empty( $prev['breakpoint'] ) && isset( $breakpoints[ $prev['breakpoint'] ] ) ) {
+					$prevSize = (int) $breakpoints[ $prev['breakpoint'] ]['size'];
+				}
+
+				if ( empty( $bp ) ) {
+					$media_attrs[ $key ] = $prevSize ? '(min-width:' . $prevSize . 'px)' : '';
+					continue;
+				}
+
+				if ( ! $prevSize ) {
+					$media_attrs[ $key ] = '(max-width:' . $bpSize . 'px)';
+					continue;
+				}
+
+				if ( $next && ! empty( $next['breakpoint'] ) ) {
+					$media_attrs[ $key ] = '(min-width:' . $prevSize . 'px) and (max-width:' . $bpSize . 'px)';
+					continue;
+				}
+
+				$media_attrs[ $key ] = '(min-width:' . $prevSize . 'px) and (max-width:' . $bpSize . 'px)';
+			}
+		}
+
+		// Output preload tags
+		foreach ( $deduped as $key => $media ) {
 			if ( empty( $media['url'] ) ) {
 				continue;
 			}
 
-			$media_attr = '';
-			if ( ! empty( $media['breakpoint'] ) && ! empty( $breakpoints_config[ $media['breakpoint'] ] ) ) {
-				$size       = (int) $breakpoints_config[ $media['breakpoint'] ]['size'];
-				$media_attr = '(max-width:' . $size . 'px)';
+			$attr = $media_attrs[ $key ] ?? '';
+			$url  = $media['url'];
+
+			// Append .webp unless SVG
+			$ext = pathinfo( $url, PATHINFO_EXTENSION );
+			if ( strtolower( $ext ) !== 'svg' ) {
+				$url .= '.webp';
 			}
 
-			echo '<link as="image" rel="preload" href="' . esc_url( $media['url'] ) . '" fetchpriority="high"' .
-			     ( $media_attr ? ' media="' . esc_attr( $media_attr ) . '"' : '' ) .
-			     '>';
+			echo '<link as="image" rel="preload" href="' . esc_url( $url ) . '" fetchpriority="high"'
+			     . ( $attr ? ' media="' . esc_attr( $attr ) . '"' : '' )
+			     . '>';
 		}
-
 	}
 
 

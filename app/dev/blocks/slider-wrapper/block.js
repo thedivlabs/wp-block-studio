@@ -44,6 +44,8 @@ registerBlockType(metadata.name, {
         }, {
             hasChildren: true,
             hasBackground: false,
+            hasAdvanced: false,
+            hasStyleEditor: false,
         }),
 
     save: withStyleSave((props) => {
@@ -59,5 +61,7 @@ registerBlockType(metadata.name, {
     }, {
         hasChildren: true,
         hasBackground: false,
+        hasAdvanced: false,
+        hasStyleEditor: false,
     }),
 });

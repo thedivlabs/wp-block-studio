@@ -345,7 +345,9 @@ class WPBS {
 		//wp_enqueue_style( 'swiper-css' );
 		//wp_enqueue_script( 'swiper-js' );
 		//wp_enqueue_style( 'swiper-css' );
-
+		wp_enqueue_style( 'wpbs-theme-css' );
+		wp_enqueue_style( 'wpbs-admin-css' );
+		wp_enqueue_style( 'wpbs-bundle-css' );
 	}
 
 	public function admin_assets(): void {
@@ -354,9 +356,9 @@ class WPBS {
 	}
 
 	public function editor_assets(): void {
-		wp_enqueue_style( 'wpbs-bundle-css' );
-		wp_enqueue_style( 'wpbs-theme-css' );
-		wp_enqueue_style( 'wpbs-admin-css' );
+
+
+
 		wp_enqueue_script( 'wpbs-editor' );
 		wp_enqueue_script( 'wpbs-theme-js' );
 	}

@@ -227,10 +227,15 @@ function renderVideoContent(settings, attributes, isEditor) {
     const titlePosition =
         settings["title-position"] === "bottom" ? "bottom-0" : "top-0";
 
+    const posterSrc = getPosterSrc(settings);
+    const eager = Boolean(settings.eager);
+
     return (
         <>
             {settings.title && (
-                <div className={`wpbs-video__title absolute z-20 left-0 w-full ${titlePosition}`}>
+                <div
+                    className={`wpbs-video__title absolute z-20 left-0 w-full ${titlePosition}`}
+                >
                     <span>{settings.title}</span>
                 </div>
             )}
@@ -242,25 +247,37 @@ function renderVideoContent(settings, attributes, isEditor) {
                 <MaterialIcon {...(settings?.["button-icon"] ?? {})} />
             </div>
 
-            {/* Replace old <img> with ResponsivePicture */}
-            {settings.poster && (
+            {/* If a custom poster image is chosen, use ResponsivePicture */}
+            {settings.poster && settings.poster.source ? (
                 <ResponsivePicture
                     settings={{
                         props: {
                             image: settings.poster,
                             resolution: settings.resolution || "medium",
                             alt: settings.title || "",
-                            eager: settings.eager,
-                            className: "w-full !h-full absolute top-0 left-0 z-0 object-cover object-center",
+                            eager,
+                            className:
+                                "w-full !h-full absolute top-0 left-0 z-0 object-cover object-center",
                         },
                         breakpoints: {},
                     }}
                     editor={isEditor}
                 />
+            ) : (
+                /* Otherwise fallback to YouTube thumbnail (or empty string) */
+                <img
+                    {...(eager
+                            ? {src: posterSrc}
+                            : {"data-src": posterSrc}
+                    )}
+                    alt={settings.title || ""}
+                    className="w-full h-full absolute top-0 left-0 z-0 object-cover object-center"
+                />
             )}
         </>
     );
 }
+
 
 //
 // -------------------------------------------------------------

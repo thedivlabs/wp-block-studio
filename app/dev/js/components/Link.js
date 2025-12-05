@@ -20,7 +20,7 @@ export default function Link({defaultValue = {}, callback, isLoop = false}) {
     const [link, setLink] = useState(defaultValue);
 
     function update(next) {
-        console.log(next);
+        //console.log(next);
         const merged = {...link, ...next};
         setLink(merged);
         callback?.({...merged});

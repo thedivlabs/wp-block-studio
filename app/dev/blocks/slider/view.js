@@ -1,4 +1,4 @@
-import {store, getElement, getContext} from '@wordpress/interactivity';
+import { store, getElement, getContext } from '@wordpress/interactivity';
 
 const SPECIAL_PROP_MAP = {
     // propName: transformFunction
@@ -9,7 +9,7 @@ const SPECIAL_PROP_MAP = {
 store('wpbs/slider', {
     actions: {
         observe: () => {
-            const {ref: element} = getElement();
+            const { ref: element } = getElement();
             const rawArgs = getContext();
             const breakpointsConfig = WPBS?.settings?.breakpoints ?? {};
 
@@ -17,12 +17,10 @@ store('wpbs/slider', {
 
             // Helper to normalize and transform props
             const normalizeProp = (key, value) => {
-                // Convert string to boolean or number
                 if (value === 'true') value = true;
                 else if (value === 'false') value = false;
                 else if (value !== '' && !isNaN(Number(value))) value = Number(value);
 
-                // Apply any special transformation
                 if (SPECIAL_PROP_MAP[key]) {
                     value = SPECIAL_PROP_MAP[key](value);
                 }
@@ -44,6 +42,12 @@ store('wpbs/slider', {
                     const bpProps = rawBreakpoints[customKey].props || {};
                     const normalizedBpProps = {};
 
+                    // Copy all base props first
+                    for (const key in baseProps) {
+                        normalizedBpProps[key] = normalizeProp(key, baseProps[key]);
+                    }
+
+                    // Then override with breakpoint-specific props
                     for (const key in bpProps) {
                         normalizedBpProps[key] = normalizeProp(key, bpProps[key]);
                     }
@@ -51,8 +55,6 @@ store('wpbs/slider', {
                     swiperArgs.breakpoints[bpMap.size] = normalizedBpProps;
                 }
             }
-
-            console.log(swiperArgs);
 
             WPBS.slider.observe(element, swiperArgs);
         },

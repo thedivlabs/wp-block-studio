@@ -671,6 +671,10 @@ function onStyleChange({css = {}, preload = [], props, styleRef, bpMin = false})
         return;
     }
 
+    if(!!bpMin){
+        cleanedCss.__bpMin = true;
+    }
+
     const {dispatch} = wp.data;
     dispatch("core/block-editor").updateBlockAttributes(clientId, {
         "wpbs-css": cleanedCss,

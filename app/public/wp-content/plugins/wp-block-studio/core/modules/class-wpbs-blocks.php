@@ -241,14 +241,6 @@ class WPBS_Blocks {
 		}
 	}
 
-
-	private function resolve_video_url( int $id ): ?string {
-		// Example: use wp_get_attachment_url() for video attachments
-		$url = wp_get_attachment_url( $id );
-
-		return $url ?: null;
-	}
-
 	public static function parse_block_styles( array $attributes, string $name = '' ): string {
 
 		if ( empty( $attributes['uniqueId'] ) ) {
@@ -261,6 +253,7 @@ class WPBS_Blocks {
 		$selector  = '.wp-block-' . str_replace( '/', '-', $name ) . '.' . $unique_id;
 
 		$parsed_css = $attributes['wpbs-css'] ?? [];
+		$bp_min     = ! empty( $parsed_css['__bpMin'] );
 
 		// Convert associative array to CSS
 		$props_to_css = function ( $props = [], $important = false, $importantKeysCustom = [] ) {
@@ -290,7 +283,7 @@ class WPBS_Blocks {
 			$result = '';
 
 			foreach ( $props as $k => $v ) {
-				if ( $v === null || $v === '' ) {
+				if ( $v === null || $v === '' || str_starts_with( $k, '__' ) ) {
 					continue;
 				}
 				$needsImportant = $important && array_reduce(
@@ -427,9 +420,14 @@ class WPBS_Blocks {
 					$bp_css      .= "{$bg_selector} { " . $props_to_css( $bp_bg_props, true ) . " } ";
 				}
 
-				if ( $bp_css ) {
-					$css .= "@media (max-width: {$max_width}px) { {$bp_css} } ";
+				if ( $bp_min ) {
+					// mobile-first (min-width)
+					$query = sprintf( '(min-width: %dpx)', (int) $bp['size'] );
+				} else {
+					// default (max-width)
+					$query = sprintf( '(max-width: %dpx)', ( (int) $bp['size'] - 1 ) );
 				}
+				$css .= "@media {$query} { {$bp_css} } ";
 			}
 		}
 
@@ -504,29 +502,6 @@ class WPBS_Blocks {
 
 		}
 	}
-
-	private function resolve_image_url( $id, $resolution = 'large' ): ?string {
-		$src = wp_get_attachment_image_url( $id, $resolution );
-
-		if ( ! $src ) {
-			return null;
-		}
-
-		// webp always preferred
-		$webp = $src . '.webp';
-
-		// If the WebP exists on disk
-		$path = str_replace( home_url(), ABSPATH, $webp );
-
-		/*if ( file_exists( $path ) ) {
-			return $webp;
-		}*/
-
-		return $webp;
-
-		//return $src;
-	}
-
 
 	/* Instance */
 

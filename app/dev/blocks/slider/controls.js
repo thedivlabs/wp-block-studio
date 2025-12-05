@@ -3,9 +3,8 @@ import {useMemo, useCallback} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
 import {BreakpointPanels} from "Components/BreakpointPanels";
-import {Loop} from "Components/Loop"; // ← import Loop component
 
-// Base slider numeric fields
+// Base slider fields
 const BASE_SLIDER_NUMERIC_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
@@ -31,7 +30,6 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
     {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},
 ];
 
-// Base slider toggle fields
 const BASE_SLIDER_TOGGLE_FIELDS = [
     {slug: "loop", type: "toggle", label: "Loop"},
     {slug: "freeMode", type: "toggle", label: "Free Mode"},
@@ -44,7 +42,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
     {slug: "enabled", type: "toggle", label: "Collapse"},
 ];
 
-// Breakpoint slider numeric fields
+// Breakpoint slider fields
 const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
@@ -55,7 +53,6 @@ const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},
 ];
 
-// Breakpoint slider toggle fields
 const BREAKPOINT_SLIDER_TOGGLE_FIELDS = [
     {slug: "freeMode", type: "toggle", label: "Free Mode"},
     {slug: "keyboard", type: "toggle", label: "Keyboard"},
@@ -67,40 +64,28 @@ const BREAKPOINT_SLIDER_TOGGLE_FIELDS = [
 export function SliderInspector({attributes, updateSettings}) {
     const rawSettings = attributes["wpbs-slider"] || {};
 
-    const value = useMemo(() => ({
-        props: rawSettings.props || {},
-        breakpoints: rawSettings.breakpoints || {},
-        query: rawSettings.query || {},
-    }), [rawSettings]);
-
-    const isLoop = (attributes?.className ?? '').includes('is-style-loop');
+    const value = useMemo(() => {
+        if (rawSettings && (rawSettings.props || rawSettings.breakpoints)) {
+            return {
+                props: rawSettings.props || {},
+                breakpoints: rawSettings.breakpoints || {},
+            };
+        }
+        return {props: rawSettings, breakpoints: {}};
+    }, [rawSettings]);
 
     const sharedConfig = useMemo(() => ({isToolsPanel: false}), []);
 
-    // Update breakpoints/base props
     const handlePanelsChange = useCallback(
         (nextValue) => {
             updateSettings({
                 props: nextValue?.props || {},
                 breakpoints: nextValue?.breakpoints || {},
-                query: value.query, // preserve query unless loop changes it
             });
         },
-        [updateSettings, value.query]
+        [updateSettings]
     );
 
-    // Update loop query settings
-    const handleQueryChange = useCallback(
-        (nextQuery) => {
-            updateSettings({
-                ...value,
-                query: nextQuery,
-            });
-        },
-        [updateSettings, value]
-    );
-
-    // Renders fields for base or breakpoint
     const renderFields = useCallback(
         (entry, updateEntry, isBreakpoint) => {
             const settings = entry?.props || {};
@@ -110,32 +95,58 @@ export function SliderInspector({attributes, updateSettings}) {
             };
 
             if (isBreakpoint) {
+                // Breakpoint grid
                 return (
                     <Grid columns={1} columnGap={15} rowGap={20} style={{padding: "12px"}}>
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             {BREAKPOINT_SLIDER_FIELDS.map((field) => (
-                                <Field key={field.slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
+                                <Field
+                                    key={field.slug}
+                                    field={field}
+                                    settings={settings}
+                                    callback={applyPatch}
+                                    {...sharedConfig}
+                                />
                             ))}
                         </Grid>
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             {BREAKPOINT_SLIDER_TOGGLE_FIELDS.map((field) => (
-                                <Field key={field.slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
+                                <Field
+                                    key={field.slug}
+                                    field={field}
+                                    settings={settings}
+                                    callback={applyPatch}
+                                    {...sharedConfig}
+                                />
                             ))}
                         </Grid>
                     </Grid>
                 );
             }
 
+            // Base fields split: numeric/select top, toggles bottom
             return (
                 <Grid columns={1} columnGap={15} rowGap={20} style={{padding: "12px"}}>
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         {BASE_SLIDER_NUMERIC_FIELDS.map((field) => (
-                            <Field key={field.slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
+                            <Field
+                                key={field.slug}
+                                field={field}
+                                settings={settings}
+                                callback={applyPatch}
+                                {...sharedConfig}
+                            />
                         ))}
                     </Grid>
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         {BASE_SLIDER_TOGGLE_FIELDS.map((field) => (
-                            <Field key={field.slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
+                            <Field
+                                key={field.slug}
+                                field={field}
+                                settings={settings}
+                                callback={applyPatch}
+                                {...sharedConfig}
+                            />
                         ))}
                     </Grid>
                 </Grid>
@@ -145,33 +156,23 @@ export function SliderInspector({attributes, updateSettings}) {
     );
 
     const renderBase = useCallback(({entry, update}) => renderFields(entry, update, false), [renderFields]);
-    const renderBreakpoints = useCallback(({bpKey, entry, update}) => renderFields(entry, update, true), [renderFields]);
+    const renderBreakpoints = useCallback(({
+                                               bpKey,
+                                               entry,
+                                               update
+                                           }) => renderFields(entry, update, true), [renderFields]);
 
     return (
-        <InspectorControls group="styles">
-            {isLoop && <PanelBody
-                title="Loop"
-                group="styles"
-                initialOpen={false}
-                className="wpbs-block-controls is-style-unstyled"
-            >
-                <div className="wpbs-block-settings">
-                    <Loop value={value.query} onChange={handleQueryChange} />
-                </div>
-            </PanelBody>}
-            <PanelBody
-                title="Slider"
-                group="styles"
-                initialOpen={false}
-                className="wpbs-block-controls is-style-unstyled"
-            >
-                {/* Breakpoints / base fields */}
-                <BreakpointPanels
-                    value={value}
-                    onChange={handlePanelsChange}
-                    render={{base: renderBase, breakpoints: renderBreakpoints}}
-                />
-            </PanelBody>
-        </InspectorControls>
+        <PanelBody
+            initialOpen={false}
+            className="wpbs-block-controls is-style-unstyled"
+            title={"Slider"}
+        >
+            <BreakpointPanels
+                value={value}
+                onChange={handlePanelsChange}
+                render={{base: renderBase, breakpoints: renderBreakpoints}}
+            />
+        </PanelBody>
     );
 }

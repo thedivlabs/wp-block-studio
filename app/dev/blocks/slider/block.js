@@ -6,11 +6,13 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {cleanObject} from "Includes/helper";
+import {InspectorControls} from "@wordpress/block-editor";
+import {PanelBody} from "@wordpress/components";
+import {Loop} from "Components/Loop"; // ← import Loop component
 
 const selector = "wpbs-slider";
 
 const getClassNames = (attributes = {}, settings = {}) => {
-
     const baseProps = settings?.props ?? {};
 
     return [
@@ -39,7 +41,6 @@ function getCssProps(settings) {
 
     Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
         const bpProps = bpEntry?.props || {};
-
         const slides = bpProps.slidesPerView ?? null;
         const space = `${bpProps.spaceBetween ?? 0}px`;
 
@@ -54,7 +55,6 @@ function getCssProps(settings) {
     return cleanObject(css);
 }
 
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         "wpbs-slider": {
             type: "object",
-            default: { props: {}, breakpoints: {}, query: {} }, // <— add query here
+            default: { props: {}, breakpoints: {}, query: {} }, // query stored here
         },
     },
 
@@ -88,15 +88,36 @@ registerBlockType(metadata.name, {
             [settings, setAttributes]
         );
 
-        const inspectorPanel = useMemo(
-            () => <SliderInspector attributes={attributes} updateSettings={updateSettings}/>,
-            [settings, updateSettings,isLoop]
+        // Update loop query settings
+        const handleLoopChange = useCallback(
+            (nextQuery) => {
+                setAttributes({
+                    "wpbs-slider": {
+                        ...settings,
+                        query: nextQuery,
+                    },
+                });
+            },
+            [settings, setAttributes]
         );
+
+        const inspectorPanel = useMemo(() => (
+            <>
+                {isLoop && (
+                    <PanelBody title="Loop" initialOpen={false} className="wpbs-block-controls is-style-unstyled">
+                        <Loop value={settings.query || {}} onChange={handleLoopChange} />
+                    </PanelBody>
+                )}
+                <SliderInspector attributes={attributes} updateSettings={updateSettings} />
+            </>
+        ), [attributes, updateSettings, settings, handleLoopChange, isLoop]);
 
         return (
             <>
-                {inspectorPanel}
-                <BlockWrapper props={props} className={classNames}/>
+                <InspectorControls group="styles">
+                    {inspectorPanel}
+                </InspectorControls>
+                <BlockWrapper props={props} className={classNames} />
             </>
         );
     }, {
@@ -105,7 +126,6 @@ registerBlockType(metadata.name, {
         bpMin: true,
     }),
 
-// block.js
     save: withStyleSave((props) => {
         const {attributes, BlockWrapper} = props;
         const settings = attributes["wpbs-slider"];
@@ -115,7 +135,7 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 className={classNames}
                 data-wp-interactive="wpbs/slider"
-                data-wp-init="actions.observe" // ← auto-call the callback
+                data-wp-init="actions.observe"
                 data-wp-context={JSON.stringify(settings || {})}
             />
         );
@@ -124,5 +144,4 @@ registerBlockType(metadata.name, {
         hasBackground: false,
         bpMin: true,
     }),
-
 });

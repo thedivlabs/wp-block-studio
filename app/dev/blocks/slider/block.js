@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         "wpbs-slider": {
             type: "object",
-            default: { props: {}, breakpoints: {}, query: {} }, // query stored here
+            default: {props: {}, breakpoints: {}, query: {}}, // query stored here
         },
     },
 
@@ -106,19 +106,19 @@ registerBlockType(metadata.name, {
             <>
                 {isLoop && (
                     <PanelBody title="Loop" initialOpen={false} className="wpbs-block-controls">
-                        <Loop value={querySettings || {}} onChange={handleLoopChange} />
+                        <Loop value={querySettings || {}} onChange={handleLoopChange}/>
                     </PanelBody>
                 )}
-                <SliderInspector attributes={attributes} updateSettings={updateSettings} />
+                <SliderInspector attributes={attributes} updateSettings={updateSettings}/>
             </>
-        ), [updateSettings, settings, handleLoopChange, isLoop,querySettings]);
+        ), [updateSettings, settings, handleLoopChange, isLoop, querySettings]);
 
         return (
             <>
                 <InspectorControls group="styles">
                     {inspectorPanel}
                 </InspectorControls>
-                <BlockWrapper props={props} className={classNames} />
+                <BlockWrapper props={props} className={classNames}/>
             </>
         );
     }, {

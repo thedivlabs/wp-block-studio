@@ -5,7 +5,7 @@ import metadata from "./block.json";
 
 import {SliderInspector} from "./controls";
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {useCallback, useMemo} from "@wordpress/element";
+import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {cleanObject} from "Includes/helper";
 
@@ -20,6 +20,39 @@ const getClassNames = (attributes = {}, settings = {}) => {
         .join(" ");
 };
 
+function getCssProps(settings) {
+    const baseProps = settings?.props || {};
+    const breakpoints = settings?.breakpoints || {};
+
+    const slides = baseProps.slidesPerView ?? null;
+    const space = baseProps.spaceBetween ?? null;
+
+    const css = {
+        props: {
+            "--space": space,
+            "--slides": slides,
+        },
+        breakpoints: {},
+    };
+
+    Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
+        const bpProps = bpEntry?.props || {};
+
+        const slides = bpProps.slidesPerView ?? null;
+        const space = bpProps.spaceBetween ?? null;
+
+        css.breakpoints[bpKey] = {
+            props: {
+                "--space": space,
+                "--slides": slides,
+            },
+        };
+    });
+
+    return cleanObject(css);
+}
+
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -32,10 +65,14 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle((props) => {
-        const {attributes, BlockWrapper, setAttributes} = props;
+        const {attributes, BlockWrapper, setAttributes, setCss} = props;
 
         const settings = attributes["wpbs-slider"];
         const classNames = getClassNames(attributes, settings);
+
+        useEffect(() => {
+            setCss(getCssProps(settings));
+        }, [settings, setCss]);
 
         // Update wpbs-slider attribute
         const updateSettings = useCallback(

@@ -418,6 +418,7 @@ export const SWIPER_ARGS_DEFAULT = {
         dynamicBullets: false
     },
     passiveListeners: true,
+    draggable: true,
     preventClicks: false,
     //watchSlidesProgress: true,
     updateOnWindowResize: true,
@@ -439,7 +440,7 @@ export const SWIPER_ARGS_DEFAULT = {
     rewind: false,
     initialSlide: 0,
     breakpoints: {},
-    simulateTouch: false,
+    simulateTouch: true,
     loopAdditionalSlides: 3,
 
 };

@@ -1,10 +1,12 @@
-import {getElement, store} from '@wordpress/interactivity';
+import {store, getElement, getContext} from '@wordpress/interactivity';
 
 store('wpbs/slider', {
     actions: {
         observe: () => {
-            const {ref: element, context: rawArgs} = getElement();
-            // Assuming this object is globally available and contains the pixel sizes
+            const {ref: element} = getElement();
+            const rawArgs = getContext();
+
+            
             const breakpointsConfig = WPBS?.settings?.breakpoints ?? {};
 
             // Start with base properties
@@ -12,26 +14,49 @@ store('wpbs/slider', {
                 breakpoints: {},
             };
 
-            // --- Map Base Props ---
+            // --- Map and Convert Base Props ---
             const baseProps = rawArgs.props || {};
             for (const key in baseProps) {
-                // Assigns the string value directly (e.g., "1", "200")
-                swiperArgs[key] = baseProps[key];
+                let value = baseProps[key];
+
+                // Convert string values to correct types (number/boolean)
+                if (value === 'true') value = true;
+                else if (value === 'false') value = false;
+                // Convert number strings (like "1", "200") to actual numbers
+                else if (value !== '' && !isNaN(Number(value))) value = Number(value);
+
+                swiperArgs[key] = value;
             }
 
-            // --- Map Breakpoints to Swiper's Numeric Keys ---
+            // --- Map Breakpoints to Swiper's Numeric Keys and Convert Props ---
             const rawBreakpoints = rawArgs.breakpoints || {};
             for (const customKey in rawBreakpoints) {
                 const bpMap = breakpointsConfig[customKey]; // e.g., {size: 640, ...}
 
                 // If the pixel size is available, use it as the key
                 if (bpMap?.size) {
-                    // Assign the breakpoint properties directly (they are also strings)
-                    swiperArgs.breakpoints[bpMap.size] = rawBreakpoints[customKey].props;
+                    const breakpointProps = {};
+                    const rawBpProps = rawBreakpoints[customKey].props;
+
+                    // Normalize the props within this breakpoint
+                    for (const key in rawBpProps) {
+                        let value = rawBpProps[key];
+                        // Convert string values to correct types (number/boolean)
+                        if (value === 'true') value = true;
+                        else if (value === 'false') value = false;
+                        else if (value !== '' && !isNaN(Number(value))) value = Number(value);
+
+                        breakpointProps[key] = value;
+                    }
+
+                    // Map the custom key (e.g., 'xs') to its pixel size (e.g., 640)
+                    swiperArgs.breakpoints[bpMap.size] = breakpointProps;
                 }
             }
 
-            // The swiperArgs object now has the correct shape, but still contains string values
+            console.log(swiperArgs);
+
+            // The swiperArgs object now has the correct shape and data types
             WPBS.slider.observe(element, swiperArgs);
         },
     },

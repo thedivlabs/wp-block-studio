@@ -25,7 +25,7 @@ function getCssProps(settings) {
     const breakpoints = settings?.breakpoints || {};
 
     const slides = baseProps.slidesPerView ?? null;
-    const space = baseProps.spaceBetween ?? null;
+    const space = `${baseProps.spaceBetween ?? 0}px`;
 
     const css = {
         props: {
@@ -39,7 +39,7 @@ function getCssProps(settings) {
         const bpProps = bpEntry?.props || {};
 
         const slides = bpProps.slidesPerView ?? null;
-        const space = bpProps.spaceBetween ?? null;
+        const space = `${bpProps.spaceBetween ?? 0}px`;
 
         css.breakpoints[bpKey] = {
             props: {

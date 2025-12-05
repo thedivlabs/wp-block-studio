@@ -101,17 +101,15 @@ function SlideInspector({ attributes, updateSettings, showImageControls }) {
 
     return (
         <InspectorControls group="styles">
-            {showImageControls && (
-                <Link
-                    defaultValue={value?.props?.link}
-                    callback={(link) =>
-                        updateSettings({
-                            ...value,
-                            props: { ...value.props, link },
-                        })
-                    }
-                />
-            )}
+            <Link
+                defaultValue={value?.props?.link}
+                callback={(link) =>
+                    updateSettings({
+                        ...value,
+                        props: { ...value.props, link },
+                    })
+                }
+            />
             {showImageControls && (
                 <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title="Slide">
                     <BreakpointPanels

@@ -230,13 +230,6 @@ registerBlockType(metadata.name, {
                     <BlockWrapper props={{ attributes }} className={classNames}>
                         {renderSlideContent(settings, attributes, true)}
 
-                        {/* Title link only */}
-                        {attributes["wpbs-slide"]?.props?.link?.url && (
-                            <a {...getAnchorProps(attributes["wpbs-slide"].props.link)} className={'wpbs-slide__link'}>
-                                <span className="screen-reader-text">{attributes["wpbs-slide"].props.link.title || ""}</span>
-                            </a>
-                        )}
-
                         <InnerBlocks
                             templateLock={isImageStyle(attributes) ? "all" : false}
                             renderAppender={isImageStyle(attributes) ? false : undefined}

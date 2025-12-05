@@ -2,8 +2,6 @@
 
 @import "./admin/acf";
 @import "./admin/admin-menu";
-@import "./admin/editor";
-@import "./admin/layout-tools";
 @import "./components/material-icons";
 
 

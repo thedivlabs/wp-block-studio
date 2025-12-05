@@ -106,9 +106,8 @@ registerBlockType(metadata.name, {
         );
 
         useEffect(() => {
-            // Only update if the attribute value differs from the current isLoop
             if (attributes?.isLoop !== isLoop) {
-                setAttributes({ isLoop:!!isLoop });
+                setAttributes({isLoop: !!isLoop});
             }
         }, [isLoop, setAttributes]);
 

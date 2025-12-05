@@ -11,6 +11,9 @@
     "uniqueId": {
       "type": "string"
     },
+    "isLoop": {
+      "type": "boolean"
+    },
     "wpbs-slider-settings": {
       "type": "object",
       "show_in_rest": true

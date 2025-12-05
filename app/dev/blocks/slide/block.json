@@ -9,6 +9,12 @@
   "parent": [
     "wpbs/slider-wrapper"
   ],
+  "styles": [
+    {
+      "name": "image",
+      "label": "Image"
+    }
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string"

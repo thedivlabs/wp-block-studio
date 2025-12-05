@@ -227,7 +227,7 @@ registerBlockType(metadata.name, {
             return (
                 <>
                     <SlideInspector attributes={attributes} updateSettings={updateSettings} />
-                    <BlockWrapper props={{ attributes }} className={classNames} showAppender={false}>
+                    <BlockWrapper props={{ attributes }} className={classNames} showAppender={!isImageStyle(attributes)}>
                         {renderSlideContent(settings, attributes, true)}
                     </BlockWrapper>
                 </>

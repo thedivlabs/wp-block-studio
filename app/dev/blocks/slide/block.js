@@ -178,13 +178,29 @@ function renderSlideContent(settings, attributes, isEditor = false) {
 function getCssProps(settings) {
     const baseProps = settings?.props || {};
     const breakpoints = settings?.breakpoints || {};
-    const contain = baseProps.contain ?? null;
 
-    const css = { props: { "--contain": contain }, breakpoints: {} };
+    const contain = baseProps.contain ? "contain" : null;
+    const origin = baseProps.origin ?? null;
+
+    const css = {
+        props: {
+            "--image-size": contain,
+            "--image-origin": origin,
+        },
+        breakpoints: {},
+    };
 
     Object.entries(breakpoints).forEach(([bpKey, bpEntry]) => {
         const bpProps = bpEntry?.props || {};
-        css.breakpoints[bpKey] = { props: { "--contain": bpProps.contain ?? null } };
+        const bpContain = bpProps.contain ? "contain" : null;
+        const bpOrigin = bpProps.origin ?? null;
+
+        css.breakpoints[bpKey] = {
+            props: {
+                "--image-size": bpContain,
+                "--image-origin": bpOrigin,
+            },
+        };
     });
 
     return cleanObject(css);

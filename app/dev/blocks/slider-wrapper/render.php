@@ -19,7 +19,6 @@ $default_query = [
 	'post_type'      => 'post',
 	'taxonomy'       => '',
 	'term'           => '',
-	'posts_per_page' => 12,
 	'orderby'        => 'date',
 	'order'          => 'DESC',
 ];

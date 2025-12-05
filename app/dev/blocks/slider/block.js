@@ -89,15 +89,18 @@ registerBlockType(metadata.name, {
             [settings, setAttributes]
         );
 
-        // Update loop query settings
         const handleLoopChange = useCallback(
             (nextQuery) => {
-                setAttributes({
-                    "wpbs-query": {
-                        ...querySettings,
-                        ...nextQuery,
-                    },
-                });
+                const newQuerySettings = {
+                    ...querySettings,
+                    ...nextQuery,
+                };
+
+                if (!isEqual(querySettings, newQuerySettings)) {
+                    setAttributes({
+                        "wpbs-query": newQuerySettings,
+                    });
+                }
             },
             [querySettings, setAttributes]
         );

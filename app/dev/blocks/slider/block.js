@@ -93,13 +93,13 @@ registerBlockType(metadata.name, {
         const handleLoopChange = useCallback(
             (nextQuery) => {
                 setAttributes({
-                    "wpbs-slider": {
-                        ...settings,
+                    "wpbs-query": {
+                        ...querySettings,
                         query: nextQuery,
                     },
                 });
             },
-            [settings, setAttributes]
+            [querySettings, setAttributes]
         );
 
         const inspectorPanel = useMemo(() => (

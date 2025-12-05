@@ -7,9 +7,12 @@ import {BreakpointPanels} from "Components/BreakpointPanels";
 // Base slider fields
 const BASE_SLIDER_NUMERIC_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
+    {slug: "slidesPerGroup", type: "number", label: "Group", min: 0, step: 0.5},
     {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
     {slug: "duration", type: "number", label: "Duration", min: 0, step: 100},
+    {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
+    {slug: "zoom", type: "number", label: "Zoom", min: 0, step: 1},
     {
         slug: "effect",
         type: "select",
@@ -20,11 +23,19 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
             {label: "Fade", value: "fade"},
         ],
     },
+    {slug: "slidesOffsetBefore", type: "number", label: "Offset Before", step: 10},
+    {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},
 ];
 
 const BASE_SLIDER_TOGGLE_FIELDS = [
     {slug: "loop", type: "toggle", label: "Loop"},
     {slug: "freeMode", type: "toggle", label: "Free Mode"},
+    {slug: "centeredSlides", type: "toggle", label: "Centered"},
+    {slug: "centerInsufficientSlides", type: "toggle", label: "Center"},
+    {slug: "keyboard", type: "toggle", label: "Keyboard"},
+    {slug: "mousewheel", type: "toggle", label: "Mousewheel"},
+    {slug: "preventClicks", type: "toggle", label: "Clicks"},
+    {slug: "rewind", type: "toggle", label: "Rewind"},
 ];
 
 // Breakpoint slider fields
@@ -32,6 +43,7 @@ const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
     {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
+    {slug: "duration", type: "number", label: "Duration", min: 0, step: 100},
 ];
 
 export function SliderInspector({attributes, updateSettings}) {

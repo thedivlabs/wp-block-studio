@@ -73,7 +73,7 @@ registerBlockType(metadata.name, {
         const classNames = getClassNames(attributes, settings);
 
         useEffect(() => {
-            setCss(getCssProps(settings), true);
+            setCss(getCssProps(settings));
         }, [JSON.stringify(settings), setCss]);
 
         // Update wpbs-slider attribute
@@ -100,6 +100,7 @@ registerBlockType(metadata.name, {
     }, {
         hasChildren: true,
         hasBackground: false,
+        bpMin: true,
     }),
 
 // block.js
@@ -119,6 +120,7 @@ registerBlockType(metadata.name, {
     }, {
         hasChildren: true,
         hasBackground: false,
+        bpMin: true,
     }),
 
 });

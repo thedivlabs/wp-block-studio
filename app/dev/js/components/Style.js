@@ -59,7 +59,7 @@ export const withStyle = (Component, config) => (props) => {
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
 
-    const {hasBackground = true, hasAdvanced = true, hasChildren, tagName} = config || {};
+    const {hasBackground = true, hasAdvanced = true, hasChildren, tagName, bpMin = false} = config || {};
 
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
@@ -175,10 +175,9 @@ export const withStyle = (Component, config) => (props) => {
     }, [styleData, blockGapDeps, uniqueId, bgData]);
 
     const applyCss = useCallback(
-        (raw, bpMin = false) => {
+        (raw) => {
             if (!raw || typeof raw !== "object") return;
 
-            // <-- NEW
             const sorted = sortBreakpointsDescending(
                 raw,
                 WPBS?.settings?.breakpoints || {}
@@ -218,6 +217,7 @@ export const withStyle = (Component, config) => (props) => {
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,
                     group: uniqueId,
+                    bpMin: bpMin,
                     props,
                     styleRef,
                 });

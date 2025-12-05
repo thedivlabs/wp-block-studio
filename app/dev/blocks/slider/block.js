@@ -72,7 +72,7 @@ registerBlockType(metadata.name, {
         return (
             <BlockWrapper
                 className={classNames}
-                data-wp-interactive="wpbs-slider"
+                data-wp-interactive="wpbs/slider"
                 data-wp-init="observeSlider" // ← auto-call the callback
                 data-wp-context={JSON.stringify(settings || {})}
             />

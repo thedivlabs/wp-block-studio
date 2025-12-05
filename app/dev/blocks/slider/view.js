@@ -2,7 +2,7 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
 store('wpbs/slider', {
-    callbacks: {
+    actions: {
         observeSlider: () => {
             const {ref: element} = getElement();
             const {context} = getContext();

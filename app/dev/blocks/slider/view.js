@@ -15,11 +15,10 @@ store('wpbs/slider', {
 
             const swiperArgs = { breakpoints: {} };
 
-            // Helper to normalize and transform props
             const normalizeProp = (key, value) => {
                 if (value === 'true') value = true;
                 else if (value === 'false') value = false;
-                else if (value !== '' && !isNaN(Number(value))) value = Number(value);
+                else if (typeof value === 'string' && value !== '' && !isNaN(Number(value))) value = Number(value);
 
                 if (SPECIAL_PROP_MAP[key]) {
                     value = SPECIAL_PROP_MAP[key](value);

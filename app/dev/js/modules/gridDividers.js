@@ -4,10 +4,10 @@ export function gridDividers(element, args = {}, uniqueId = false) {
     const {divider, breakpoints: bpConfig = {}} = args;
     if (!divider) return;
 
-    const container = element.querySelector(':scope > .loop-container');
+    const container = element.querySelector(':scope > .grid-container');
     if (!container) return;
 
-    const cards = container.querySelectorAll('.loop-card');
+    const cards = container.querySelectorAll('.grid-card');
     const total = cards.length;
     if (total === 0) return;
 
@@ -61,54 +61,54 @@ export function gridDividers(element, args = {}, uniqueId = false) {
     // Original rule generator (unchanged)
     // ------------------------------------------------------------------
     const buildRules = (cols, lastRow) => [
-        `${selector} .loop-container > .loop-card:nth-of-type(${cols}n+1):after { 
+        `${selector} .grid-container > .grid-card:nth-of-type(${cols}n+1):after { 
         content: none !important; 
     }`,
 
-        `${selector} .loop-container > .loop-card:nth-of-type(n+${cols + 1}):after { 
+        `${selector} .grid-container > .grid-card:nth-of-type(n+${cols + 1}):after { 
         height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));
         top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
     }`,
 
-        `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) > .loop-card:before { 
+        `${selector} .grid-container:has(> .grid-card:nth-of-type(${cols + 1})) > .grid-card:before { 
         content: ""; 
     }`,
 
-        `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) 
-        > .loop-card:nth-of-type(-n+${cols + 1}):after { 
+        `${selector} .grid-container:has(> .grid-card:nth-of-type(${cols + 1})) 
+        > .grid-card:nth-of-type(-n+${cols + 1}):after { 
         height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));
         top: 0;
     }`,
 
-        `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) 
-        > .loop-card:nth-of-type(n+${cols + 2}):after { 
+        `${selector} .grid-container:has(> .grid-card:nth-of-type(${cols + 1})) 
+        > .grid-card:nth-of-type(n+${cols + 2}):after { 
         height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));
         top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
     }`,
 
-        `${selector} .loop-container > .loop-card:nth-of-type(${cols}n):before {
+        `${selector} .grid-container > .grid-card:nth-of-type(${cols}n):before {
         width: calc(100% + calc(var(--grid-col-gap) / 2));
     }`,
 
-        `${selector} .loop-container > .loop-card:nth-of-type(${cols}n+1):before {
+        `${selector} .grid-container > .grid-card:nth-of-type(${cols}n+1):before {
         width: ${cols > 1
             ? 'calc(100% + calc(var(--grid-col-gap) / 2))'
             : '100%'};
         left: 0;
     }`,
 
-        `${selector} .loop-container:has(> .loop-card:nth-of-type(${cols + 1})) 
-        > .loop-card:nth-last-of-type(-n+${lastRow}):after {
+        `${selector} .grid-container:has(> .grid-card:nth-of-type(${cols + 1})) 
+        > .grid-card:nth-last-of-type(-n+${lastRow}):after {
         height: calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;
         top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
     }`,
 
-        `${selector} .loop-container > .loop-card:nth-last-of-type(-n+${lastRow}):before { 
+        `${selector} .grid-container > .grid-card:nth-last-of-type(-n+${lastRow}):before { 
         content: none !important; 
     }`,
 
         // ✅ NEW: keep the vertical line, but remove the icon on the last row
-        `${selector} .loop-container > .loop-card:nth-last-of-type(-n+${lastRow - 1}):after {
+        `${selector} .grid-container > .grid-card:nth-last-of-type(-n+${lastRow - 1}):after {
         content: "" !important;
     }`,
     ];

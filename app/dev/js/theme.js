@@ -75,7 +75,7 @@ class WPBS_Theme {
             const masonryData = Masonry.data(container) || false;
             const gutterSizer = container.querySelector(':scope > .gutter-sizer');
 
-            const total = container.querySelectorAll(':scope > .loop-card').length;
+            const total = container.querySelectorAll(':scope > .grid-card').length;
             const cols = parseInt(getComputedStyle(container).getPropertyValue('--columns'))
 
             if (masonryData) {
@@ -89,8 +89,8 @@ class WPBS_Theme {
             container.classList.add('masonry');
 
             const masonry = new Masonry(container, {
-                itemSelector: '.loop-card',
-                //columnWidth: '.loop-card',
+                itemSelector: '.grid-card',
+                //columnWidth: '.grid-card',
                 gutter: gutterSizer,
                 percentPosition: true,
                 horizontalOrder: true,
@@ -150,7 +150,6 @@ class WPBS_Theme {
         document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
-
 
 
         });

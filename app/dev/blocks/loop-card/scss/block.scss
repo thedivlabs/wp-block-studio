@@ -1,7 +1,7 @@
-.wpbs-loop-card {
+.wpbs-grid-card {
   position: relative;
 
-  a.wpbs-loop-card__link {
+  a.wpbs-grid-card__link {
     position: absolute;
     top: 0;
     left: 0;
@@ -12,7 +12,7 @@
 }
 
 body:not(.wp-admin):not(.editor-styles-wrapper) {
-  .--loop .wpbs-loop-card {
+  .--loop .wpbs-grid-card {
 
     transition: opacity 0.4s ease, transform 0.4s ease;
     transition-delay: var(--delay, 0ms);

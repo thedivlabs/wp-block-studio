@@ -12,7 +12,7 @@ const getClassNames = (attributes = {}, styleData) => {
 
     return [
         selector,
-        'loop-container w-full flex flex-wrap relative z-20',
+        'grid-container w-full flex flex-wrap relative z-20',
         "block",
         "relative",
     ]

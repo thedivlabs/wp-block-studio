@@ -14,6 +14,10 @@
     "wpbs-slider-settings": {
       "type": "object",
       "show_in_rest": true
+    },
+    "wpbs-query": {
+      "type": "object",
+      "show_in_rest": true
     }
   },
   "allowedBlocks": [
@@ -28,7 +32,7 @@
     }
   ],
   "providesContext": {
-    "wpbs/loopQuery": "loopQuery",
+    "wpbs/query": "wpbs-query",
     "wpbs/settings": "wpbs-slider-settings"
   },
   "supports": {

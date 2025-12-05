@@ -15,7 +15,7 @@ const getClassNames = (attributes = {}, styleData) => {
 
     return [
         selector,
-        'loop-card',
+        'grid-card',
         "w-full",
         "flex",
         "swiper-slide",

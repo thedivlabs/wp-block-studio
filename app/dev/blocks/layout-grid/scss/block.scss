@@ -6,9 +6,6 @@
   justify-content: flex-start;
   box-sizing: border-box;
 
-  --space: calc(var(--column-gap, 0px) * (var(--columns, 1) - 1));
-  --column-width: calc((100% - var(--space, 0px)) / var(--columns, 3));
-
   &:not(.active) .loop-button {
     display: none;
   }

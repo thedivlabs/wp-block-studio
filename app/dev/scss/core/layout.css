@@ -1,14 +1,19 @@
 /* Loop card sizing */
-.loop-card {
+.grid-card {
   max-width: calc((100% - (var(--grid-col-gap, 0px) * (var(--columns, var(--slides, 2)) - 1))) / var(--columns, var(--slides, 1)));
 }
 
+.grid-container {
+  --space: calc(var(--column-gap, 0px) * (var(--columns, 1) - 1));
+  --column-width: calc((100% - var(--space, 0px)) / var(--columns, 3));
+}
+
 /* Masonry layout */
-.loop-container.masonry .loop-card {
+.grid-container.masonry .grid-card {
   margin-bottom: var(--grid-row-gap, var(--grid-col-gap, 0px));
 }
 
-.loop-container.masonry .loop-card.last-row-item {
+.grid-container.masonry .grid-card.last-row-item {
   margin-bottom: 0;
 
   &:before {
@@ -36,8 +41,8 @@
 /* ============================================================
    Base shared styles (positioning + font baseline)
    ============================================================ */
-.--divider .loop-card::before,
-.--divider .loop-card::after {
+.--divider .grid-card::before,
+.--divider .grid-card::after {
   position: absolute;
   z-index: 10;
   display: flex;
@@ -52,7 +57,7 @@
 /* ============================================================
    Horizontal line (::before)
    ============================================================ */
-.--divider .loop-card::before {
+.--divider .grid-card::before {
   content: "";
   left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
   width: calc(100% + var(--grid-col-gap, var(--grid-row-gap, 0px)));
@@ -65,7 +70,7 @@
 /* ============================================================
    Vertical divider + icon (::after)
    ============================================================ */
-.--divider .loop-card::after {
+.--divider .grid-card::after {
   left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
   top: 0;
   height: 100%;

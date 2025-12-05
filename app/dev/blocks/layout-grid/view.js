@@ -19,7 +19,7 @@ store("wpbs/layout-grid", {
             if (!container) return;
 
             requestAnimationFrame(() => {
-                const newCards = container.querySelectorAll(".loop-card.--loading");
+                const newCards = container.querySelectorAll(".grid-card.--loading");
 
                 newCards.forEach((card, i) => {
                     card.style.setProperty("--delay", `${i * 100}ms`);
@@ -51,7 +51,7 @@ store("wpbs/layout-grid", {
 
             // Save instance state
             el._wpbs = {
-                container: el.querySelector(".loop-container") ?? el,
+                container: el.querySelector(".grid-container") ?? el,
                 template,
                 page: pagination.page,
                 totalPages: pagination.totalPages,
@@ -142,7 +142,7 @@ store("wpbs/layout-grid", {
             const context = getContext();
             const grid = el.closest(".wpbs-layout-grid");
             const instance = grid?._wpbs;
-            
+
             if (!instance || !instance.hasMore) return;
 
             const nextPage = instance.page + 1;

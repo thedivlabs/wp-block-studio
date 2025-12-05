@@ -7,8 +7,6 @@ $query_settings  = $block->context['wpbs/query'] ?? [];
 $is_loop         = ! empty( $block->context['wpbs/isLoop'] );
 $is_current      = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
-WPBS::console_log( $block->context );
-
 // If not a loop, output the normal content and exit
 if ( ! $is_loop ) {
 	echo $content ?? null;

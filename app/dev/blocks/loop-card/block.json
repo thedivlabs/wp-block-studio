@@ -1,10 +1,10 @@
 {
   "apiVersion": 3,
-  "name": "wpbs/grid-card",
+  "name": "wpbs/loop-card",
   "title": "Loop Card",
   "description": "Display a loop card",
   "selectors": {
-    "root": ".wpbs-grid-card"
+    "root": ".wpbs-loop-card"
   },
   "attributes": {
     "uniqueId": {

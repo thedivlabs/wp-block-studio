@@ -9,10 +9,10 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useEffect} from "@wordpress/element";
 import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
 
-const selector = "wpbs-grid-card";
+const selector = "wpbs-loop-card";
 
 const getClassNames = (attributes = {}, styleData) => {
-    const {"wpbs-grid-card": settings} = attributes;
+    const {"wpbs-loop-card": settings} = attributes;
 
     return [
         selector,
@@ -30,7 +30,7 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
-        "wpbs-grid-card": {
+        "wpbs-loop-card": {
             type: "object",
             default: {},
         },
@@ -40,7 +40,7 @@ registerBlockType(metadata.name, {
         (props) => {
 
             const {attributes, styleData, BlockWrapper, context, setAttributes} = props;
-            const {'wpbs-grid-card': settings = {}} = attributes;
+            const {'wpbs-loop-card': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 
             const {'wpbs/isLoop': isLoop} = context;
@@ -63,7 +63,7 @@ registerBlockType(metadata.name, {
                             defaultValue={settings?.link}
                             callback={(val) =>
                                 setAttributes({
-                                    'wpbs-grid-card': {
+                                    'wpbs-loop-card': {
                                         ...settings,
                                         link: val,
                                     }
@@ -87,7 +87,7 @@ registerBlockType(metadata.name, {
         const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
-        const {isLoop = false, 'wpbs-grid-card': settings} = attributes;
+        const {isLoop = false, 'wpbs-loop-card': settings} = attributes;
 
         return (
             <BlockWrapper
@@ -95,7 +95,7 @@ registerBlockType(metadata.name, {
                 className={classNames}
             >
                 <InnerBlocks.Content/>
-                {settings?.link && (<a {...getAnchorProps(settings.link)} className={'wpbs-grid-card__link'}><span
+                {settings?.link && (<a {...getAnchorProps(settings.link)} className={'wpbs-loop-card__link'}><span
                     className={'screen-reader-text'}>{settings?.link?.title ?? 'Learn more'}</span> </a>)}
             </BlockWrapper>
         );

@@ -351,6 +351,7 @@ class WPBS {
 		//wp_enqueue_style( 'swiper-css' );
 		//wp_enqueue_script( 'swiper-js' );
 		//wp_enqueue_style( 'swiper-css' );
+		wp_enqueue_style( 'wpbs-editor-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_style( 'wpbs-bundle-css' );
 

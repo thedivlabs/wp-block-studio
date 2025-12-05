@@ -14,10 +14,6 @@
     "isLoop": {
       "type": "boolean"
     },
-    "wpbs-slider-settings": {
-      "type": "object",
-      "show_in_rest": true
-    },
     "wpbs-query": {
       "type": "object",
       "show_in_rest": true

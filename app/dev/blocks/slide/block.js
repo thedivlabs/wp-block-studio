@@ -232,7 +232,7 @@ registerBlockType(metadata.name, {
 
                         {/* Title link only */}
                         {attributes["wpbs-slide"]?.props?.link?.url && (
-                            <a {...getAnchorProps(attributes["wpbs-slide"].props.link)}>
+                            <a {...getAnchorProps(attributes["wpbs-slide"].props.link)} className={'wpbs-slide__link'}>
                                 <span className="screen-reader-text">{attributes["wpbs-slide"].props.link.title || ""}</span>
                             </a>
                         )}

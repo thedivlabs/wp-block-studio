@@ -72,6 +72,8 @@ registerBlockType(metadata.name, {
         const settings = attributes["wpbs-slider"];
         const classNames = getClassNames(attributes, settings);
 
+        const isLoop = (attributes?.className ?? '').includes('is-style-loop');
+
         useEffect(() => {
             setCss(getCssProps(settings));
         }, [JSON.stringify(settings), setCss]);
@@ -88,7 +90,7 @@ registerBlockType(metadata.name, {
 
         const inspectorPanel = useMemo(
             () => <SliderInspector attributes={attributes} updateSettings={updateSettings}/>,
-            [settings, updateSettings]
+            [settings, updateSettings,isLoop]
         );
 
         return (

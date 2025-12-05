@@ -91,21 +91,18 @@ export function SliderInspector({attributes, updateSettings}) {
                                            }) => renderFields(entry, update, true), [renderFields]);
 
     return (
-        <>
-
-            <InspectorControls group="styles">
-                <PanelBody
-                    initialOpen={false}
-                    className="wpbs-block-controls is-style-unstyled"
-                    title={"Slider"}
-                >
-                    <BreakpointPanels
-                        value={value}
-                        onChange={handlePanelsChange}
-                        render={{base: renderBase, breakpoints: renderBreakpoints}}
-                    />
-                </PanelBody>
-            </InspectorControls>
-        </>
+        <InspectorControls group="styles">
+            <PanelBody
+                initialOpen={false}
+                className="wpbs-block-controls is-style-unstyled"
+                title={"Slider"}
+            >
+                <BreakpointPanels
+                    value={value}
+                    onChange={handlePanelsChange}
+                    render={{base: renderBase, breakpoints: renderBreakpoints}}
+                />
+            </PanelBody>
+        </InspectorControls>
     );
 }

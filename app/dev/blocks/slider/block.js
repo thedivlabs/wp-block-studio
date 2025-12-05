@@ -40,7 +40,7 @@ registerBlockType(metadata.name, {
         // Update wpbs-slider attribute
         const updateSettings = useCallback(
             (nextValue) => {
-                if (!isEqual(cleanObject(settings), cleanObject(nextValue))) {
+                if (!isEqual(settings, nextValue)) {
                     setAttributes({"wpbs-slider": nextValue});
                 }
             },
@@ -73,7 +73,7 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 className={classNames}
                 data-wp-interactive="wpbs/slider"
-                data-wp-init="observeSlider" // ← auto-call the callback
+                data-wp-init="actions.observe" // ← auto-call the callback
                 data-wp-context={JSON.stringify(settings || {})}
             />
         );

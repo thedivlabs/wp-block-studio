@@ -28,13 +28,13 @@ const getStyles = (attributes = {}) => {
 };
 
 const NavigationContent = ({options = {}}) => {
-    const buttonClass = "wpbs-slider-nav__btn";
+    const buttonClass = "wpbs-slider-button";
 
-    const prevClass = [buttonClass, "wpbs-slider-nav__btn--prev wpbs-slider-btn--prev"]
+    const prevClass = [buttonClass, "wpbs-slider-button--prev"]
         .filter(Boolean)
         .join(" ");
 
-    const nextClass = [buttonClass, "wpbs-slider-nav__btn--next wpbs-slider-btn--next"]
+    const nextClass = [buttonClass, "wpbs-slider-button--next"]
         .filter(Boolean)
         .join(" ");
 

@@ -17,8 +17,8 @@ export default class Slider {
         const mergedArgs = merge({}, SWIPER_ARGS_VIEW, {
             navigation: {
                 enabled: true,
-                nextEl: element.querySelector('.wpbs-slider-button-next'),
-                prevEl: element.querySelector('.wpbs-slider-button-prev'),
+                nextEl: element.querySelector('.wpbs-slider-button--next'),
+                prevEl: element.querySelector('.wpbs-slider-button--prev'),
             },
             pagination: {
                 el: element.querySelector('.swiper-pagination'),

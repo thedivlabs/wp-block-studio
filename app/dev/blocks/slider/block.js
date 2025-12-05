@@ -3,23 +3,22 @@ import metadata from "./block.json";
 
 import {SliderInspector} from "./controls";
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
+import {Loop} from "Components/Loop";
+import {BreakpointPanels} from "Components/BreakpointPanels";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {cleanObject} from "Includes/helper";
+import {InspectorControls} from "@wordpress/block-editor";
 
 const selector = "wpbs-slider";
 
 const getClassNames = (attributes = {}, settings = {}) => {
-
     const baseProps = settings?.props ?? {};
-
     return [
         selector,
         "h-auto w-full max-h-full flex flex-col swiper",
         !!baseProps?.collapse ? '--collapse' : null,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    ].filter(Boolean).join(" ");
 };
 
 function getCssProps(settings) {
@@ -39,10 +38,8 @@ function getCssProps(settings) {
 
     Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
         const bpProps = bpEntry?.props || {};
-
         const slides = bpProps.slidesPerView ?? null;
         const space = `${bpProps.spaceBetween ?? 0}px`;
-
         css.breakpoints[bpKey] = {
             props: {
                 "--space": space,
@@ -54,7 +51,6 @@ function getCssProps(settings) {
     return cleanObject(css);
 }
 
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -62,13 +58,12 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         "wpbs-slider": {
             type: "object",
-            default: {props: {}, breakpoints: {}},
+            default: {props: {}, breakpoints: {}, query: {}},
         },
     },
 
     edit: withStyle((props) => {
         const {attributes, BlockWrapper, setAttributes, setCss} = props;
-
         const settings = attributes["wpbs-slider"];
         const classNames = getClassNames(attributes, settings);
 
@@ -86,14 +81,39 @@ registerBlockType(metadata.name, {
             [settings, setAttributes]
         );
 
-        const inspectorPanel = useMemo(
-            () => <SliderInspector attributes={attributes} updateSettings={updateSettings}/>,
+        // Loop updater
+        const updateQuerySettings = useCallback(
+            (nextQuery) => {
+                const current = settings.query || {};
+                if (!isEqual(current, nextQuery)) {
+                    updateSettings({...settings, query: nextQuery});
+                }
+            },
             [settings, updateSettings]
         );
 
+        const loopControls = useMemo(() => {
+            return settings.style === "loop" ? (
+                <Loop value={settings.query || {}} onChange={updateQuerySettings}/>
+            ) : null;
+        }, [settings.style, settings.query, updateQuerySettings]);
+
         return (
             <>
-                {inspectorPanel}
+                <InspectorControls group={'styles'}>
+                    {loopControls}
+                    <BreakpointPanels
+                        value={settings}
+                        onChange={updateSettings}
+                        label="Slider Breakpoints"
+                        render={{
+                            base: (props) => <SliderInspector {...props} attributes={attributes}
+                                                              updateSettings={updateSettings}/>,
+                            breakpoints: (props) => <SliderInspector {...props} attributes={attributes}
+                                                                     updateSettings={updateSettings}/>,
+                        }}
+                    />
+                </InspectorControls>
                 <BlockWrapper props={props} className={classNames}/>
             </>
         );
@@ -103,7 +123,6 @@ registerBlockType(metadata.name, {
         bpMin: true,
     }),
 
-// block.js
     save: withStyleSave((props) => {
         const {attributes, BlockWrapper} = props;
         const settings = attributes["wpbs-slider"];
@@ -113,7 +132,7 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 className={classNames}
                 data-wp-interactive="wpbs/slider"
-                data-wp-init="actions.observe" // ← auto-call the callback
+                data-wp-init="actions.observe"
                 data-wp-context={JSON.stringify(settings || {})}
             />
         );
@@ -122,5 +141,4 @@ registerBlockType(metadata.name, {
         hasBackground: false,
         bpMin: true,
     }),
-
 });

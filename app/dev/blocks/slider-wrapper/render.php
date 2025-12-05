@@ -3,11 +3,11 @@ declare( strict_types=1 );
 
 // Original loop/context logic from layout-grid-container
 $slider_settings = $block->context['wpbs/slider'] ?? [];
-$query_settings = $block->context['wpbs/query'] ?? [];
-$is_loop        = str_contains($slider_settings['className'] ?? '', 'is-style-loop');
-$is_current     = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
+$query_settings  = $block->context['wpbs/query'] ?? [];
+$is_loop         = ! empty( $block->context['wpbs/isLoop'] );
+$is_current      = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
-WPBS::console_log($is_loop);
+WPBS::console_log( $is_loop );
 
 // If not a loop, output the normal content and exit
 if ( ! $is_loop ) {

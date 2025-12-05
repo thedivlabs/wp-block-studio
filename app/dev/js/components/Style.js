@@ -167,6 +167,7 @@ export const withStyle = (Component, config) => (props) => {
 
         onStyleChange({
             css: blockCssRef.current,
+            bpMin: bpMin,
             preload: blockPreloadRef.current,
             group: uniqueId,
             props,

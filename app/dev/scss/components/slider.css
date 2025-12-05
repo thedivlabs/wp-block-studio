@@ -1,11 +1,12 @@
-
-
-
 .swiper {
   width: 100%;
   height: auto;
   display: flex !important;
   flex-direction: column;
+
+  .swiper-slide {
+    max-width: calc((100% - (var(--space, 0px) * (var(--slides, 2) - 1))) / var(--slides, 1));
+  }
 
   .swiper-wrapper {
     min-width: 100%;

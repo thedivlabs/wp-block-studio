@@ -70,6 +70,7 @@ registerBlockType(metadata.name, {
         const {attributes, BlockWrapper, setAttributes, setCss} = props;
 
         const settings = attributes["wpbs-slider"];
+        const querySettings = attributes["wpbs-query"];
         const classNames = getClassNames(attributes, settings);
 
         const isLoop = (attributes?.className ?? '').includes('is-style-loop');
@@ -104,13 +105,13 @@ registerBlockType(metadata.name, {
         const inspectorPanel = useMemo(() => (
             <>
                 {isLoop && (
-                    <PanelBody title="Loop" initialOpen={false} className="wpbs-block-controls is-style-unstyled">
-                        <Loop value={settings.query || {}} onChange={handleLoopChange} />
+                    <PanelBody title="Loop" initialOpen={false} className="wpbs-block-controls">
+                        <Loop value={querySettings || {}} onChange={handleLoopChange} />
                     </PanelBody>
                 )}
                 <SliderInspector attributes={attributes} updateSettings={updateSettings} />
             </>
-        ), [attributes, updateSettings, settings, handleLoopChange, isLoop]);
+        ), [updateSettings, settings, handleLoopChange, isLoop,querySettings]);
 
         return (
             <>

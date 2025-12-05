@@ -10,8 +10,8 @@ import { InnerBlocks, InspectorControls } from "@wordpress/block-editor";
 import { BreakpointPanels } from "Components/BreakpointPanels";
 import { Field } from "Components/Field";
 import ResponsivePicture from "Components/ResponsivePicture";
-import Link, { getAnchorProps } from "Components/Link";
-import { resolveFeaturedMedia, cleanObject } from "Includes/helper";
+import Link from "Components/Link";
+import { resolveFeaturedMedia, cleanObject, getAnchorProps } from "Includes/helper";
 import { isEqual } from "lodash";
 
 // ------------------------
@@ -50,26 +50,10 @@ const normalizeSettings = (raw) => {
 // ------------------------
 // Slide Inspector
 // ------------------------
-function SlideInspector({ attributes, updateSettings }) {
+function SlideInspector({ attributes, updateSettings, showImageControls }) {
     const rawSettings = attributes["wpbs-slide"] || {};
     const value = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
     const sharedConfig = useMemo(() => ({ isToolsPanel: false }), []);
-
-    // Link control
-    const linkControl = useMemo(
-        () => (
-            <Link
-                defaultValue={value?.props?.link}
-                callback={(link) =>
-                    updateSettings({
-                        ...value,
-                        props: { ...value.props, link },
-                    })
-                }
-            />
-        ),
-        [value, updateSettings]
-    );
 
     const handlePanelsChange = useCallback(
         (nextValue) => updateSettings(normalizeSettings(nextValue)),
@@ -78,6 +62,8 @@ function SlideInspector({ attributes, updateSettings }) {
 
     const renderFields = useCallback(
         (entry, updateEntry, bpKey) => {
+            if (!showImageControls) return null;
+
             const settings = entry?.props || {};
             const applyPatch = (patch) =>
                 updateEntry({ ...entry, props: { ...entry.props, ...patch } });
@@ -87,25 +73,29 @@ function SlideInspector({ attributes, updateSettings }) {
 
             return (
                 <Grid columns={1} rowGap={20} style={{ padding: 12 }}>
-                    {/* First grid: main fields */}
+                    {/* Main fields */}
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         {mainFields.map((slug) => {
                             const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find((f) => f.slug === slug);
-                            return <Field key={slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />;
+                            return (
+                                <Field key={slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
+                            );
                         })}
                     </Grid>
 
-                    {/* Second grid: toggles */}
+                    {/* Toggle fields */}
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         {toggleFields.map((slug) => {
                             const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find((f) => f.slug === slug);
-                            return <Field key={slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />;
+                            return (
+                                <Field key={slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
+                            );
                         })}
                     </Grid>
                 </Grid>
             );
         },
-        [sharedConfig]
+        [sharedConfig, showImageControls]
     );
 
     const renderBase = useCallback(({ entry, update }) => renderFields(entry, update, false), [renderFields]);
@@ -113,14 +103,26 @@ function SlideInspector({ attributes, updateSettings }) {
 
     return (
         <InspectorControls group="styles">
-            {linkControl}
-            <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title="Slide">
-                <BreakpointPanels
-                    value={value}
-                    onChange={handlePanelsChange}
-                    render={{ base: renderBase, breakpoints: renderBreakpoints }}
+            {showImageControls && (
+                <Link
+                    defaultValue={value?.props?.link}
+                    callback={(link) =>
+                        updateSettings({
+                            ...value,
+                            props: { ...value.props, link },
+                        })
+                    }
                 />
-            </PanelBody>
+            )}
+            {showImageControls && (
+                <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title="Slide">
+                    <BreakpointPanels
+                        value={value}
+                        onChange={handlePanelsChange}
+                        render={{ base: renderBase, breakpoints: renderBreakpoints }}
+                    />
+                </PanelBody>
+            )}
         </InspectorControls>
     );
 }
@@ -128,7 +130,9 @@ function SlideInspector({ attributes, updateSettings }) {
 // ------------------------
 // Get classes
 // ------------------------
-const getClassNames = (attributes = {}) => ["wpbs-slide", attributes.uniqueId ?? "", "w-full flex"].join(" ");
+const getClassNames = (attributes = {}) => {
+    return ["wpbs-slide", attributes.uniqueId, "w-full", "flex"].filter(Boolean).join(" ");
+};
 
 // ------------------------
 // Render slide content
@@ -137,15 +141,8 @@ function renderSlideContent(settings, attributes, isEditor = false) {
     const baseProps = settings.props || {};
     const bpMap = settings.breakpoints || {};
 
-    const wrapWithLink = (content) => {
-        const link = baseProps.link;
-        if (!link) return content;
-        return !isEditor ? <a {...getAnchorProps(link)}>{content}</a> : <a>{content}</a>;
-    };
-
     const finalSettings = { props: { ...baseProps }, breakpoints: {} };
 
-    // Base image
     finalSettings.props.image = resolveFeaturedMedia({
         type: "image",
         media: baseProps.image,
@@ -153,7 +150,6 @@ function renderSlideContent(settings, attributes, isEditor = false) {
         isEditor,
     });
 
-    // Breakpoint images
     Object.entries(bpMap).forEach(([bpKey, bpEntry]) => {
         const bpProps = bpEntry?.props || {};
         finalSettings.breakpoints[bpKey] = {
@@ -169,7 +165,7 @@ function renderSlideContent(settings, attributes, isEditor = false) {
         };
     });
 
-    return wrapWithLink(<ResponsivePicture settings={finalSettings} editor={!!isEditor} />);
+    return <ResponsivePicture settings={finalSettings} editor={!!isEditor} />;
 }
 
 // ------------------------
@@ -234,6 +230,7 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
         "wpbs-slide": { type: "object", default: {} },
+        "title": { type: "string", default: "" },
     },
 
     edit: withStyle(
@@ -257,14 +254,21 @@ registerBlockType(metadata.name, {
                 [settings, setAttributes]
             );
 
-            // Disable InnerBlocks appender if style is image
-            const isImageStyle = true; // your condition if you want to check style attribute
+            const isImageStyle = (attributes?.className ?? "").includes("is-style-image");
 
             return (
                 <>
-                    <SlideInspector attributes={attributes} updateSettings={updateSettings} />
+                    <SlideInspector attributes={attributes} updateSettings={updateSettings} showImageControls={isImageStyle} />
                     <BlockWrapper props={{ attributes }} className={classNames}>
                         {renderSlideContent(settings, attributes, true)}
+
+                        {/* Title link only */}
+                        {attributes.title && attributes["wpbs-slide"]?.props?.link && (
+                            <a {...getAnchorProps(attributes["wpbs-slide"].props.link)}>
+                                <span className="screen-reader-text">{attributes.title}</span>
+                            </a>
+                        )}
+
                         <InnerBlocks
                             templateLock={isImageStyle ? "all" : false}
                             renderAppender={isImageStyle ? false : undefined}
@@ -284,6 +288,13 @@ registerBlockType(metadata.name, {
         return (
             <BlockWrapper props={{ attributes }} className={classNames}>
                 {renderSlideContent(settings, attributes, false)}
+
+                {/* Title link only */}
+                {attributes.title && attributes["wpbs-slide"]?.props?.link && (
+                    <a {...getAnchorProps(attributes["wpbs-slide"].props.link)}>
+                        <span className="screen-reader-text">{attributes.title}</span>
+                    </a>
+                )}
             </BlockWrapper>
         );
     }, { hasChildren: true, hasBackground: true }),

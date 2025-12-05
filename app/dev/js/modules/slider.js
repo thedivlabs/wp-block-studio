@@ -1,7 +1,7 @@
 import {SWIPER_ARGS_VIEW} from 'Includes/config';
 import merge from 'lodash/merge';
 
-export class Slider {
+export default class Slider {
 
     static init() {
         /* [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {

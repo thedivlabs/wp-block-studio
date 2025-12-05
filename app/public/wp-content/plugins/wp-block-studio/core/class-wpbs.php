@@ -323,6 +323,7 @@ class WPBS {
 			'in_footer' => false,
 		] );
 
+		wp_register_style( 'wpbs-editor-css', self::$uri . 'build/editor.css', [], '1.5' );
 		wp_register_style( 'wpbs-theme-css', self::$uri . 'build/theme.css', [], '1.5' );
 		wp_register_style( 'wpbs-admin-css', self::$uri . 'build/admin.css' );
 		wp_register_script( 'wpbs-theme-js', self::$uri . 'build/theme.js', [

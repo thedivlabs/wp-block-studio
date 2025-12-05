@@ -81,7 +81,6 @@ function SlideInspector({ attributes, updateSettings, showImageControls }) {
                             );
                         })}
                     </Grid>
-
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         {toggleFields.map((slug) => {
                             const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find((f) => f.slug === slug);

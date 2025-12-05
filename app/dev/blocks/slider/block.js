@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         "wpbs-slider": {
             type: "object",
-            default: {props: {}, breakpoints: {}, query: {}}, // query stored here
+            default: {props: {}, breakpoints: {}}, // query stored here
         },
     },
 
@@ -95,7 +95,7 @@ registerBlockType(metadata.name, {
                 setAttributes({
                     "wpbs-query": {
                         ...querySettings,
-                        query: nextQuery,
+                        ...nextQuery,
                     },
                 });
             },

@@ -1,11 +1,6 @@
 /* Loop card sizing */
 .grid-card {
-  max-width: calc((100% - (var(--grid-col-gap, 0px) * (var(--columns, var(--slides, 2)) - 1))) / var(--columns, var(--slides, 1)));
-}
-
-.grid-container {
-  --space: calc(var(--column-gap, 0px) * (var(--columns, 1) - 1));
-  --column-width: calc((100% - var(--space, 0px)) / var(--columns, 3));
+  max-width: calc((100% - (var(--grid-col-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
 }
 
 /* Masonry layout */

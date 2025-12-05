@@ -10,8 +10,8 @@ import { InnerBlocks, InspectorControls } from "@wordpress/block-editor";
 import { BreakpointPanels } from "Components/BreakpointPanels";
 import { Field } from "Components/Field";
 import ResponsivePicture from "Components/ResponsivePicture";
-import Link, {getAnchorProps} from "Components/Link";
-import { resolveFeaturedMedia, cleanObject } from "Includes/helper";
+import Link, { getAnchorProps } from "Components/Link";
+import { cleanObject } from "Includes/helper";
 import { isEqual } from "lodash";
 
 // ------------------------
@@ -73,7 +73,6 @@ function SlideInspector({ attributes, updateSettings, showImageControls }) {
 
             return (
                 <Grid columns={1} rowGap={20} style={{ padding: 12 }}>
-                    {/* Main fields */}
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         {mainFields.map((slug) => {
                             const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find((f) => f.slug === slug);
@@ -83,7 +82,6 @@ function SlideInspector({ attributes, updateSettings, showImageControls }) {
                         })}
                     </Grid>
 
-                    {/* Toggle fields */}
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         {toggleFields.map((slug) => {
                             const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find((f) => f.slug === slug);
@@ -138,33 +136,7 @@ const getClassNames = (attributes = {}) => {
 // Render slide content
 // ------------------------
 function renderSlideContent(settings, attributes, isEditor = false) {
-    const baseProps = settings.props || {};
-    const bpMap = settings.breakpoints || {};
-
-    const finalSettings = { props: { ...baseProps }, breakpoints: {} };
-
-    finalSettings.props.image = resolveFeaturedMedia({
-        type: "image",
-        media: baseProps.image,
-        resolution: (baseProps.resolution || "large").toUpperCase(),
-        isEditor,
-    });
-
-    Object.entries(bpMap).forEach(([bpKey, bpEntry]) => {
-        const bpProps = bpEntry?.props || {};
-        finalSettings.breakpoints[bpKey] = {
-            props: {
-                ...bpProps,
-                image: resolveFeaturedMedia({
-                    type: "image",
-                    media: bpProps.image || baseProps.image,
-                    resolution: (bpProps.resolution || baseProps.resolution || "large").toUpperCase(),
-                    isEditor,
-                }),
-            },
-        };
-    });
-
+    const finalSettings = { props: { ...settings.props }, breakpoints: { ...settings.breakpoints } };
     return <ResponsivePicture settings={finalSettings} editor={!!isEditor} />;
 }
 
@@ -175,26 +147,20 @@ function getCssProps(settings) {
     const baseProps = settings?.props || {};
     const breakpoints = settings?.breakpoints || {};
 
-    const contain = baseProps.contain ? "contain" : null;
-    const origin = baseProps.origin ?? null;
-
     const css = {
         props: {
-            "--image-size": contain,
-            "--image-origin": origin,
+            "--image-size": baseProps.contain ? "contain" : null,
+            "--image-origin": baseProps.origin ?? null,
         },
         breakpoints: {},
     };
 
     Object.entries(breakpoints).forEach(([bpKey, bpEntry]) => {
         const bpProps = bpEntry?.props || {};
-        const bpContain = bpProps.contain ? "contain" : null;
-        const bpOrigin = bpProps.origin ?? null;
-
         css.breakpoints[bpKey] = {
             props: {
-                "--image-size": bpContain,
-                "--image-origin": bpOrigin,
+                "--image-size": bpProps.contain ? "contain" : null,
+                "--image-origin": bpProps.origin ?? null,
             },
         };
     });
@@ -237,7 +203,7 @@ registerBlockType(metadata.name, {
         ({ attributes, BlockWrapper, setAttributes, setCss, setPreload }) => {
             const rawSettings = attributes["wpbs-slide"] || {};
             const settings = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
-            const classNames = getClassNames(attributes, settings);
+            const classNames = getClassNames(attributes);
 
             useEffect(() => {
                 setCss(getCssProps(settings));
@@ -258,11 +224,15 @@ registerBlockType(metadata.name, {
 
             return (
                 <>
-                    <SlideInspector attributes={attributes} updateSettings={updateSettings} showImageControls={isImageStyle} />
+                    <SlideInspector
+                        attributes={attributes}
+                        updateSettings={updateSettings}
+                        showImageControls={isImageStyle}
+                    />
                     <BlockWrapper props={{ attributes }} className={classNames}>
                         {renderSlideContent(settings, attributes, true)}
 
-                        {/* Title link only */}
+                        {/* Title link */}
                         {attributes.title && attributes["wpbs-slide"]?.props?.link && (
                             <a {...getAnchorProps(attributes["wpbs-slide"].props.link)}>
                                 <span className="screen-reader-text">{attributes.title}</span>
@@ -281,15 +251,14 @@ registerBlockType(metadata.name, {
     ),
 
     save: withStyleSave(({ attributes, BlockWrapper }) => {
-        const rawSettings = attributes["wpbs-slide"] || {};
-        const settings = normalizeSettings(rawSettings);
+        const settings = normalizeSettings(attributes["wpbs-slide"]);
         const classNames = getClassNames(attributes);
 
         return (
             <BlockWrapper props={{ attributes }} className={classNames}>
                 {renderSlideContent(settings, attributes, false)}
 
-                {/* Title link only */}
+                {/* Title link */}
                 {attributes.title && attributes["wpbs-slide"]?.props?.link && (
                     <a {...getAnchorProps(attributes["wpbs-slide"].props.link)}>
                         <span className="screen-reader-text">{attributes.title}</span>

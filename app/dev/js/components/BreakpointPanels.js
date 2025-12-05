@@ -136,9 +136,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
             <div className="wpbs-layout-tools__panel" key="base">
-                <div className="wpbs-layout-tools__header">
-                    <strong>{label ?? "Base"}</strong>
-                </div>
+                {label && <div className="wpbs-layout-tools__header">
+                    <strong>{label}</strong>
+                </div>}
 
                 <div className="wpbs-layout-tools__grid">
                     {render.base({

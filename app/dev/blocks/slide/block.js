@@ -283,7 +283,7 @@ registerBlockType(metadata.name, {
     save: withStyleSave(({ attributes, BlockWrapper }) => {
         const rawSettings = attributes["wpbs-slide"] || {};
         const settings = normalizeSettings(rawSettings);
-        const classNames = getClassNames(attributes, settings);
+        const classNames = getClassNames(attributes);
 
         return (
             <BlockWrapper props={{ attributes }} className={classNames}>

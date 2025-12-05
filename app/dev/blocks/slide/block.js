@@ -1,40 +1,40 @@
 import "./scss/block.scss";
 
-import {registerBlockType} from "@wordpress/blocks";
+import { registerBlockType } from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {useMemo, useCallback, useEffect} from "@wordpress/element";
-import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
-import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
-import {BreakpointPanels} from "Components/BreakpointPanels";
-import {Field} from "Components/Field";
+import { STYLE_ATTRIBUTES, withStyle, withStyleSave } from "Components/Style";
+import { useMemo, useCallback, useEffect } from "@wordpress/element";
+import { PanelBody, __experimentalGrid as Grid } from "@wordpress/components";
+import { InnerBlocks, InspectorControls } from "@wordpress/block-editor";
+import { BreakpointPanels } from "Components/BreakpointPanels";
+import { Field } from "Components/Field";
 import ResponsivePicture from "Components/ResponsivePicture";
-import Link, {getAnchorProps} from "Components/Link";
-import {resolveFeaturedMedia, getBreakpointPropsList, anyProp, cleanObject} from "Includes/helper";
-import {isEqual} from "lodash";
+import Link, { getAnchorProps } from "Components/Link";
+import { resolveFeaturedMedia, cleanObject } from "Includes/helper";
+import { isEqual } from "lodash";
 
 // ------------------------
 // Slide control fields
 // ------------------------
-import {ORIGIN_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
+import { ORIGIN_OPTIONS, RESOLUTION_OPTIONS } from "Includes/config";
 
 const IMAGE_FIELDS = [
-    {slug: "image", type: "image", label: "Image", full: true},
-    {slug: "resolution", type: "select", label: "Size", options: RESOLUTION_OPTIONS},
+    { slug: "image", type: "image", label: "Image", full: true },
+    { slug: "resolution", type: "select", label: "Size", options: RESOLUTION_OPTIONS },
 ];
 
 const BASE_FIELDS = [
     ...IMAGE_FIELDS,
-    {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
-    {slug: "contain", type: "toggle", label: "Contain"},
-    {slug: "eager", type: "toggle", label: "Eager"},
+    { slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS },
+    { slug: "contain", type: "toggle", label: "Contain" },
+    { slug: "eager", type: "toggle", label: "Eager" },
 ];
 
 const BREAKPOINT_FIELDS = [
     ...IMAGE_FIELDS,
-    {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
-    {slug: "contain", type: "toggle", label: "Contain"},
+    { slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS },
+    { slug: "contain", type: "toggle", label: "Contain" },
 ];
 
 // ------------------------
@@ -42,32 +42,34 @@ const BREAKPOINT_FIELDS = [
 // ------------------------
 const normalizeSettings = (raw) => {
     if (raw && (raw.props || raw.breakpoints)) {
-        return {props: raw.props || {}, breakpoints: raw.breakpoints || {}};
+        return { props: raw.props || {}, breakpoints: raw.breakpoints || {} };
     }
-    return {props: raw || {}, breakpoints: {}};
+    return { props: raw || {}, breakpoints: {} };
 };
 
 // ------------------------
 // Slide Inspector
 // ------------------------
-function SlideInspector({attributes, updateSettings}) {
+function SlideInspector({ attributes, updateSettings }) {
     const rawSettings = attributes["wpbs-slide"] || {};
     const value = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
-    const sharedConfig = useMemo(() => ({isToolsPanel: false}), []);
+    const sharedConfig = useMemo(() => ({ isToolsPanel: false }), []);
 
     // Link control
-    const linkControl = useMemo(() => (
-        <Link
-            defaultValue={value?.props?.link}
-            callback={(link) => updateSettings({
-                ...value,
-                props: {
-                    ...value.props,
-                    link,
-                },
-            })}
-        />
-    ), [value, updateSettings]);
+    const linkControl = useMemo(
+        () => (
+            <Link
+                defaultValue={value?.props?.link}
+                callback={(link) =>
+                    updateSettings({
+                        ...value,
+                        props: { ...value.props, link },
+                    })
+                }
+            />
+        ),
+        [value, updateSettings]
+    );
 
     const handlePanelsChange = useCallback(
         (nextValue) => updateSettings(normalizeSettings(nextValue)),
@@ -77,25 +79,26 @@ function SlideInspector({attributes, updateSettings}) {
     const renderFields = useCallback(
         (entry, updateEntry, bpKey) => {
             const settings = entry?.props || {};
-            const applyPatch = (patch) => updateEntry({...entry, props: {...entry.props, ...patch}});
+            const applyPatch = (patch) =>
+                updateEntry({ ...entry, props: { ...entry.props, ...patch } });
 
             const mainFields = ["image", "resolution", "origin"];
             const toggleFields = bpKey ? ["contain"] : ["contain", "eager"];
 
             return (
-                <Grid columns={1} rowGap={20} style={{padding: 12}}>
+                <Grid columns={1} rowGap={20} style={{ padding: 12 }}>
                     {/* First grid: main fields */}
                     <Grid columns={2} columnGap={15} rowGap={20}>
-                        {mainFields.map(slug => {
-                            const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find(f => f.slug === slug);
+                        {mainFields.map((slug) => {
+                            const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find((f) => f.slug === slug);
                             return <Field key={slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />;
                         })}
                     </Grid>
 
                     {/* Second grid: toggles */}
                     <Grid columns={2} columnGap={15} rowGap={20}>
-                        {toggleFields.map(slug => {
-                            const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find(f => f.slug === slug);
+                        {toggleFields.map((slug) => {
+                            const field = (BASE_FIELDS.concat(BREAKPOINT_FIELDS)).find((f) => f.slug === slug);
                             return <Field key={slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />;
                         })}
                     </Grid>
@@ -105,14 +108,18 @@ function SlideInspector({attributes, updateSettings}) {
         [sharedConfig]
     );
 
-    const renderBase = useCallback(({entry, update}) => renderFields(entry, update, false), [renderFields]);
-    const renderBreakpoints = useCallback(({entry, update, bpKey}) => renderFields(entry, update, bpKey), [renderFields]);
+    const renderBase = useCallback(({ entry, update }) => renderFields(entry, update, false), [renderFields]);
+    const renderBreakpoints = useCallback(({ entry, update, bpKey }) => renderFields(entry, update, bpKey), [renderFields]);
 
     return (
         <InspectorControls group="styles">
             {linkControl}
             <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title="Slide">
-                <BreakpointPanels value={value} onChange={handlePanelsChange} render={{base: renderBase, breakpoints: renderBreakpoints}} />
+                <BreakpointPanels
+                    value={value}
+                    onChange={handlePanelsChange}
+                    render={{ base: renderBase, breakpoints: renderBreakpoints }}
+                />
             </PanelBody>
         </InspectorControls>
     );
@@ -121,21 +128,7 @@ function SlideInspector({attributes, updateSettings}) {
 // ------------------------
 // Get classes
 // ------------------------
-const getClassNames = (attributes = {}, settings = {}) => {
-    const base = settings.props || {};
-    const bpPropsList = getBreakpointPropsList(settings);
-    const hasImage = anyProp(base, bpPropsList, "image");
-
-    return [
-        "wpbs-slide",
-        attributes.uniqueId ?? "",
-        "w-full flex",
-        anyProp(base, bpPropsList, "contain") ? "--contain" : null,
-        !hasImage ? "--empty" : null,
-    ]
-        .filter(Boolean)
-        .join(" ");
-};
+const getClassNames = (attributes = {}) => ["wpbs-slide", attributes.uniqueId ?? "", "w-full flex"].join(" ");
 
 // ------------------------
 // Render slide content
@@ -150,7 +143,7 @@ function renderSlideContent(settings, attributes, isEditor = false) {
         return !isEditor ? <a {...getAnchorProps(link)}>{content}</a> : <a>{content}</a>;
     };
 
-    const finalSettings = {props: {...baseProps}, breakpoints: {}};
+    const finalSettings = { props: { ...baseProps }, breakpoints: {} };
 
     // Base image
     finalSettings.props.image = resolveFeaturedMedia({
@@ -187,11 +180,11 @@ function getCssProps(settings) {
     const breakpoints = settings?.breakpoints || {};
     const contain = baseProps.contain ?? null;
 
-    const css = {props: {"--contain": contain}, breakpoints: {}};
+    const css = { props: { "--contain": contain }, breakpoints: {} };
 
     Object.entries(breakpoints).forEach(([bpKey, bpEntry]) => {
         const bpProps = bpEntry?.props || {};
-        css.breakpoints[bpKey] = {props: {"--contain": bpProps.contain ?? null}};
+        css.breakpoints[bpKey] = { props: { "--contain": bpProps.contain ?? null } };
     });
 
     return cleanObject(css);
@@ -203,13 +196,13 @@ function getPreload(settings) {
     const breakpoints = settings?.breakpoints || {};
 
     if (baseProps.eager && baseProps.image?.id && !baseProps.image.isPlaceholder) {
-        preload.push({id: baseProps.image.id, type: "image", resolution: baseProps.resolution || "large"});
+        preload.push({ id: baseProps.image.id, type: "image", resolution: baseProps.resolution || "large" });
     }
 
     Object.entries(breakpoints).forEach(([bpKey, bpEntry]) => {
         const bpImage = bpEntry?.props?.image;
         if (bpImage?.id && !bpImage.isPlaceholder) {
-            preload.push({id: bpImage.id, type: "image", resolution: bpEntry.props.resolution || "large", breakpoint: bpKey});
+            preload.push({ id: bpImage.id, type: "image", resolution: bpEntry.props.resolution || "large", breakpoint: bpKey });
         }
     });
 
@@ -224,47 +217,58 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
-        "wpbs-slide": {type: "object", default: {}},
+        "wpbs-slide": { type: "object", default: {} },
     },
 
-    edit: withStyle((props) => {
-        const {attributes, BlockWrapper, setAttributes, setCss, setPreload} = props;
-        const rawSettings = attributes["wpbs-slide"] || {};
-        const settings = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
-        const classNames = getClassNames(attributes, settings);
+    edit: withStyle(
+        ({ attributes, BlockWrapper, setAttributes, setCss, setPreload }) => {
+            const rawSettings = attributes["wpbs-slide"] || {};
+            const settings = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
+            const classNames = getClassNames(attributes, settings);
 
-        useEffect(() => {
-            setCss(getCssProps(settings));
-            setPreload(getPreload(settings));
-        }, [settings, setCss, setPreload]);
+            useEffect(() => {
+                setCss(getCssProps(settings));
+                setPreload(getPreload(settings));
+            }, [settings, setCss, setPreload]);
 
-        const updateSettings = useCallback((nextValue) => {
-            const normalized = normalizeSettings(nextValue);
-            if (!isEqual(settings, normalized)) {
-                setAttributes({"wpbs-slide": normalized});
-            }
-        }, [settings, setAttributes]);
+            const updateSettings = useCallback(
+                (nextValue) => {
+                    const normalized = normalizeSettings(nextValue);
+                    if (!isEqual(settings, normalized)) {
+                        setAttributes({ "wpbs-slide": normalized });
+                    }
+                },
+                [settings, setAttributes]
+            );
 
-        return (
-            <>
-                <SlideInspector attributes={attributes} updateSettings={updateSettings} />
-                <BlockWrapper props={props} className={classNames}>
-                    {renderSlideContent(settings, attributes, true)}
-                </BlockWrapper>
-            </>
-        );
-    }, {hasChildren: true, hasBackground: true}),
+            // Disable InnerBlocks appender if style is image
+            const isImageStyle = true; // your condition if you want to check style attribute
 
-    save: withStyleSave((props) => {
-        const {attributes, BlockWrapper} = props;
+            return (
+                <>
+                    <SlideInspector attributes={attributes} updateSettings={updateSettings} />
+                    <BlockWrapper props={{ attributes }} className={classNames}>
+                        {renderSlideContent(settings, attributes, true)}
+                        <InnerBlocks
+                            templateLock={isImageStyle ? "all" : false}
+                            renderAppender={isImageStyle ? false : undefined}
+                        />
+                    </BlockWrapper>
+                </>
+            );
+        },
+        { hasChildren: true, hasBackground: true }
+    ),
+
+    save: withStyleSave(({ attributes, BlockWrapper }) => {
         const rawSettings = attributes["wpbs-slide"] || {};
         const settings = normalizeSettings(rawSettings);
         const classNames = getClassNames(attributes, settings);
 
         return (
-            <BlockWrapper props={props} className={classNames}>
+            <BlockWrapper props={{ attributes }} className={classNames}>
                 {renderSlideContent(settings, attributes, false)}
             </BlockWrapper>
         );
-    }, {hasChildren: true, hasBackground: true}),
+    }, { hasChildren: true, hasBackground: true }),
 });

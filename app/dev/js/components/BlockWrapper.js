@@ -167,7 +167,7 @@ export const BlockWrapper = ({
         const containerProps = useInnerBlocksProps(
             {className: containerClass},
             {
-                templateLock: !!showAppender ? 'all' : false,
+                templateLock: !showAppender ? 'all' : false,
                 renderAppender: !!showAppender ? undefined : false,
             }
         );
@@ -186,7 +186,7 @@ export const BlockWrapper = ({
 
     if (hasChildren) {
         const innerProps = useInnerBlocksProps(blockProps, {
-            templateLock: !!showAppender ? 'all' : false,
+            templateLock: !showAppender ? 'all' : false,
             renderAppender: !!showAppender ? undefined : false,
         });
         return (

@@ -1,94 +1,81 @@
 import {SWIPER_ARGS_VIEW} from 'Includes/config';
 import merge from 'lodash/merge';
 
-
-export default class Slider {
+class Slider {
 
     static init() {
-
-        [...document.querySelectorAll('.wpbs-slider.swiper')].forEach((swiperEl) => {
-            this.observe(swiperEl);
-        })
-
-
+        [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
+            this.observe(el);
+        });
     }
 
-
     static observe(element, args = {}) {
-
         if (element.classList.contains('swiper-initialized')) {
             return;
         }
 
         const mergedArgs = merge({}, SWIPER_ARGS_VIEW, {
-                navigation: {
-                    enabled: true,
-                    nextEl: element.querySelector('.wpbs-slider-nav__btn--next'),
-                    prevEl: element.querySelector('.wpbs-slider-nav__btn--prev'),
-                },
-                pagination: {
-                    el: element.querySelector('.swiper-pagination'),
-                }
+            navigation: {
+                enabled: true,
+                nextEl: element.querySelector('.wpbs-slider-button-next'),
+                prevEl: element.querySelector('.wpbs-slider-button-prev'),
             },
-            args);
+            pagination: {
+                el: element.querySelector('.swiper-pagination'),
+            }
+        }, args);
 
-        let observerIntersection = new IntersectionObserver((entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
+        const observer = new IntersectionObserver((entries, observerInstance) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
 
-                    observerIntersection.unobserve(element);
+                observerInstance.unobserve(element);
 
-                    if (entry.target.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide').length <= 1) {
-                        return false;
+                const slides = entry.target.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide');
+                if (slides.length <= 1) return;
+
+                this.initLib().then(() => {
+                    try {
+                        new Swiper(entry.target, mergedArgs);
+                    } catch (e) {
+                        console.error('Failed to initialize Swiper:', e);
                     }
-
-                    this.initLib().then(() => {
-
-                        try {
-                            new Swiper(entry.target, mergedArgs);
-                        } catch (e) {
-                            console.error('Failed to initialize Swiper:', e);
-                        }
-                    })
-
-                }
+                });
             });
-
         }, {
             root: null,
-            rootMargin: "90px",
+            rootMargin: '90px',
             threshold: 0,
         });
 
-        observerIntersection.observe(element);
+        observer.observe(element);
     }
 
-    static async initLib() {
-        if (typeof window.Swiper !== 'function') {
+    static initLib() {
+        if (!this._libPromise) {
+            if (typeof window.Swiper === 'function') {
+                this._libPromise = Promise.resolve();
+            } else {
+                const stylesheet = document.createElement('link');
+                stylesheet.id = 'wpbs-swiper-styles';
+                stylesheet.rel = 'stylesheet';
+                stylesheet.type = 'text/css';
+                stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+                document.head.appendChild(stylesheet);
 
-            let stylesheet = document.createElement('link');
-            stylesheet.id = 'wpbs-swiper-styles';
-            stylesheet.rel = 'stylesheet';
-            stylesheet.type = 'text/css';
-            stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-
-            document.head.appendChild(stylesheet);
-
-            return new Promise((resolve, reject) => {
-                const script_tag = document.createElement('script');
-                script_tag.id = 'wpbs-swiper-js';
-                script_tag.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-                script_tag.defer = true;
-                script_tag.async = true;
-                script_tag.onload = resolve;
-                script_tag.onerror = reject;
-                document.body.appendChild(script_tag);
-            });
-
-        } else {
-            return Promise.resolve();
+                this._libPromise = new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.id = 'wpbs-swiper-js';
+                    script.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+                    script.defer = true;
+                    script.async = true;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.body.appendChild(script);
+                });
+            }
         }
+        return this._libPromise;
     }
-
 
 }

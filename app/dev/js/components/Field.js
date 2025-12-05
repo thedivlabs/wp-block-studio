@@ -50,7 +50,7 @@ export const Field = memo(
             .filter(Boolean)
             .join(" ");
 
-        const { colors, gradients } = useMemo(() => getEditorPalettes(), []);
+        const {colors, gradients} = useMemo(() => getEditorPalettes(), []);
 
         //
         // UNIVERSAL commit wrapper — always sends { slug: newValue }
@@ -78,7 +78,7 @@ export const Field = memo(
         //
         switch (type) {
             case "border": {
-                const { BorderControl } = wp.components || {};
+                const {BorderControl} = wp.components || {};
 
                 if (!BorderControl) {
                     control = null;
@@ -98,7 +98,7 @@ export const Field = memo(
                         enableStyle={true}
                         colors={colors}              // ← your colors from editor settings
                         gradients={gradients}              // ← your colors from editor settings
-                        onChange={(v) => commit({ [slug]: v })}
+                        onChange={(v) => commit({[slug]: v})}
                         __nextHasNoMarginBottom
                         __next40pxDefaultSize
                         {...controlProps}
@@ -256,6 +256,7 @@ export const Field = memo(
                         value={value || defaultValue}
                         aria-label={label}
                         onChange={(v) => commit({[slug]: v})}
+                        isShiftStepEnabled={true}
                         {...controlProps}
                     />
                 );

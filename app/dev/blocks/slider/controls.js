@@ -8,10 +8,9 @@ import {BreakpointPanels} from "Components/BreakpointPanels";
 const BASE_SLIDER_NUMERIC_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
-    {slug: "spaceBetween", type: "number", label: "Space"},
-    {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
+    {slug: "spaceBetween", type: "number", label: "Space", min: 0, step: 5, shiftStep: 10},
+    {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5, shiftStep: 1},
     {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
-    {slug: "zoom", type: "number", label: "Zoom", min: 0, step: 1},
     {
         slug: "effect",
         type: "select",
@@ -46,8 +45,8 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
 const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
-    {slug: "spaceBetween", type: "number", label: "Space"},
-    {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
+    {slug: "spaceBetween", type: "number", label: "Space", min: 0, step: 5, shiftStep: 10},
+    {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5, shiftStep: 1},
     {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
     {slug: "slidesOffsetBefore", type: "number", label: "Offset Before", step: 10},
     {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},

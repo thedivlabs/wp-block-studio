@@ -7,7 +7,7 @@ import {BreakpointPanels} from "Components/BreakpointPanels";
 // Base slider fields
 const BASE_SLIDER_NUMERIC_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
-    {slug: "slidesPerGroup", type: "number", label: "Group", min: 0, step: 0.5},
+    {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
     {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
     {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
@@ -45,7 +45,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
 // Breakpoint slider fields
 const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
-    {slug: "slidesPerGroup", type: "number", label: "Group", min: 0, step: 0.5},
+    {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
     {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
     {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},

@@ -1,12 +1,12 @@
 import {SWIPER_ARGS_VIEW} from 'Includes/config';
 import merge from 'lodash/merge';
 
-class Slider {
+export class Slider {
 
     static init() {
-        [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
-            this.observe(el);
-        });
+        /* [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
+             this.observe(el);
+         });*/
     }
 
     static observe(element, args = {}) {

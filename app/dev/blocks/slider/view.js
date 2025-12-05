@@ -1,16 +1,15 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
-
-const {state} = store('wpbs/slider', {
+store('wpbs/slider', {
     callbacks: {
         observeSlider: () => {
             const {ref: element} = getElement();
+            const {context} = getContext();
 
-            let {args} = getContext();
-
-            //WPBS.slider.observe(element, JSON.parse(JSON.stringify(args)));
-
+            const args = JSON.parse(JSON.stringify(context));
+            console.log(args);
+            
+            WPBS.slider.observe(element, args);
         },
-    }
-
+    },
 });

@@ -39,7 +39,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
     {slug: "mousewheel", type: "toggle", label: "Mousewheel"},
     {slug: "preventClicks", type: "toggle", label: "Clicks"},
     {slug: "rewind", type: "toggle", label: "Rewind"},
-    {slug: "collapse", type: "toggle", label: "Collapse"},
+    {slug: "disabled", type: "toggle", label: "Collapse"},
 ];
 
 // Breakpoint slider fields
@@ -58,7 +58,7 @@ const BREAKPOINT_SLIDER_TOGGLE_FIELDS = [
     {slug: "keyboard", type: "toggle", label: "Keyboard"},
     {slug: "mousewheel", type: "toggle", label: "Mousewheel"},
     {slug: "rewind", type: "toggle", label: "Rewind"},
-    {slug: "collapse", type: "toggle", label: "Collapse"},
+    {slug: "disabled", type: "toggle", label: "Collapse"},
 ];
 
 export function SliderInspector({attributes, updateSettings}) {

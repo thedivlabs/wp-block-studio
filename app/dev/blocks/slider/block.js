@@ -12,9 +12,13 @@ import {cleanObject} from "Includes/helper";
 const selector = "wpbs-slider";
 
 const getClassNames = (attributes = {}, settings = {}) => {
+
+    const baseProps = settings?.props ?? {};
+
     return [
         selector,
         "h-auto w-full max-h-full flex flex-col swiper",
+        !!baseProps?.collapse ? '--collapse' : null,
     ]
         .filter(Boolean)
         .join(" ");

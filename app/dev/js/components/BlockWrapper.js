@@ -13,7 +13,7 @@ const {cleanObject} = API;
 
 const BlockBackground = memo(
     ({attributes}) => {
-        return <BackgroundElement attributes={attributes} isSave={false} />;
+        return <BackgroundElement attributes={attributes} isSave={false}/>;
     },
     (prev, next) =>
         _.isEqual(
@@ -85,6 +85,7 @@ export const BlockWrapper = ({
                                  config = {},
                                  children,
                                  isSave = false,
+                                 showAppender = true,
                              }) => {
     const {attributes} = props;
 
@@ -130,11 +131,11 @@ export const BlockWrapper = ({
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>
-                        <InnerBlocks.Content />
+                        <InnerBlocks.Content/>
                         {children}
                     </div>
 
-                    <BackgroundElement attributes={attributes} isSave={true} />
+                    <BackgroundElement attributes={attributes} isSave={true}/>
                 </Tag>
             );
         }
@@ -142,7 +143,7 @@ export const BlockWrapper = ({
         if (hasChildren) {
             return (
                 <Tag {...saveProps}>
-                    <InnerBlocks.Content />
+                    <InnerBlocks.Content/>
                     {children}
                 </Tag>
             );
@@ -152,7 +153,7 @@ export const BlockWrapper = ({
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>{children}</div>
-                    <BackgroundElement attributes={attributes} isSave={true} />
+                    <BackgroundElement attributes={attributes} isSave={true}/>
                 </Tag>
             );
         }
@@ -165,7 +166,9 @@ export const BlockWrapper = ({
     if (hasContainer || isBackgroundActive) {
         const containerProps = useInnerBlocksProps(
             {className: containerClass},
-            {}
+            {
+                renderAppender: !!showAppender ? undefined : false,
+            }
         );
 
         return (
@@ -175,13 +178,15 @@ export const BlockWrapper = ({
                     {children}
                 </div>
 
-                <BlockBackground attributes={attributes} />
+                <BlockBackground attributes={attributes}/>
             </Tag>
         );
     }
 
     if (hasChildren) {
-        const innerProps = useInnerBlocksProps(blockProps, {});
+        const innerProps = useInnerBlocksProps(blockProps, {
+            renderAppender: !!showAppender ? undefined : false,
+        });
         return (
             <Tag {...innerProps}>
                 {innerProps.children}

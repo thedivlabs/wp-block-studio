@@ -10,7 +10,6 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0, step: 0.5},
     {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
-    {slug: "duration", type: "number", label: "Duration", min: 0, step: 100},
     {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
     {slug: "zoom", type: "number", label: "Zoom", min: 0, step: 1},
     {
@@ -21,6 +20,11 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
             {label: "Select", value: ""},
             {label: "Slide", value: "slide"},
             {label: "Fade", value: "fade"},
+            {label: "Cube", value: "cube"},
+            {label: "Coverflow", value: "coverflow"},
+            {label: "Flip", value: "flip"},
+            {label: "Creative", value: "creative"},
+            {label: "Cards", value: "cards"},
         ],
     },
     {slug: "slidesOffsetBefore", type: "number", label: "Offset Before", step: 10},
@@ -41,9 +45,12 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
 // Breakpoint slider fields
 const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "slidesPerView", type: "number", label: "Slides"},
+    {slug: "slidesPerGroup", type: "number", label: "Group", min: 0, step: 0.5},
     {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
-    {slug: "duration", type: "number", label: "Duration", min: 0, step: 100},
+    {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
+    {slug: "slidesOffsetBefore", type: "number", label: "Offset Before", step: 10},
+    {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},
 ];
 
 export function SliderInspector({attributes, updateSettings}) {

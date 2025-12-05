@@ -25,7 +25,7 @@ function getCssProps(settings) {
     const breakpoints = settings?.breakpoints || {};
 
     const slides = baseProps.slidesPerView ?? null;
-    const space = `${baseProps.spaceBetween ?? 0}px`;
+    const space = baseProps.spaceBetween;
 
     const css = {
         props: {
@@ -39,7 +39,7 @@ function getCssProps(settings) {
         const bpProps = bpEntry?.props || {};
 
         const slides = bpProps.slidesPerView ?? null;
-        const space = `${bpProps.spaceBetween ?? 0}px`;
+        const space = bpProps.spaceBetween;
 
         css.breakpoints[bpKey] = {
             props: {
@@ -72,7 +72,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setCss(getCssProps(settings), true);
-        }, [settings, setCss]);
+        }, [JSON.stringify(settings), setCss]);
 
         // Update wpbs-slider attribute
         const updateSettings = useCallback(

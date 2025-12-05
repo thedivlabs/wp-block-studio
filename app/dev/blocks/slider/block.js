@@ -71,7 +71,7 @@ registerBlockType(metadata.name, {
         const classNames = getClassNames(attributes, settings);
 
         useEffect(() => {
-            setCss(getCssProps(settings));
+            setCss(getCssProps(settings), true);
         }, [settings, setCss]);
 
         // Update wpbs-slider attribute

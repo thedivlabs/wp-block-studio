@@ -175,7 +175,7 @@ export const withStyle = (Component, config) => (props) => {
     }, [styleData, blockGapDeps, uniqueId, bgData]);
 
     const applyCss = useCallback(
-        (raw) => {
+        (raw, bpMin = false) => {
             if (!raw || typeof raw !== "object") return;
 
             // <-- NEW
@@ -194,6 +194,7 @@ export const withStyle = (Component, config) => (props) => {
             if (typeof onStyleChange === "function" && styleRef.current) {
                 onStyleChange({
                     css: blockCssRef.current,
+                    bpMin: bpMin,
                     preload: blockPreloadRef.current,
                     group: uniqueId,
                     props,

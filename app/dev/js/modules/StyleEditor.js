@@ -425,8 +425,9 @@ function buildPreloadArray({blockItems = [], incoming = [], current = []} = {}) 
     return _.isEqual(safeCurrent, deduped) ? safeCurrent : deduped;
 }
 
-function buildCssTextFromObject(cssObj = {}, props = {}) {
+function buildCssTextFromObject(cssObj = {}, props = {}, bpMin = false) {
     if (!props) return "";
+    const mq = bpMin ? 'min-width' : 'max-width'
 
     const {attributes, name} = props;
     if (!attributes) return "";
@@ -482,7 +483,7 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
          * --------------------------- */
         if (!_.isEmpty(bpCss.props)) {
             css += `
-                @media (max-width:${maxWidth}px){
+                @media (${mq}:${maxWidth}px){
                     ${selector}{
                         ${buildRules(bpCss.props, true)}
                     }
@@ -497,7 +498,7 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
             const bgSelector = `${selector} > .wpbs-background`;
 
             css += `
-                @media (max-width:${maxWidth}px){
+                @media (${mq}:${maxWidth}px){
                     ${bgSelector}{
                         ${buildRules(bpCss.background, true)}
                     }
@@ -510,7 +511,7 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
          * --------------------------- */
         if (!_.isEmpty(bpCss.hover)) {
             css += `
-                @media (max-width:${maxWidth}px){
+                @media (${mq}:${maxWidth}px){
                     ${selector}:hover{
                         ${buildRules(bpCss.hover, true)}
                     }
@@ -522,7 +523,7 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
     return css;
 }
 
-function onStyleChange({css = {}, preload = [], props, styleRef}) {
+function onStyleChange({css = {}, preload = [], props, styleRef, bpMin = false}) {
 
     if (!props) return;
 
@@ -659,7 +660,7 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         current: prevPreload,
     });
 
-    const cssText = buildCssTextFromObject(cleanedCss, props);
+    const cssText = buildCssTextFromObject(cleanedCss, props, bpMin);
     if (styleRef?.current) {
         styleRef.current.textContent = cssText;
     }

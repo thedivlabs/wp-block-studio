@@ -105,6 +105,13 @@ registerBlockType(metadata.name, {
             [querySettings, setAttributes]
         );
 
+        useEffect(() => {
+            // Only update if the attribute value differs from the current isLoop
+            if (attributes?.isLoop !== isLoop) {
+                setAttributes({ isLoop });
+            }
+        }, [isLoop, setAttributes]);
+
         const inspectorPanel = useMemo(() => (
             <>
                 {isLoop && (

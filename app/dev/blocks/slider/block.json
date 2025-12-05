@@ -33,7 +33,8 @@
   ],
   "providesContext": {
     "wpbs/query": "wpbs-query",
-    "wpbs/slider": "wpbs-slider"
+    "wpbs/slider": "wpbs-slider",
+    "wpbs/isLoop": "isLoop"
   },
   "supports": {
     "innerBlocks": true,
@@ -57,7 +58,9 @@
       "radius": true
     }
   },
-  "editorScript": ["file:./block.js"],
+  "editorScript": [
+    "file:./block.js"
+  ],
   "viewScriptModule": "file:./view.js",
   "style": [
     "file:./block.css",

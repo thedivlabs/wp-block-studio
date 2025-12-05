@@ -9,7 +9,6 @@ import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {BreakpointPanels} from "Components/BreakpointPanels";
 import {Field} from "Components/Field";
-import Link from "Components/Link";
 
 // ------------------------
 // Slide control fields
@@ -21,13 +20,15 @@ const IMAGE_FIELDS = [
     {slug: "resolution", type: "select", label: "Size", options: RESOLUTION_OPTIONS},
 ];
 
-const BASE_STYLE_FIELDS = [
+const BASE_FIELDS = [
+    ...IMAGE_FIELDS,
     {slug: "contain", type: "toggle", label: "Contain"},
     {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
     {slug: "eager", type: "toggle", label: "Eager"},
 ];
 
-const BREAKPOINT_STYLE_FIELDS = [
+const BREAKPOINT_FIELDS = [
+    ...IMAGE_FIELDS,
     {slug: "contain", type: "toggle", label: "Contain"},
     {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
 ];
@@ -48,17 +49,7 @@ const normalizeSettings = (raw) => {
 function SlideInspector({attributes, updateSettings}) {
     const rawSettings = attributes["wpbs-slide"] || {};
     const value = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
-
     const sharedConfig = useMemo(() => ({isToolsPanel: false}), []);
-
-    const LinkControls = useMemo(() => (
-        <Link
-            defaultValue={value?.props?.link}
-            callback={(val) =>
-                updateSettings({...value, props: {...(value.props || {}), link: val}})
-            }
-        />
-    ), [value, updateSettings]);
 
     const handlePanelsChange = useCallback(
         (nextValue) => updateSettings(normalizeSettings(nextValue)),
@@ -70,15 +61,11 @@ function SlideInspector({attributes, updateSettings}) {
             const settings = entry?.props || {};
             const applyPatch = (patch) => updateEntry({...entry, props: {...entry.props, ...patch}});
 
+            const fields = bpKey ? BREAKPOINT_FIELDS : BASE_FIELDS;
+
             return (
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: 12}}>
-                    {/* IMAGE FIELDS */}
-                    {!bpKey && IMAGE_FIELDS.map(field => (
-                        <Field key={field.slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
-                    ))}
-
-                    {/* STYLE FIELDS */}
-                    {(bpKey ? BREAKPOINT_STYLE_FIELDS : BASE_STYLE_FIELDS).map(field => (
+                    {fields.map(field => (
                         <Field key={field.slug} field={field} settings={settings} callback={applyPatch} {...sharedConfig} />
                     ))}
                 </Grid>
@@ -91,15 +78,11 @@ function SlideInspector({attributes, updateSettings}) {
     const renderBreakpoints = useCallback(({entry, update, bpKey}) => renderFields(entry, update, bpKey), [renderFields]);
 
     return (
-        <>
-            {LinkControls}
-
-            <InspectorControls group="styles">
-                <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title="Slide">
-                    <BreakpointPanels value={value} onChange={handlePanelsChange} render={{base: renderBase, breakpoints: renderBreakpoints}} />
-                </PanelBody>
-            </InspectorControls>
-        </>
+        <InspectorControls group="styles">
+            <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title="Slide">
+                <BreakpointPanels value={value} onChange={handlePanelsChange} render={{base: renderBase, breakpoints: renderBreakpoints}} />
+            </PanelBody>
+        </InspectorControls>
     );
 }
 

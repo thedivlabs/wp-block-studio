@@ -73,6 +73,8 @@ export function SliderInspector({attributes, updateSettings}) {
         query: rawSettings.query || {},
     }), [rawSettings]);
 
+    const isLoop = (attributes?.className ?? '').includes('is-style-loop');
+
     const sharedConfig = useMemo(() => ({isToolsPanel: false}), []);
 
     // Update breakpoints/base props
@@ -147,16 +149,22 @@ export function SliderInspector({attributes, updateSettings}) {
 
     return (
         <InspectorControls group="styles">
+            {isLoop && <PanelBody
+                title="Loop"
+                group="styles"
+                initialOpen={false}
+                className="wpbs-block-controls is-style-unstyled"
+            >
+                <div className="wpbs-block-settings">
+                    <Loop value={value.query} onChange={handleQueryChange} />
+                </div>
+            </PanelBody>}
             <PanelBody
                 title="Slider"
                 group="styles"
                 initialOpen={false}
                 className="wpbs-block-controls is-style-unstyled"
             >
-                <div className="wpbs-block-settings">
-                <Loop value={value.query} onChange={handleQueryChange} />
-                </div>
-
                 {/* Breakpoints / base fields */}
                 <BreakpointPanels
                     value={value}

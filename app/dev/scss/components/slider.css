@@ -1,40 +1,33 @@
-.wpbs-slider .swiper-slide {
-  height: auto;
-}
 
-.swiper:not(.swiper--init) .swiper-wrapper {
+
+
+.swiper {
   width: 100%;
-}
+  height: auto;
+  display: flex !important;
+  flex-direction: column;
 
-.swiper .swiper-wrapper {
-  min-width: 100%;
-  display: flex;
-  align-self: flex-start;
-  justify-self: flex-start;
+  .swiper-wrapper {
+    min-width: 100%;
+    display: flex;
+    align-self: flex-start;
+    justify-self: flex-start;
+    height: auto;
+    flex-grow: 1;
+  }
 }
 
 .swiper .swiper-slide {
   width: 100%;
   flex-shrink: 0;
-  margin-right: var(--margin, 0px);
-}
-
-.swiper:not(.swiper--init) .swiper-slide {
-  max-width: calc((100% - (var(--margin, 0px) * (var(--slides, 1) - 1))) / var(--slides, 1));
-}
-
-/* Fade-in modifier */
-.wpbs-slider--fade-in {
-  opacity: 0;
-  transition: opacity 0.3s linear;
-}
-
-.wpbs-slider--fade-in.swiper-initialized {
-  opacity: 1;
+  margin-right: var(--space, 0px);
+  position: relative;
+  box-sizing: border-box;
+  max-width: calc((100% - (var(--space, 0px) * (var(--slides, 2) - 1))) / var(--slides, 1));
 }
 
 /* Collapse + disabled modifiers */
-.wpbs-slider--collapse.swiper--disabled .swiper-wrapper {
+.swiper.--collapse.swiper--disabled .swiper-wrapper {
   display: flex !important;
   flex-direction: column !important;
   justify-content: flex-start !important;

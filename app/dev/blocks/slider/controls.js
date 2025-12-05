@@ -39,6 +39,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
     {slug: "mousewheel", type: "toggle", label: "Mousewheel"},
     {slug: "preventClicks", type: "toggle", label: "Clicks"},
     {slug: "rewind", type: "toggle", label: "Rewind"},
+    {slug: "collapse", type: "toggle", label: "Collapse"},
 ];
 
 // Breakpoint slider fields
@@ -50,6 +51,14 @@ const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
     {slug: "slidesOffsetBefore", type: "number", label: "Offset Before", step: 10},
     {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},
+];
+
+const BREAKPOINT_SLIDER_TOGGLE_FIELDS = [
+    {slug: "freeMode", type: "toggle", label: "Free Mode"},
+    {slug: "keyboard", type: "toggle", label: "Keyboard"},
+    {slug: "mousewheel", type: "toggle", label: "Mousewheel"},
+    {slug: "rewind", type: "toggle", label: "Rewind"},
+    {slug: "collapse", type: "toggle", label: "Collapse"},
 ];
 
 export function SliderInspector({attributes, updateSettings}) {
@@ -88,16 +97,29 @@ export function SliderInspector({attributes, updateSettings}) {
             if (isBreakpoint) {
                 // Breakpoint grid
                 return (
-                    <Grid columns={2} columnGap={15} rowGap={20} style={{padding: "12px"}}>
-                        {BREAKPOINT_SLIDER_FIELDS.map((field) => (
-                            <Field
-                                key={field.slug}
-                                field={field}
-                                settings={settings}
-                                callback={applyPatch}
-                                {...sharedConfig}
-                            />
-                        ))}
+                    <Grid columns={1} columnGap={15} rowGap={20} style={{padding: "12px"}}>
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            {BREAKPOINT_SLIDER_FIELDS.map((field) => (
+                                <Field
+                                    key={field.slug}
+                                    field={field}
+                                    settings={settings}
+                                    callback={applyPatch}
+                                    {...sharedConfig}
+                                />
+                            ))}
+                        </Grid>
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            {BREAKPOINT_SLIDER_TOGGLE_FIELDS.map((field) => (
+                                <Field
+                                    key={field.slug}
+                                    field={field}
+                                    settings={settings}
+                                    callback={applyPatch}
+                                    {...sharedConfig}
+                                />
+                            ))}
+                        </Grid>
                     </Grid>
                 );
             }

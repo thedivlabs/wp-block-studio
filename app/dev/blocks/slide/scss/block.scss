@@ -1,10 +1,5 @@
 .wpbs-slide {
-  position: relative;
-  box-sizing: border-box;
 
-
-  width: 100%;
-  max-width: calc((100% - (var(--space, 0px) * (var(--slides, 2) - 1))) / var(--slides, 1));
 }
 
 

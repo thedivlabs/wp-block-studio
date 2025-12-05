@@ -1,3 +1,4 @@
+// view.js
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
 store('wpbs/slider', {
@@ -8,7 +9,7 @@ store('wpbs/slider', {
 
             const args = JSON.parse(JSON.stringify(context));
             console.log(args);
-            
+            // now the slider gets initialized automatically
             WPBS.slider.observe(element, args);
         },
     },

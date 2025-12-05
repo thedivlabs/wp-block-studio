@@ -63,18 +63,23 @@ registerBlockType(metadata.name, {
         hasBackground: false,
     }),
 
+// block.js
     save: withStyleSave((props) => {
         const {attributes, BlockWrapper} = props;
         const settings = attributes["wpbs-slider"];
         const classNames = getClassNames(attributes, settings);
 
-        return <BlockWrapper
-            className={classNames}
-            data-wp-interactive="wpbs-slider"
-            data-wp-context={JSON.stringify(attributes["wpbs-slider"] || {})}
-        />;
+        return (
+            <BlockWrapper
+                className={classNames}
+                data-wp-interactive="wpbs-slider"
+                data-wp-init="observeSlider" // ← auto-call the callback
+                data-wp-context={JSON.stringify(settings || {})}
+            />
+        );
     }, {
         hasChildren: true,
         hasBackground: false,
     }),
+
 });

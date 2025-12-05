@@ -5,11 +5,11 @@ import {Field} from "Components/Field";
 import {BreakpointPanels} from "Components/BreakpointPanels";
 
 // Base slider fields
-const BASE_SLIDER_FIELDS = [
-    {slug: "slidesPerView", type: "number", label: "Slides per view"},
-    {slug: "spaceBetween", type: "number", label: "Space between slides"},
-    {slug: "loop", type: "toggle", label: "Loop"},
+const BASE_SLIDER_NUMERIC_FIELDS = [
+    {slug: "slidesPerView", type: "number", label: "Slides"},
+    {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
+    {slug: "duration", type: "number", label: "Duration", min: 0, step: 100},
     {
         slug: "effect",
         type: "select",
@@ -20,14 +20,17 @@ const BASE_SLIDER_FIELDS = [
             {label: "Fade", value: "fade"},
         ],
     },
-    {slug: "freeMode", type: "toggle", label: "Free mode"},
-    {slug: "duration", type: "number", label: "Duration", min: 0, step: 100},
+];
+
+const BASE_SLIDER_TOGGLE_FIELDS = [
+    {slug: "loop", type: "toggle", label: "Loop"},
+    {slug: "freeMode", type: "toggle", label: "Free Mode"},
 ];
 
 // Breakpoint slider fields
 const BREAKPOINT_SLIDER_FIELDS = [
-    {slug: "slidesPerView", type: "number", label: "Slides per view"},
-    {slug: "spaceBetween", type: "number", label: "Space between slides"},
+    {slug: "slidesPerView", type: "number", label: "Slides"},
+    {slug: "spaceBetween", type: "number", label: "Space"},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
 ];
 
@@ -64,19 +67,48 @@ export function SliderInspector({attributes, updateSettings}) {
                 updateEntry({props: {...(entry.props || {}), ...patch}});
             };
 
-            const fields = isBreakpoint ? BREAKPOINT_SLIDER_FIELDS : BASE_SLIDER_FIELDS;
+            if (isBreakpoint) {
+                // Breakpoint grid
+                return (
+                    <Grid columns={2} columnGap={15} rowGap={20} style={{padding: "12px"}}>
+                        {BREAKPOINT_SLIDER_FIELDS.map((field) => (
+                            <Field
+                                key={field.slug}
+                                field={field}
+                                settings={settings}
+                                callback={applyPatch}
+                                {...sharedConfig}
+                            />
+                        ))}
+                    </Grid>
+                );
+            }
 
+            // Base fields split: numeric/select top, toggles bottom
             return (
-                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: "12px"}}>
-                    {fields.map((field) => (
-                        <Field
-                            key={field.slug}
-                            field={field}
-                            settings={settings}
-                            callback={applyPatch}
-                            {...sharedConfig}
-                        />
-                    ))}
+                <Grid columns={1} columnGap={15} rowGap={20} style={{padding: "12px"}}>
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        {BASE_SLIDER_NUMERIC_FIELDS.map((field) => (
+                            <Field
+                                key={field.slug}
+                                field={field}
+                                settings={settings}
+                                callback={applyPatch}
+                                {...sharedConfig}
+                            />
+                        ))}
+                    </Grid>
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        {BASE_SLIDER_TOGGLE_FIELDS.map((field) => (
+                            <Field
+                                key={field.slug}
+                                field={field}
+                                settings={settings}
+                                callback={applyPatch}
+                                {...sharedConfig}
+                            />
+                        ))}
+                    </Grid>
                 </Grid>
             );
         },

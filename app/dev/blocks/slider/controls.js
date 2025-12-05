@@ -2,207 +2,96 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {useMemo, useCallback} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
-import {
-    BLEND_OPTIONS,
-    ORIGIN_OPTIONS,
-    RESOLUTION_OPTIONS,
-    OVERLAY_GRADIENTS,
-} from "Includes/config";
-import Link from "Components/Link";
 import {BreakpointPanels} from "Components/BreakpointPanels";
 
-// MAP #1: image-related settings
-const FIGURE_IMAGE_FIELDS = [
-    {slug: "image", type: "image", label: "Image", full: true},
+// Base slider fields
+const BASE_SLIDER_FIELDS = [
+    {slug: "slidesPerView", type: "number", label: "Slides per view"},
+    {slug: "spaceBetween", type: "number", label: "Space between slides"},
+    {slug: "loop", type: "toggle", label: "Loop"},
+    {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
     {
-        slug: "resolution",
+        slug: "effect",
         type: "select",
-        label: "Size",
-        options: RESOLUTION_OPTIONS,
+        label: "Effect",
+        options: [
+            {label: "Select", value: ""},
+            {label: "Slide", value: "slide"},
+            {label: "Fade", value: "fade"},
+        ],
     },
+    {slug: "freeMode", type: "toggle", label: "Free mode"},
+    {slug: "duration", type: "number", label: "Duration", min: 0, step: 100},
 ];
 
-const FIGURE_SETTING_FIELDS = [
-    {slug: "blend", type: "select", label: "Blend", options: BLEND_OPTIONS},
-    {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
-    {
-        slug: "overlay",
-        type: "gradient",
-        label: "Overlay",
-        full: true,
-        gradients: OVERLAY_GRADIENTS,
-    },
-
-    {slug: "eager", type: "toggle", label: "Eager"},
-    {slug: "contain", type: "toggle", label: "Contain"},
+// Breakpoint slider fields
+const BREAKPOINT_SLIDER_FIELDS = [
+    {slug: "slidesPerView", type: "number", label: "Slides per view"},
+    {slug: "spaceBetween", type: "number", label: "Space between slides"},
+    {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5},
 ];
-
-const BREAKPOINT_FIGURE_SETTING_FIELDS = [
-    {slug: "blend", type: "select", label: "Blend", options: BLEND_OPTIONS},
-    {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
-    {
-        slug: "overlay",
-        type: "gradient",
-        label: "Overlay",
-        full: true,
-        gradients: OVERLAY_GRADIENTS,
-    },
-
-    {slug: "contain", type: "toggle", label: "Contain"},
-];
-
-const TYPE_FIELD = {
-    slug: "type",
-    type: "select",
-    label: "Type",
-    options: [
-        {label: "Select", value: ""},
-        {label: "Image", value: "image"},
-        {label: "Featured Image", value: "featured-image"},
-        {label: "Featured Image Mobile", value: "featured-image-mobile"},
-        {label: "Lottie", value: "lottie"},
-    ],
-    full: true,
-};
 
 export function SliderInspector({attributes, updateSettings}) {
     const rawSettings = attributes["wpbs-slider"] || {};
 
-    // Normalize into { props, breakpoints } shape
     const value = useMemo(() => {
-        // New structured format
         if (rawSettings && (rawSettings.props || rawSettings.breakpoints)) {
             return {
                 props: rawSettings.props || {},
                 breakpoints: rawSettings.breakpoints || {},
             };
         }
-
-        // Legacy flat format → treat as base props
-        return {
-            props: rawSettings,
-            breakpoints: {},
-        };
+        return {props: rawSettings, breakpoints: {}};
     }, [rawSettings]);
 
-    const sharedConfig = useMemo(
-        () => ({
-            isToolsPanel: false,
-        }),
-        []
-    );
-
-    // Link stays global (non-responsive) as before, using base props
-    const LinkControls = useMemo(
-        () => (
-            <Link
-                defaultValue={value?.props?.link}
-                callback={(val) =>
-                    updateSettings({
-                        ...value,
-                        props: {
-                            ...(value.props || {}),
-                            link: val,
-                        },
-                    })
-                }
-            />
-        ),
-        [value, updateSettings]
-    );
+    const sharedConfig = useMemo(() => ({isToolsPanel: false}), []);
 
     const handlePanelsChange = useCallback(
         (nextValue) => {
-            const normalized = {
+            updateSettings({
                 props: nextValue?.props || {},
                 breakpoints: nextValue?.breakpoints || {},
-            };
-
-            // Expectation: updateSettings replaces the wpbs-slider object
-            updateSettings(normalized);
+            });
         },
         [updateSettings]
     );
 
-    // Shared renderer for base + breakpoint panels
     const renderFields = useCallback(
-        (entry, updateEntry, bpKey) => {
+        (entry, updateEntry, isBreakpoint) => {
             const settings = entry?.props || {};
 
             const applyPatch = (patch) => {
-                const nextProps = {
-                    ...(entry.props || {}),
-                    ...patch,
-                };
-
-                updateEntry({
-                    ...entry,
-                    props: nextProps,
-                });
+                updateEntry({props: {...(entry.props || {}), ...patch}});
             };
 
+            const fields = isBreakpoint ? BREAKPOINT_SLIDER_FIELDS : BASE_SLIDER_FIELDS;
+
             return (
-                <Grid
-                    columns={2}
-                    columnGap={15}
-                    rowGap={20}
-                    style={{padding: "12px"}}
-                >
-                    {/* TYPE FIELD – standalone */}
-                    <Field
-                        field={TYPE_FIELD}
-                        settings={settings}
-                        callback={applyPatch}
-                        {...sharedConfig}
-                    />
-
-                    {/* MAP #1 — IMAGE + BREAKPOINT + RESOLUTIONS */}
-                    {(settings.type === "image" ||
-                            settings.type === "featured-image-mobile" ||
-                            settings.type === "featured-image") &&
-                        FIGURE_IMAGE_FIELDS.map((field) => (
-                            <Field
-                                key={field.slug}
-                                field={field}
-                                settings={settings}
-                                callback={applyPatch}
-                                {...sharedConfig}
-                            />
-                        ))}
-
-                    {/* MAP #2 — STYLE + TOGGLES */}
-                    {settings.type &&
-                        (!!bpKey
-                                ? BREAKPOINT_FIGURE_SETTING_FIELDS
-                                : FIGURE_SETTING_FIELDS
-                        ).map((field) => (
-                            <Field
-                                key={field.slug}
-                                field={field}
-                                settings={settings}
-                                callback={applyPatch}
-                                {...sharedConfig}
-                            />
-                        ))}
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: "12px"}}>
+                    {fields.map((field) => (
+                        <Field
+                            key={field.slug}
+                            field={field}
+                            settings={settings}
+                            callback={applyPatch}
+                            {...sharedConfig}
+                        />
+                    ))}
                 </Grid>
             );
         },
         [sharedConfig]
     );
 
-    const renderBase = useCallback(
-        ({bpKey, entry, update}) => renderFields(entry, update, false),
-        [renderFields]
-    );
-
-    const renderBreakpoints = useCallback(
-        ({bpKey, entry, update}) => renderFields(entry, update, bpKey),
-        [renderFields]
-    );
+    const renderBase = useCallback(({entry, update}) => renderFields(entry, update, false), [renderFields]);
+    const renderBreakpoints = useCallback(({
+                                               bpKey,
+                                               entry,
+                                               update
+                                           }) => renderFields(entry, update, true), [renderFields]);
 
     return (
         <>
-            {LinkControls}
 
             <InspectorControls group="styles">
                 <PanelBody
@@ -213,10 +102,7 @@ export function SliderInspector({attributes, updateSettings}) {
                     <BreakpointPanels
                         value={value}
                         onChange={handlePanelsChange}
-                        render={{
-                            base: renderBase,
-                            breakpoints: renderBreakpoints,
-                        }}
+                        render={{base: renderBase, breakpoints: renderBreakpoints}}
                     />
                 </PanelBody>
             </InspectorControls>

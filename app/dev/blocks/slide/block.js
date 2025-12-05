@@ -125,7 +125,7 @@ function SlideInspector({ attributes, updateSettings }) {
 // Get classes
 // ------------------------
 function getClassNames(attributes = {}) {
-    return ["wpbs-slide", attributes.uniqueId, "w-full", "flex"].filter(Boolean).join(" ");
+    return ["wpbs-slide swiper-slide", attributes.uniqueId, "w-full", "flex"].filter(Boolean).join(" ");
 }
 
 // ------------------------

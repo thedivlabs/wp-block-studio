@@ -33,7 +33,7 @@
   ],
   "providesContext": {
     "wpbs/query": "wpbs-query",
-    "wpbs/settings": "wpbs-slider-settings"
+    "wpbs/settings": "wpbs-slider"
   },
   "supports": {
     "innerBlocks": true,

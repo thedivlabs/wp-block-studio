@@ -216,7 +216,7 @@ registerBlockType(metadata.name, {
             const settings = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
             const classNames = getClassNames(attributes);
 
-            const isImageStyle = isImageStyle(attributes);
+            const isImage = isImageStyle(attributes);
 
             const {replaceInnerBlocks} = useDispatch('core/block-editor');
 
@@ -226,10 +226,10 @@ registerBlockType(metadata.name, {
             }, [settings, setCss, setPreload]);
 
             useEffect(() => {
-                if (!!isImageStyle) {
+                if (!!isImage) {
                     replaceInnerBlocks(clientId, [])
                 }
-            }, [isImageStyle]);
+            }, [isImage]);
 
             const updateSettings = useCallback(
                 (nextValue) => {

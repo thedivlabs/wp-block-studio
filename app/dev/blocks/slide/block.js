@@ -10,8 +10,8 @@ import { InnerBlocks, InspectorControls } from "@wordpress/block-editor";
 import { BreakpointPanels } from "Components/BreakpointPanels";
 import { Field } from "Components/Field";
 import ResponsivePicture from "Components/ResponsivePicture";
-import Link from "Components/Link";
-import { resolveFeaturedMedia, cleanObject, getAnchorProps } from "Includes/helper";
+import Link, {getAnchorProps} from "Components/Link";
+import { resolveFeaturedMedia, cleanObject } from "Includes/helper";
 import { isEqual } from "lodash";
 
 // ------------------------

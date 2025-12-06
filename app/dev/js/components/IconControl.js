@@ -11,7 +11,7 @@ import {useEffect, useState, memo, useCallback} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {ColorSelector} from "Components/ColorSelector";
 
-const generateCSS = (fill, weight, opsz) =>
+export const generateCSS = (fill, weight, opsz) =>
     `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 32}`;
 
 const FAMILY_MAP = {

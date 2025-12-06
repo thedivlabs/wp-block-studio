@@ -117,6 +117,7 @@ registerBlockType(metadata.name, {
             const styles = useMemo(
                 () => getStyles(attributes),
                 [
+                    settings,
                     attributes.backgroundColor,
                     attributes.fontSize,
                     attributes.style?.typography?.letterSpacing,

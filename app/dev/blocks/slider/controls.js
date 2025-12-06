@@ -26,8 +26,18 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
             {label: "Cards", value: "cards"},
         ],
     },
-    {slug: "slidesOffsetBefore", type: "number", label: "Offset Before", step: 10},
-    {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},
+    {
+        slug: "pagination",
+        type: "select",
+        label: "Pagination",
+        options: [
+            {label: "Select", value: ""},
+            {label: "Progress", value: "progressbar"},
+            {label: "Dots", value: "dots"},
+            {label: "Fraction", value: "fraction"},
+        ],
+    },
+    {slug: "slidesOffset", type: "number", label: "Offset", step: 10},
 ];
 
 const BASE_SLIDER_TOGGLE_FIELDS = [

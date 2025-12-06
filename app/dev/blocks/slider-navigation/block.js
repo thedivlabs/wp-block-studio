@@ -47,7 +47,6 @@ const NavigationContent = ({options = {}}) => {
                     className="wpbs-slider-nav__icon"
                     name={options?.["icon-prev"] ?? "arrow_back"}
                     size={24}
-                    style={0}
                 />
                 <span className="screen-reader-text">Previous Slide</span>
             </button>
@@ -59,7 +58,6 @@ const NavigationContent = ({options = {}}) => {
                     className="wpbs-slider-nav__icon"
                     name={options?.["icon-next"] ?? "arrow_forward"}
                     size={24}
-                    style={0}
                 />
                 <span className="screen-reader-text">Next Slide</span>
             </button>

@@ -24,6 +24,57 @@ const getClassNames = (attributes = {}, settings = {}) => {
         .join(" ");
 };
 
+function normalizeSliderSettings(settings = {}) {
+    const {props = {}, breakpoints = {}} = settings;
+
+    const normalizeProps = (obj = {}) => {
+        const out = {...obj};
+
+        for (const key in out) {
+            const value = out[key];
+
+            switch (key) {
+                case "slidesOffset":
+
+                    out.slidesOffsetAfter = value;
+                    out.slidesOffsetBefore = value;
+
+                    break;
+                default:
+                    break;
+            }
+
+            // Cleanup for empty values
+            const isEmpty =
+                value === "" ||
+                value == null ||
+                (typeof value === "object" &&
+                    !Array.isArray(value) &&
+                    Object.keys(value).length === 0);
+
+            if (isEmpty) delete out[key];
+        }
+
+        return out;
+    };
+
+    const normalized = {
+        props: normalizeProps(props),
+        breakpoints: {},
+    };
+
+    // Normalize breakpoints exactly the same way
+    for (const [bp, entry] of Object.entries(breakpoints)) {
+        const bpProps = normalizeProps(entry?.props || {});
+        if (Object.keys(bpProps).length > 0) {
+            normalized.breakpoints[bp] = {props: bpProps};
+        }
+    }
+
+    return normalized;
+}
+
+
 function getCssProps(settings) {
     const baseProps = settings?.props || {};
     const breakpoints = settings?.breakpoints || {};
@@ -146,7 +197,7 @@ registerBlockType(metadata.name, {
                 className={classNames}
                 data-wp-interactive="wpbs/slider"
                 data-wp-init="actions.observe"
-                data-wp-context={JSON.stringify(settings || {})}
+                data-wp-context={JSON.stringify(normalizeSliderSettings(settings || {}))}
             />
         );
     }, {

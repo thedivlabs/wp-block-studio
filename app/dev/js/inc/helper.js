@@ -383,6 +383,9 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
 
     if (typeof raw !== 'string') return raw;
 
+    // Return raw if it's a valid CSS unit
+    if (/^\d+(px|rem|em|%)$/.test(raw)) return raw;
+
     if (raw.startsWith('var:')) {
         const [source, type, name] = raw.slice(4).split('|');
         if (source && type && name) {

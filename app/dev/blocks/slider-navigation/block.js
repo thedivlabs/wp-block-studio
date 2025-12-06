@@ -80,6 +80,8 @@ const NavigationContent = ({options = {}, context = {}}) => {
     const nextIconCss = getIconCssProps(options['icon-next']);
     const prevIconCss = getIconCssProps(options['icon-prev']);
 
+    console.log(nextIconCss);
+    
     return (
         <>
             <button type="button" className={prevClass} style={prevIconCss}>

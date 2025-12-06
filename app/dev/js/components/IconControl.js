@@ -36,9 +36,9 @@ export function getIconCssProps(icon = {}, returnKeys = []) {
     }
 
     // Keep only keys in returnKeys
-    return Object.fromEntries(
+    return returnKeys.length ? Object.fromEntries(
         Object.entries(fullStyles).filter(([key]) => returnKeys.includes(key))
-    );
+    ) : fullStyles;
 }
 
 

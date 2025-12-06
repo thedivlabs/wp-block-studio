@@ -33,8 +33,7 @@
       "background": true,
       "text": false,
       "link": true,
-      "gradients": true,
-      "__experimentalSkipSerialization": true
+      "gradients": true
     },
     "spacing": {
       "padding": true,

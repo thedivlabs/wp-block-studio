@@ -1,15 +1,19 @@
 .wpbs-slider-navigation {
   background: transparent !important;
 
-  .swiper-button-prev::after {
-    content: var(--swiper-navigation-icon-prev, 'arrow_back');
-    font-family: 'Material Symbols Outlined', sans-serif;
-    color: var(--swiper-navigation-icon-prev-color, var(--swiper-navigation-color, inherit))
+  .swiper-button-prev {
+
+    &:after {
+      content: none;
+    }
   }
 
-  .swiper-button-next::after {
-    content: var(--swiper-navigation-icon-next, 'arrow_forward');
-    font-family: 'Material Symbols Outlined', sans-serif;
-    color: var(--swiper-navigation-icon-next-color, var(--swiper-navigation-color, inherit))
+  .swiper-button-next {
+
+    &:after {
+      content: none;
+    }
   }
+
+
 }

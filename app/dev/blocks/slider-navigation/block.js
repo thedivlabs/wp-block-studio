@@ -4,7 +4,7 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {IconControl, getIconCssProps} from "Components/IconControl";
+import {IconControl, getIconCssProps, MaterialIcon} from "Components/IconControl";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {cleanObject, getCSSFromStyle} from "Includes/helper";
 import {__experimentalGrid as Grid, PanelBody, TextControl} from "@wordpress/components";
@@ -41,10 +41,6 @@ const getStyles = (attributes = {}) => {
             Object.entries({
 
                 // Navigation arrows
-                "--swiper-navigation-icon-prev": settings?.['icon-prev']?.name ? `"${settings?.['icon-prev']?.name}"` : undefined,
-                "--swiper-navigation-icon-next": settings?.['icon-next']?.name ? `"${settings?.['icon-next']?.name}"` : undefined,
-                "--swiper-navigation-icon-next-color": settings?.['icon-next']?.color,
-                "--swiper-navigation-icon-prev-color": settings?.['icon-prev']?.color,
                 "--swiper-navigation-color": getCSSFromStyle(linkColor, 'color'),
                 "--swiper-navigation-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
                 "--swiper-navigation-size": getCSSFromStyle(fontSize, 'font-size'),
@@ -77,21 +73,17 @@ const NavigationContent = ({options = {}, context = {}}) => {
 
     const paginationClass = "wpbs-slider-pagination swiper-pagination";
 
-    const nextIconCss = getIconCssProps(options['icon-next']);
-    const prevIconCss = getIconCssProps(options['icon-prev']);
-
-    console.log(nextIconCss);
-    
     return (
         <>
-            <button type="button" className={prevClass} style={prevIconCss}>
+            <button type="button" className={prevClass}>
                 <span className="screen-reader-text">Previous Slide</span>
             </button>
 
             <div className={paginationClass}></div>
 
-            <button type="button" className={nextClass} style={nextIconCss}>
+            <button type="button" className={nextClass}>
                 <span className="screen-reader-text">Next Slide</span>
+                <MaterialIcon {...options?.['icon-next']} />
             </button>
         </>
     );

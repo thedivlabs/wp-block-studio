@@ -33,7 +33,7 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
         options: [
             {label: "Select", value: ""},
             {label: "Progress", value: "progressbar"},
-            {label: "Dots", value: "dots"},
+            {label: "Bullets", value: "bullets"},
             {label: "Fraction", value: "fraction"},
         ],
     },

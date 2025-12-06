@@ -18,15 +18,23 @@ const getClassNames = (attributes = {}) => {
 };
 
 const getStyles = (attributes = {}) => {
+    const opts = attributes[selector] || DEFAULT_SETTINGS;
+
     return Object.fromEntries(
         Object.entries({
-            "--swiper-pagination-color":
-                attributes?.[selector]?.["pagination-color"] || null,
-            "--swiper-pagination-bullet-inactive-color":
-                attributes?.[selector]?.["pagination-track-color"] || null,
-        }).filter(([key, value]) => value)
+            "--swiper-navigation-color": opts.linkColor,
+            "--swiper-navigation-size": opts.fontSize,
+            "--swiper-pagination-color": opts.linkColor,
+            "--swiper-pagination-bullet-inactive-color": opts.backgroundColor,
+            "--swiper-pagination-bullet-horizontal-gap": opts.letterSpacing,
+            "--swiper-pagination-bullet-vertical-gap": opts.letterSpacing,
+            "--swiper-pagination-bullet-size": opts.fontSize,
+            "--swiper-pagination-fraction-color": opts.linkColor,
+            "--swiper-pagination-fraction-font-size": opts.fontSize
+        }).filter(([_, value]) => value !== undefined && value !== null)
     );
 };
+
 
 const NavigationContent = ({options = {}, context = {}}) => {
     const buttonClass = "wpbs-slider-button";
@@ -67,6 +75,17 @@ const GroupedNavigation = ({options = {}, context = {}}) => (
         <NavigationContent options={options} context={context}/>
     </div>
 );
+
+// wpbs-slider-navigation default settings (flat)
+export const DEFAULT_SETTINGS = {
+    backgroundColor: "",                  // color.background
+    fontSize: "",                         // typography.fontSize
+    linkColor: "",                        // color.link
+    linkHoverColor: "",                   // link hover color
+    blockGap: "",                         // spacing.blockGap
+    letterSpacing: ""                     // typography.letterSpacing (for bullets)
+};
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,

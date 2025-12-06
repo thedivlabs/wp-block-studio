@@ -16,17 +16,24 @@ const generateCSS = (fill, weight, opsz) =>
 
 
 export function getIconCssProps(icon = {}, returnKeys = []) {
-    const {color, size, weight, style, css} = icon;
+    const {color, gradient, size, weight, style, css} = icon;
 
     const fill = style === "filled" ? 1 : 0;
     const fontVariation = css || generateCSS(fill, weight, size);
 
     const fullStyles = {
-        color: color || "",
         fontSize: size ? `${Number(size)}px` : "",
         fontVariationSettings: fontVariation,
         fontFamily: '"Material Icons Outlines", sans-serif',
     };
+
+    if (gradient) {
+        fullStyles.background = gradient;
+        fullStyles.color = "transparent";
+        fullStyles.backgroundClip = "text";
+    } else if (color) {
+        fullStyles.color = color;
+    }
 
     // Keep only keys in returnKeys
     return Object.fromEntries(

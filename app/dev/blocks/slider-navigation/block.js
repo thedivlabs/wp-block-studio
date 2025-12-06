@@ -77,8 +77,8 @@ const NavigationContent = ({options = {}, context = {}}) => {
 
     const paginationClass = "wpbs-slider-pagination swiper-pagination";
 
-    const nextIconCss = getIconCssProps(options['icon-next'], ['fontSize', 'fontVariationSettings']);
-    const prevIconCss = getIconCssProps(options['icon-prev'], ['fontSize', 'fontVariationSettings']);
+    const nextIconCss = getIconCssProps(options['icon-next']);
+    const prevIconCss = getIconCssProps(options['icon-prev']);
 
     return (
         <>
@@ -138,7 +138,7 @@ registerBlockType(metadata.name, {
 
             const updateSettings = useCallback(
                 (newValues) => {
-                    
+
                     const newSettings = merge({}, settings, newValues);
 
                     setAttributes({

@@ -1,18 +1,30 @@
 .wpbs-slider-navigation {
   background: transparent !important;
 
-  .swiper-button-prev {
+  .wpbs-slider-button {
+    appearance: none;
+    outline: none;
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 100;
 
-    &:after {
-      content: none;
+    &.swiper-button-prev {
+
+      &:after {
+        content: none;
+      }
     }
-  }
 
-  .swiper-button-next {
+    &.swiper-button-next {
 
-    &:after {
-      content: none;
+      &:after {
+        content: none;
+      }
     }
+
   }
 
 

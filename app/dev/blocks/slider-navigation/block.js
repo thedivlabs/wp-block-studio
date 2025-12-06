@@ -77,6 +77,7 @@ const NavigationContent = ({options = {}, context = {}}) => {
         <>
             <button type="button" className={prevClass}>
                 <span className="screen-reader-text">Previous Slide</span>
+                <MaterialIcon {...options?.['icon-prev']} />
             </button>
 
             <div className={paginationClass}></div>

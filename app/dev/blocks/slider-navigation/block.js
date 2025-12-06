@@ -147,7 +147,7 @@ registerBlockType(metadata.name, {
                     const merged = merge({}, settings, newValues);
 
                     if (!isEqual(settings, merged)) {
-                        setAttributes(merged);
+                        setAttributes({'wpbs-slider-navigation': merged});
                     }
                 },
                 [settings, setAttributes]

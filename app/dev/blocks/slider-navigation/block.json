@@ -49,6 +49,9 @@
     }
   },
   "editorScript": "file:./block.js",
+  "style": [
+    "file:./block.css"
+  ],
   "icon": "slides"
 }
 

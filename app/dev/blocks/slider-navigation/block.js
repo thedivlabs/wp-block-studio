@@ -1,15 +1,15 @@
 // wpbs-slider-navigation block
-
+import "./scss/block.css";
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl} from "Components/IconControl";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {getCSSFromStyle} from "Includes/helper";
 import {__experimentalGrid as Grid, PanelBody, TextControl} from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
-import {merge, isEqual} from "lodash";
+import {isEqual} from "lodash";
 
 const selector = "wpbs-slider-navigation";
 
@@ -77,22 +77,12 @@ const NavigationContent = ({options = {}, context = {}}) => {
     return (
         <>
             <button type="button" className={prevClass}>
-                <MaterialIcon
-                    className="wpbs-slider-nav__icon"
-                    name={options?.["icon-prev"] ?? "arrow_back"}
-                    size={24}
-                />
                 <span className="screen-reader-text">Previous Slide</span>
             </button>
 
             <div className={paginationClass}></div>
 
             <button type="button" className={nextClass}>
-                <MaterialIcon
-                    className="wpbs-slider-nav__icon"
-                    name={options?.["icon-next"] ?? "arrow_forward"}
-                    size={24}
-                />
                 <span className="screen-reader-text">Next Slide</span>
             </button>
         </>
@@ -111,7 +101,7 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
-        [selector]: {
+        "wpbs-slider-navigation": {
             type: "object",
             default: {},
         },
@@ -143,11 +133,16 @@ registerBlockType(metadata.name, {
             }, [styles]);
 
             const updateSettings = useCallback(
-                (newValues = {}) => {
-                    const merged = merge({}, settings, newValues);
+                (newValues) => {
+                    const newSettings = {
+                        ...settings,
+                        ...newValues,
+                    };
 
-                    if (!isEqual(settings, merged)) {
-                        setAttributes({'wpbs-slider-navigation': merged});
+                    if (!isEqual(settings, newSettings)) {
+                        setAttributes({
+                            "wpbs-slider-navigation": newSettings,
+                        });
                     }
                 },
                 [settings, setAttributes]

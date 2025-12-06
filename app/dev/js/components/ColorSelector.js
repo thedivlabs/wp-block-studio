@@ -23,32 +23,27 @@ export function ColorSelector({label, value, onChange, normalize = true}) {
     const gradientValue = isGradient ? value : undefined;
 
     const handleColorChange = (val) => {
-
-        if (val === undefined) {
-            return
-        }
+        // if val is null or undefined, treat as cleared
+        const newVal = val ?? "";
 
         if (normalize) {
-            onChange(val);
+            onChange(newVal);
         } else {
             onChange({
-                color: val,
+                color: newVal,
                 gradient: undefined
             });
         }
     };
 
     const handleGradientChange = (val) => {
-
-        if (val === undefined) {
-            return
-        }
+        const newVal = val ?? "";
 
         if (normalize) {
-            onChange(val);
+            onChange(newVal);
         } else {
             onChange({
-                gradient: val,
+                gradient: newVal,
                 color: undefined
             });
         }

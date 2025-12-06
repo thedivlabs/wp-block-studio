@@ -6,10 +6,10 @@ import metadata from "./block.json";
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {IconControl, getIconCssProps} from "Components/IconControl";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
-import {getCSSFromStyle} from "Includes/helper";
+import {cleanObject, getCSSFromStyle} from "Includes/helper";
 import {__experimentalGrid as Grid, PanelBody, TextControl} from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
-import {isEqual} from "lodash";
+import {isEqual, merge} from "lodash";
 
 const selector = "wpbs-slider-navigation";
 
@@ -138,12 +138,12 @@ registerBlockType(metadata.name, {
 
             const updateSettings = useCallback(
                 (newValues) => {
-                    const newSettings = {
-                        ...settings,
-                        ...newValues,
-                    };
 
-                    if (!isEqual(settings, newSettings)) {
+                    console.log(newValues);
+
+                    const newSettings = merge({}, settings, newValues);
+
+                    if (!isEqual(cleanObject(settings), newSettings)) {
                         setAttributes({
                             "wpbs-slider-navigation": newSettings,
                         });

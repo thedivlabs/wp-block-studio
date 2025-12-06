@@ -4,7 +4,7 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {IconControl} from "Components/IconControl";
+import {IconControl, getIconCssProps} from "Components/IconControl";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {getCSSFromStyle} from "Includes/helper";
 import {__experimentalGrid as Grid, PanelBody, TextControl} from "@wordpress/components";
@@ -39,6 +39,7 @@ const getStyles = (attributes = {}) => {
     return {
         props: Object.fromEntries(
             Object.entries({
+
                 // Navigation arrows
                 "--swiper-navigation-icon-prev": settings?.['icon-prev']?.name ? `"${settings?.['icon-prev']?.name}"` : undefined,
                 "--swiper-navigation-icon-next": settings?.['icon-next']?.name ? `"${settings?.['icon-next']?.name}"` : undefined,
@@ -76,15 +77,18 @@ const NavigationContent = ({options = {}, context = {}}) => {
 
     const paginationClass = "wpbs-slider-pagination swiper-pagination";
 
+    const nextIconCss = getIconCssProps(options['icon-next'], ['fontSize', 'fontVariationSettings']);
+    const prevIconCss = getIconCssProps(options['icon-prev'], ['fontSize', 'fontVariationSettings']);
+
     return (
         <>
-            <button type="button" className={prevClass}>
+            <button type="button" className={prevClass} style={prevIconCss}>
                 <span className="screen-reader-text">Previous Slide</span>
             </button>
 
             <div className={paginationClass}></div>
 
-            <button type="button" className={nextClass}>
+            <button type="button" className={nextClass} style={nextIconCss}>
                 <span className="screen-reader-text">Next Slide</span>
             </button>
         </>
@@ -129,9 +133,6 @@ registerBlockType(metadata.name, {
             );
 
             useEffect(() => {
-                console.log(styles);
-                console.log(attributes);
-
                 setCss(styles);
             }, [styles]);
 

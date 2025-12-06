@@ -11,14 +11,28 @@ import {useEffect, useState, memo, useCallback} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {ColorSelector} from "Components/ColorSelector";
 
-export const generateCSS = (fill, weight, opsz) =>
+const generateCSS = (fill, weight, opsz) =>
     `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 32}`;
 
-const FAMILY_MAP = {
-    solid: "materialsymbols",
-    outlined: "materialsymbolsoutlined",
-    default: "materialsymbolsoutlined",
-};
+
+export function getIconCssProps(icon = {}, returnKeys = []) {
+    const {color, size, weight, style, css} = icon;
+
+    const fill = style === "filled" ? 1 : 0;
+    const fontVariation = css || generateCSS(fill, weight, size);
+
+    const fullStyles = {
+        color: color || "",
+        fontSize: size ? `${Number(size)}px` : "",
+        fontVariationSettings: fontVariation,
+        fontFamily: '"Material Icons Outlines", sans-serif',
+    };
+
+    // Keep only keys in returnKeys
+    return Object.fromEntries(
+        Object.entries(fullStyles).filter(([key]) => returnKeys.includes(key))
+    );
+}
 
 
 /* ------------------------------------------------------------

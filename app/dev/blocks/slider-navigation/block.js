@@ -5,10 +5,11 @@ import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {IconControl, MaterialIcon} from "Components/IconControl";
-import {useEffect, useMemo} from "@wordpress/element";
+import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {getCSSFromStyle} from "Includes/helper";
 import {__experimentalGrid as Grid, PanelBody, TextControl} from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
+import {merge, isEqual} from "lodash";
 
 const selector = "wpbs-slider-navigation";
 
@@ -64,9 +65,6 @@ const getStyles = (attributes = {}) => {
     };
 };
 
-export default getStyles;
-
-
 const NavigationContent = ({options = {}, context = {}}) => {
     const buttonClass = "wpbs-slider-button";
 
@@ -121,9 +119,10 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const {attributes, BlockWrapper, context, setCss} = props;
+            const {attributes, BlockWrapper, context, setCss, setAttributes} = props;
             const classNames = getClassNames(attributes);
             const {'wpbs-slider-navigation': settings = {}} = attributes;
+            const isGroup = classNames.includes("is-style-group");
 
             const styles = useMemo(
                 () => getStyles(attributes),
@@ -143,7 +142,16 @@ registerBlockType(metadata.name, {
                 setCss(styles);
             }, [styles]);
 
-            const isGroup = classNames.includes("is-style-group");
+            const updateSettings = useCallback(
+                (newValues = {}) => {
+                    const merged = merge({}, settings, newValues);
+
+                    if (!isEqual(settings, merged)) {
+                        setAttributes(merged);
+                    }
+                },
+                [settings, setAttributes]
+            );
 
             return (
                 <>

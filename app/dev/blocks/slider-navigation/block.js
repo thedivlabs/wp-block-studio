@@ -30,29 +30,31 @@ const getStyles = (attributes = {}) => {
     const fontSize = attributes.fontSize;
     const letterSpacing = style.typography?.letterSpacing;
 
-    return Object.fromEntries(
-        Object.entries({
-            // Navigation arrows
-            "--swiper-navigation-color": getCSSFromStyle(linkColor, 'color'),
-            "--swiper-navigation-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
-            "--swiper-navigation-size": getCSSFromStyle(fontSize, 'font-size'),
+    return {
+        props: Object.fromEntries(
+            Object.entries({
+                // Navigation arrows
+                "--swiper-navigation-color": getCSSFromStyle(linkColor, 'color'),
+                "--swiper-navigation-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
+                "--swiper-navigation-size": getCSSFromStyle(fontSize, 'font-size'),
 
-            // Pagination bullets
-            "--swiper-pagination-color": getCSSFromStyle(linkColor, 'color'),
-            "--swiper-pagination-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
-            "--swiper-pagination-bullet-inactive-color": getCSSFromStyle(backgroundColor, 'color'),
-            "--swiper-pagination-bullet-horizontal-gap": getCSSFromStyle(letterSpacing, 'spacing'),
-            "--swiper-pagination-bullet-vertical-gap": getCSSFromStyle(letterSpacing, 'spacing'),
-            "--swiper-pagination-bullet-size": getCSSFromStyle(fontSize, 'font-size'),
+                // Pagination bullets
+                "--swiper-pagination-color": getCSSFromStyle(linkColor, 'color'),
+                "--swiper-pagination-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
+                "--swiper-pagination-bullet-inactive-color": getCSSFromStyle(backgroundColor, 'color'),
+                "--swiper-pagination-bullet-horizontal-gap": getCSSFromStyle(letterSpacing, 'spacing'),
+                "--swiper-pagination-bullet-vertical-gap": getCSSFromStyle(letterSpacing, 'spacing'),
+                "--swiper-pagination-bullet-size": getCSSFromStyle(fontSize, 'font-size'),
 
-            // Fraction
-            "--swiper-pagination-fraction-color": getCSSFromStyle(linkColor, 'color'),
-            "--swiper-pagination-fraction-font-size": getCSSFromStyle(fontSize, 'font-size'),
+                // Fraction
+                "--swiper-pagination-fraction-color": getCSSFromStyle(linkColor, 'color'),
+                "--swiper-pagination-fraction-font-size": getCSSFromStyle(fontSize, 'font-size'),
 
-            // Progressbar background
-            "--swiper-pagination-progressbar-bg-color": getCSSFromStyle(backgroundColor, 'color')
-        }).filter(([_, value]) => value !== undefined && value !== null)
-    );
+                // Progressbar background
+                "--swiper-pagination-progressbar-bg-color": getCSSFromStyle(backgroundColor, 'color')
+            }).filter(([_, value]) => value !== undefined && value !== null)
+        )
+    };
 };
 
 export default getStyles;

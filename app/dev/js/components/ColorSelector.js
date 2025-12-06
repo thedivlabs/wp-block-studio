@@ -12,36 +12,23 @@ import {isEqual} from 'lodash';
 import {getEditorPalettes} from "Includes/helper";
 
 
-export function ColorSelector({label, value, onChange, normalize = true}) {
+export function ColorSelector({label, value = {}, onChange}) {
     const {colors, gradients} = getEditorPalettes();
 
-    const isGradient = typeof value === "string" && value.startsWith("linear-gradient");
-    const colorValue = !isGradient ? value : undefined;
-    const gradientValue = isGradient ? value : undefined;
+    const colorValue = value.color;
+    const gradientValue = value.gradient;
 
     const handleColorChange = (val) => {
-        if (normalize) {
-            if (!isEqual(val, value)) {
-                onChange(val);
-            }
-        } else {
-            const next = {...value, color: val, gradient: value?.gradient};
-            if (!isEqual(next, value)) {
-                onChange(next);
-            }
+        const next = {...value, color: val};
+        if (!isEqual(next, value)) {
+            onChange(next);
         }
     };
 
     const handleGradientChange = (val) => {
-        if (normalize) {
-            if (!isEqual(val, value)) {
-                onChange(val);
-            }
-        } else {
-            const next = {...value, gradient: val, color: value?.color};
-            if (!isEqual(next, value)) {
-                onChange(next);
-            }
+        const next = {...value, gradient: val};
+        if (!isEqual(next, value)) {
+            onChange(next);
         }
     };
 

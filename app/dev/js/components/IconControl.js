@@ -276,7 +276,10 @@ export const IconControl = ({
 
                                 <ColorSelector
                                     label="Icon Color"
-                                    value={color || gradient}
+                                    value={{
+                                        color: color || "",
+                                        gradient: gradient || "",
+                                    }}
                                     normalize={false}
                                     onChange={(val) => {
                                         console.log(val);

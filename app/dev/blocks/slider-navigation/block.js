@@ -77,14 +77,14 @@ const NavigationContent = ({options = {}, context = {}}) => {
         <>
             <button type="button" className={prevClass}>
                 <span className="screen-reader-text">Previous Slide</span>
-                <MaterialIcon {...options?.['icon-prev']} />
+                <MaterialIcon {...options?.['icon-prev']} defaultName={'arrow_back'}/>
             </button>
 
             <div className={paginationClass}></div>
 
             <button type="button" className={nextClass}>
                 <span className="screen-reader-text">Next Slide</span>
-                <MaterialIcon {...options?.['icon-next']} />
+                <MaterialIcon {...options?.['icon-next']} defaultName={'arrow_forward'}/>
             </button>
         </>
     );

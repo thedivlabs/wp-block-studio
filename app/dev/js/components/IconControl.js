@@ -309,6 +309,7 @@ export const MaterialIcon = ({
                                  style = "outlined",
                                  color,
                                  gradient,
+                                 defaultName,
                                  className = "",
                              }) => {
 
@@ -340,9 +341,9 @@ export const MaterialIcon = ({
         styleObj.background = 'transparent';
     }
 
-    return !name ? null : (
+    return !name && !defaultName ? null : (
         <span className={classNames} style={styleObj}>
-            {name}
+            {name || defaultName}
         </span>
     );
 };

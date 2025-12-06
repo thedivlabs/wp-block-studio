@@ -5,6 +5,7 @@ import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {MaterialIcon} from "Components/IconControl";
+import {useEffect} from "@wordpress/element";
 
 const selector = "wpbs-slider-navigation";
 
@@ -27,16 +28,12 @@ const getStyles = (attributes = {}) => {
     );
 };
 
-const NavigationContent = ({options = {}}) => {
+const NavigationContent = ({options = {}, context = {}}) => {
     const buttonClass = "wpbs-slider-button";
 
-    const prevClass = [buttonClass, "wpbs-slider-button--prev"]
-        .filter(Boolean)
-        .join(" ");
+    const prevClass = [buttonClass, "wpbs-slider-button--prev"].join(" ");
 
-    const nextClass = [buttonClass, "wpbs-slider-button--next"]
-        .filter(Boolean)
-        .join(" ");
+    const nextClass = [buttonClass, "wpbs-slider-button--next"].join(" ");
 
     const paginationClass = "wpbs-slider-nav__pagination swiper-pagination";
 
@@ -51,7 +48,7 @@ const NavigationContent = ({options = {}}) => {
                 <span className="screen-reader-text">Previous Slide</span>
             </button>
 
-            {!!options?.pagination && <div className={paginationClass}></div>}
+            <div className={paginationClass}></div>
 
             <button type="button" className={nextClass}>
                 <MaterialIcon
@@ -65,9 +62,9 @@ const NavigationContent = ({options = {}}) => {
     );
 };
 
-const GroupedNavigation = ({options = {}}) => (
+const GroupedNavigation = ({options = {}, context = {}}) => (
     <div className="wpbs-slider-navigation__group">
-        <NavigationContent options={options}/>
+        <NavigationContent options={options} context={context}/>
     </div>
 );
 
@@ -84,18 +81,24 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const {attributes, BlockWrapper} = props;
+            const {attributes, BlockWrapper, context} = props;
             const classNames = getClassNames(attributes);
             const styles = getStyles(attributes);
+
+
+            useEffect(() => {
+                console.log(context);
+                console.log(attributes);
+            }, [attributes?.style]);
 
             const isGroup = classNames.includes("is-style-group");
 
             return (
                 <BlockWrapper props={props} className={classNames} style={styles}>
                     {isGroup ? (
-                        <GroupedNavigation options={attributes[selector]}/>
+                        <GroupedNavigation options={attributes[selector]} context={context}/>
                     ) : (
-                        <NavigationContent options={attributes[selector]}/>
+                        <NavigationContent options={attributes[selector]} context={context}/>
                     )}
                 </BlockWrapper>
             );

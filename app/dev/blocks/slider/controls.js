@@ -37,7 +37,7 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
             {label: "Fraction", value: "fraction"},
         ],
     },
-    {slug: "slidesOffset", type: "number", label: "Offset", step: 10},
+    {slug: "slidesOffset", type: "number", label: "Offset Slides", step: 10},
 ];
 
 const BASE_SLIDER_TOGGLE_FIELDS = [
@@ -59,8 +59,7 @@ const BREAKPOINT_SLIDER_FIELDS = [
     {slug: "spaceBetween", type: "number", label: "Space", min: 0, step: 5, shiftStep: 10},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5, shiftStep: 1},
     {slug: "speed", type: "number", label: "Speed", min: 0, step: 100},
-    {slug: "slidesOffsetBefore", type: "number", label: "Offset Before", step: 10},
-    {slug: "slidesOffsetAfter", type: "number", label: "Offset After", step: 10},
+    {slug: "slidesOffset", type: "number", label: "Offset Slides", step: 10},
 ];
 
 const BREAKPOINT_SLIDER_TOGGLE_FIELDS = [

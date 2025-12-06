@@ -22,20 +22,25 @@
     }
   ],
   "usesContext": [
-    "wpbs/settings"
+    "wpbs/slider"
   ],
   "supports": {
     "typography": {
-      "fontSize": true
+      "fontSize": true,
+      "__experimentalLetterSpacing": true
     },
     "color": {
       "background": true,
-      "text": true,
+      "text": false,
+      "link": true,
       "gradients": true
     },
     "spacing": {
       "padding": true,
-      "margin": true
+      "margin": true,
+      "blockGap": [
+        "horizontal"
+      ]
     },
     "__experimentalBorder": {
       "size": true,

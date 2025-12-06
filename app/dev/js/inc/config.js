@@ -445,17 +445,6 @@ export const SWIPER_ARGS_DEFAULT = {
 
 };
 
-export const SWIPER_ARGS_EDITOR = {
-
-    effect: 'slide',
-    allowTouchMove: false,         // disables swiping
-    simulateTouch: false,          // disables fake mouse events
-    keyboard: false,               // disables keyboard control
-    mousewheel: false,             // disables mousewheel
-    autoplay: false,               // disables autoplay
-    loop: false,                   // disables looping
-}
-
 export const SWIPER_ARGS_VIEW = {
     ...SWIPER_ARGS_DEFAULT,
     on: {
@@ -512,6 +501,17 @@ export const SWIPER_ARGS_VIEW = {
         }
     }
 };
+
+export const SWIPER_ARGS_EDITOR = {
+
+    effect: 'slide',
+    allowTouchMove: false,         // disables swiping
+    simulateTouch: false,          // disables fake mouse events
+    keyboard: false,               // disables keyboard control
+    mousewheel: false,             // disables mousewheel
+    autoplay: false,               // disables autoplay
+    loop: false,                   // disables looping
+}
 
 export const layoutFieldsMap = [
     {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},

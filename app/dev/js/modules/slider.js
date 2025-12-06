@@ -4,26 +4,15 @@ import merge from 'lodash/merge';
 export default class Slider {
 
     static init() {
-        /* [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
-             this.observe(el);
-         });*/
+        [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
+            this.observe(el);
+        });
     }
 
     static observe(element, args = {}) {
-        if (element.classList.contains('swiper-initialized')) {
-            return;
-        }
+        if (element.classList.contains('swiper-initialized')) return;
 
-        const mergedArgs = merge({}, SWIPER_ARGS_VIEW, {
-            navigation: {
-                enabled: true,
-                nextEl: element.querySelector('.wpbs-slider-button--next'),
-                prevEl: element.querySelector('.wpbs-slider-button--prev'),
-            },
-            pagination: {
-                el: element.querySelector('.swiper-pagination'),
-            }
-        }, args);
+        const mergedArgs = this.mergeArgs(element, args);
 
         const observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach(entry => {
@@ -49,6 +38,31 @@ export default class Slider {
         });
 
         observer.observe(element);
+    }
+
+    static mergeArgs(element, args = {}) {
+        const normalizedArgs = {...args};
+
+        // Ensure pagination is an object
+        if (typeof normalizedArgs.pagination === 'string') {
+            normalizedArgs.pagination = {type: normalizedArgs.pagination};
+        }
+        if (!normalizedArgs.pagination) normalizedArgs.pagination = {};
+
+        // Ensure navigation is an object
+        if (!normalizedArgs.navigation) normalizedArgs.navigation = {};
+
+        // Merge defaults, DOM elements, and incoming args
+        return merge({}, SWIPER_ARGS_VIEW, {
+            navigation: {
+                enabled: true,
+                nextEl: element.querySelector('.wpbs-slider-button--next'),
+                prevEl: element.querySelector('.wpbs-slider-button--prev')
+            },
+            pagination: {
+                el: element.querySelector('.swiper-pagination')
+            }
+        }, normalizedArgs);
     }
 
     static initLib() {

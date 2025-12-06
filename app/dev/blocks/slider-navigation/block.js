@@ -43,7 +43,7 @@ const NavigationContent = ({options = {}, context = {}}) => {
 
     const nextClass = [buttonClass, "wpbs-slider-button--next"].join(" ");
 
-    const paginationClass = "wpbs-slider-nav__pagination swiper-pagination";
+    const paginationClass = "wpbs-slider-pagination swiper-pagination";
 
     return (
         <>

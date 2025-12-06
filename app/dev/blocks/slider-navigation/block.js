@@ -5,7 +5,7 @@ import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {MaterialIcon} from "Components/IconControl";
-import {useEffect} from "@wordpress/element";
+import {useEffect, useMemo} from "@wordpress/element";
 
 const selector = "wpbs-slider-navigation";
 
@@ -18,19 +18,33 @@ const getClassNames = (attributes = {}) => {
 };
 
 const getStyles = (attributes = {}) => {
-    const opts = attributes[selector] || DEFAULT_SETTINGS;
+    const style = attributes.style || {};
+    const elements = style.elements || {};
+    const link = elements.link || {};
+    const linkColor = link.color?.text;
+    const linkHoverColor = link[':hover']?.color?.text;
+    const backgroundColor = attributes.backgroundColor;
+    const fontSize = attributes.fontSize;
+    const letterSpacing = style.typography?.letterSpacing;
 
     return Object.fromEntries(
         Object.entries({
-            "--swiper-navigation-color": opts.linkColor,
-            "--swiper-navigation-size": opts.fontSize,
-            "--swiper-pagination-color": opts.linkColor,
-            "--swiper-pagination-bullet-inactive-color": opts.backgroundColor,
-            "--swiper-pagination-bullet-horizontal-gap": opts.letterSpacing,
-            "--swiper-pagination-bullet-vertical-gap": opts.letterSpacing,
-            "--swiper-pagination-bullet-size": opts.fontSize,
-            "--swiper-pagination-fraction-color": opts.linkColor,
-            "--swiper-pagination-fraction-font-size": opts.fontSize
+            // Navigation arrows
+            "--swiper-navigation-color": linkColor,
+            "--swiper-navigation-hover-color": linkHoverColor,
+            "--swiper-navigation-size": fontSize,
+
+            // Pagination bullets
+            "--swiper-pagination-color": linkColor,
+            "--swiper-pagination-hover-color": linkHoverColor,
+            "--swiper-pagination-bullet-inactive-color": backgroundColor,
+            "--swiper-pagination-bullet-horizontal-gap": letterSpacing,
+            "--swiper-pagination-bullet-vertical-gap": letterSpacing,
+            "--swiper-pagination-bullet-size": fontSize,
+
+            // Fraction
+            "--swiper-pagination-fraction-color": linkColor,
+            "--swiper-pagination-fraction-font-size": fontSize
         }).filter(([_, value]) => value !== undefined && value !== null)
     );
 };
@@ -76,16 +90,6 @@ const GroupedNavigation = ({options = {}, context = {}}) => (
     </div>
 );
 
-// wpbs-slider-navigation default settings (flat)
-export const DEFAULT_SETTINGS = {
-    backgroundColor: "",                  // color.background
-    fontSize: "",                         // typography.fontSize
-    linkColor: "",                        // color.link
-    linkHoverColor: "",                   // link hover color
-    blockGap: "",                         // spacing.blockGap
-    letterSpacing: ""                     // typography.letterSpacing (for bullets)
-};
-
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -100,15 +104,23 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const {attributes, BlockWrapper, context} = props;
+            const {attributes, BlockWrapper, context, setCss} = props;
             const classNames = getClassNames(attributes);
-            const styles = getStyles(attributes);
+            const styles = useMemo(() => getStyles(attributes), [
+                attributes.style?.elements?.link?.color?.text,
+                attributes.style?.elements?.link?.[':hover']?.color?.text,
+                attributes.style?.typography?.letterSpacing,
+                attributes.backgroundColor,
+                attributes.fontSize
+            ]);
 
 
             useEffect(() => {
                 console.log(context);
                 console.log(attributes);
-            }, [attributes?.style]);
+
+                setCss(styles);
+            }, [styles]);
 
             const isGroup = classNames.includes("is-style-group");
 

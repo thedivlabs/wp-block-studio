@@ -173,7 +173,7 @@ registerBlockType(metadata.name, {
                             </Grid>
                         </PanelBody>
                     </InspectorControls>
-                    <BlockWrapper props={props} className={classNames}>
+                    <BlockWrapper props={props} className={classNames} style={{backgroundColor: 'transparent'}}>
                         {isGroup ? (
                             <GroupedNavigation options={attributes[selector]} context={context}/>
                         ) : (

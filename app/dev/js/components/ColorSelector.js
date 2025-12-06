@@ -15,20 +15,18 @@ import {getEditorPalettes} from "Includes/helper";
 export function ColorSelector({label, value = {}, onChange}) {
     const {colors, gradients} = getEditorPalettes();
 
-    const colorValue = value.color;
-    const gradientValue = value.gradient;
+    const colorValue = value.color === '' ? undefined : value.color;
+    const gradientValue = value.gradient === '' ? undefined : value.gradient;
 
     const handleColorChange = (val) => {
-        const next = {...value, color: val};
-        if (!isEqual(next, value)) {
-            onChange(next);
+        if (!isEqual(val, colorValue)) {
+            onChange({color: val});
         }
     };
 
     const handleGradientChange = (val) => {
-        const next = {...value, gradient: val};
-        if (!isEqual(next, value)) {
-            onChange(next);
+        if (!isEqual(val, gradientValue)) {
+            onChange({gradient: val});
         }
     };
 

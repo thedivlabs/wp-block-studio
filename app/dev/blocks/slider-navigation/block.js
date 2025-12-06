@@ -138,9 +138,7 @@ registerBlockType(metadata.name, {
 
             const updateSettings = useCallback(
                 (newValues) => {
-
-                    console.log(newValues)
-
+                    
                     const newSettings = merge({}, settings, newValues);
 
                     setAttributes({

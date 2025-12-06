@@ -163,7 +163,7 @@ export const IconControl = ({
 
     const labelNode = (
         <>
-            <span>Icon </span>
+            <span>{label} </span>
             <a
                 href="https://fonts.google.com/icons"
                 target="_blank"

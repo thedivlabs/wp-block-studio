@@ -4,15 +4,17 @@ import merge from 'lodash/merge';
 export default class Slider {
 
     static init() {
-        [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
+        /* [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
             this.observe(el);
-        });
+        }); */
     }
 
     static observe(element, args = {}) {
         if (element.classList.contains('swiper-initialized')) return;
 
         const mergedArgs = this.mergeArgs(element, args);
+
+        console.log(mergedArgs);
 
         const observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach(entry => {
@@ -41,28 +43,30 @@ export default class Slider {
     }
 
     static mergeArgs(element, args = {}) {
-        const normalizedArgs = {...args};
+        // Clone default to avoid mutation
+        const merged = merge({}, SWIPER_ARGS_VIEW);
 
-        // Ensure pagination is an object
-        if (typeof normalizedArgs.pagination === 'string') {
-            normalizedArgs.pagination = {type: normalizedArgs.pagination};
+        // Navigation always points to correct DOM elements
+        merged.navigation = {
+            ...merged.navigation,
+            nextEl: element.querySelector('.wpbs-slider-button--next'),
+            prevEl: element.querySelector('.wpbs-slider-button--prev'),
+            ...args.navigation, // allow overrides
+        };
+
+        // Pagination: merge only if object, else keep default
+        if (args.pagination && typeof args.pagination === 'object') {
+            merged.pagination = merge({}, merged.pagination, args.pagination);
         }
-        if (!normalizedArgs.pagination) normalizedArgs.pagination = {};
 
-        // Ensure navigation is an object
-        if (!normalizedArgs.navigation) normalizedArgs.navigation = {};
-
-        // Merge defaults, DOM elements, and incoming args
-        return merge({}, SWIPER_ARGS_VIEW, {
-            navigation: {
-                enabled: true,
-                nextEl: element.querySelector('.wpbs-slider-button--next'),
-                prevEl: element.querySelector('.wpbs-slider-button--prev')
-            },
-            pagination: {
-                el: element.querySelector('.swiper-pagination')
+        // Merge any other top-level args
+        Object.keys(args).forEach(key => {
+            if (key !== 'navigation' && key !== 'pagination') {
+                merged[key] = args[key];
             }
-        }, normalizedArgs);
+        });
+
+        return merged;
     }
 
     static initLib() {

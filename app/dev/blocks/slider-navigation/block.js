@@ -40,8 +40,8 @@ const getStyles = (attributes = {}) => {
         props: Object.fromEntries(
             Object.entries({
                 // Navigation arrows
-                "--swiper-navigation-icon-prev": settings?.['icon-prev']?.name,
-                "--swiper-navigation-icon-next": settings?.['icon-next']?.name,
+                "--swiper-navigation-icon-prev": settings?.['icon-prev']?.name ? `"${settings?.['icon-prev']?.name}"` : null,
+                "--swiper-navigation-icon-next": settings?.['icon-next']?.name ? `"${settings?.['icon-next']?.name}"` : null,
                 "--swiper-navigation-color": getCSSFromStyle(linkColor, 'color'),
                 "--swiper-navigation-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
                 "--swiper-navigation-size": getCSSFromStyle(fontSize, 'font-size'),

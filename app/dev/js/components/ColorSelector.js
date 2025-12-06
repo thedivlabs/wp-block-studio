@@ -6,6 +6,8 @@ import {
 import {
     __experimentalColorGradientControl as ColorGradientControl,
 } from "@wordpress/block-editor";
+import {isEqual} from 'lodash';
+
 
 import {getEditorPalettes} from "Includes/helper";
 
@@ -23,29 +25,28 @@ export function ColorSelector({label, value, onChange, normalize = true}) {
     const gradientValue = isGradient ? value : undefined;
 
     const handleColorChange = (val) => {
-        // if val is null or undefined, treat as cleared
-        const newVal = val ?? "";
-
-        if (normalize) {
-            onChange(newVal);
+        if (!!normalize) {
+            if (!isEqual(val, local)) {
+                onChange(val);
+            }
         } else {
-            onChange({
-                color: newVal,
-                gradient: undefined
-            });
+            const next = {...local, color: val, gradient: local.gradient};
+            if (!isEqual(next, local)) {
+                onChange(next);
+            }
         }
     };
 
     const handleGradientChange = (val) => {
-        const newVal = val ?? "";
-
-        if (normalize) {
-            onChange(newVal);
+        if (!!normalize) {
+            if (!isEqual(val, local)) {
+                onChange(val);
+            }
         } else {
-            onChange({
-                gradient: newVal,
-                color: undefined
-            });
+            const next = {...local, gradient: val, color: local.color};
+            if (!isEqual(next, local)) {
+                onChange(next);
+            }
         }
     };
 

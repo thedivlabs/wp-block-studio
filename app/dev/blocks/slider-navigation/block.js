@@ -139,15 +139,13 @@ registerBlockType(metadata.name, {
             const updateSettings = useCallback(
                 (newValues) => {
 
-                    console.log(newValues);
+                    console.log(newValues)
 
                     const newSettings = merge({}, settings, newValues);
 
-                    if (!isEqual(cleanObject(settings), newSettings)) {
-                        setAttributes({
-                            "wpbs-slider-navigation": newSettings,
-                        });
-                    }
+                    setAttributes({
+                        "wpbs-slider-navigation": newSettings,
+                    });
                 },
                 [settings, setAttributes]
             );

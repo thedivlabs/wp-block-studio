@@ -122,6 +122,7 @@ export const IconControl = ({
     ------------------------------------------------------------ */
     const update = useCallback(
         (patch) => {
+
             if (!patch || typeof patch !== "object") return;
 
             setLocal((prev) => {
@@ -278,19 +279,11 @@ export const IconControl = ({
                                     value={color || gradient}
                                     normalize={false}
                                     onChange={(val) => {
-                                        // val = { color: ... } OR { gradient: ... }
-                                        if (!val) return;
-
-                                        const patch = {};
-
-                                        if ("color" in val) {
-                                            patch.color = val.color || "";
-                                        }
-                                        if ("gradient" in val) {
-                                            patch.gradient = val.gradient || "";
-                                        }
-
-                                        update(patch);
+                                        console.log(val);
+                                        update({
+                                            color: val?.color || "",
+                                            gradient: val?.gradient || "",
+                                        });
                                     }}
                                 />
                             </Grid>

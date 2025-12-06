@@ -282,14 +282,16 @@ export const IconControl = ({
                                     }}
                                     normalize={false}
                                     onChange={(val) => {
-
-                                        update({
+                                        const next = {
                                             ...{
                                                 color: color,
                                                 gradient: gradient,
                                             },
                                             ...val
-                                        });
+                                        };
+                                        console.log(val);
+                                        console.log(next);
+                                        update(next);
                                     }}
                                 />
                             </Grid>

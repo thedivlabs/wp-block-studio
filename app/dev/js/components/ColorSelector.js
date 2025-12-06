@@ -20,13 +20,13 @@ export function ColorSelector({label, value = {}, onChange}) {
 
     const handleColorChange = (val) => {
         if (!isEqual(val, colorValue)) {
-            onChange({color: val});
+            onChange({color: val, gradient: gradientValue});
         }
     };
 
     const handleGradientChange = (val) => {
         if (!isEqual(val, gradientValue)) {
-            onChange({gradient: val});
+            onChange({gradient: val, color: colorValue});
         }
     };
 

@@ -6,6 +6,7 @@ import metadata from "./block.json";
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {MaterialIcon} from "Components/IconControl";
 import {useEffect, useMemo} from "@wordpress/element";
+import {getCSSFromStyle} from "Includes/helper";
 
 const selector = "wpbs-slider-navigation";
 
@@ -17,10 +18,12 @@ const getClassNames = (attributes = {}) => {
         .join(" ");
 };
 
+
 const getStyles = (attributes = {}) => {
     const style = attributes.style || {};
     const elements = style.elements || {};
     const link = elements.link || {};
+
     const linkColor = link.color?.text;
     const linkHoverColor = link[':hover']?.color?.text;
     const backgroundColor = attributes.backgroundColor;
@@ -30,24 +33,29 @@ const getStyles = (attributes = {}) => {
     return Object.fromEntries(
         Object.entries({
             // Navigation arrows
-            "--swiper-navigation-color": linkColor,
-            "--swiper-navigation-hover-color": linkHoverColor,
-            "--swiper-navigation-size": fontSize,
+            "--swiper-navigation-color": getCSSFromStyle(linkColor, 'color'),
+            "--swiper-navigation-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
+            "--swiper-navigation-size": getCSSFromStyle(fontSize, 'font-size'),
 
             // Pagination bullets
-            "--swiper-pagination-color": linkColor,
-            "--swiper-pagination-hover-color": linkHoverColor,
-            "--swiper-pagination-bullet-inactive-color": backgroundColor,
-            "--swiper-pagination-bullet-horizontal-gap": letterSpacing,
-            "--swiper-pagination-bullet-vertical-gap": letterSpacing,
-            "--swiper-pagination-bullet-size": fontSize,
+            "--swiper-pagination-color": getCSSFromStyle(linkColor, 'color'),
+            "--swiper-pagination-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
+            "--swiper-pagination-bullet-inactive-color": getCSSFromStyle(backgroundColor, 'color'),
+            "--swiper-pagination-bullet-horizontal-gap": getCSSFromStyle(letterSpacing, 'spacing'),
+            "--swiper-pagination-bullet-vertical-gap": getCSSFromStyle(letterSpacing, 'spacing'),
+            "--swiper-pagination-bullet-size": getCSSFromStyle(fontSize, 'font-size'),
 
             // Fraction
-            "--swiper-pagination-fraction-color": linkColor,
-            "--swiper-pagination-fraction-font-size": fontSize
+            "--swiper-pagination-fraction-color": getCSSFromStyle(linkColor, 'color'),
+            "--swiper-pagination-fraction-font-size": getCSSFromStyle(fontSize, 'font-size'),
+
+            // Progressbar background
+            "--swiper-pagination-progressbar-bg-color": getCSSFromStyle(backgroundColor, 'color')
         }).filter(([_, value]) => value !== undefined && value !== null)
     );
 };
+
+export default getStyles;
 
 
 const NavigationContent = ({options = {}, context = {}}) => {
@@ -106,18 +114,21 @@ registerBlockType(metadata.name, {
         (props) => {
             const {attributes, BlockWrapper, context, setCss} = props;
             const classNames = getClassNames(attributes);
-            const styles = useMemo(() => getStyles(attributes), [
-                attributes.style?.elements?.link?.color?.text,
-                attributes.style?.elements?.link?.[':hover']?.color?.text,
-                attributes.style?.typography?.letterSpacing,
-                attributes.backgroundColor,
-                attributes.fontSize
-            ]);
+            const styles = useMemo(
+                () => getStyles(attributes),
+                [
+                    attributes.backgroundColor,
+                    attributes.fontSize,
+                    attributes.style?.typography?.letterSpacing,
+                    attributes.style?.elements?.link?.color?.text,
+                    attributes.style?.elements?.link?.[':hover']?.color?.text
+                ]
+            );
 
 
             useEffect(() => {
-                console.log(context);
-                console.log(attributes);
+                console.log(styles);
+//                console.log(attributes);
 
                 setCss(styles);
             }, [styles]);
@@ -125,7 +136,7 @@ registerBlockType(metadata.name, {
             const isGroup = classNames.includes("is-style-group");
 
             return (
-                <BlockWrapper props={props} className={classNames} style={styles}>
+                <BlockWrapper props={props} className={classNames}>
                     {isGroup ? (
                         <GroupedNavigation options={attributes[selector]} context={context}/>
                     ) : (
@@ -144,12 +155,11 @@ registerBlockType(metadata.name, {
         (props) => {
             const {attributes, BlockWrapper} = props;
             const classNames = getClassNames(attributes);
-            const styles = getStyles(attributes);
 
             const isGroup = classNames.includes("is-style-group");
 
             return (
-                <BlockWrapper props={props} className={classNames} style={styles}>
+                <BlockWrapper props={props} className={classNames}>
                     {isGroup ? (
                         <GroupedNavigation options={attributes[selector]}/>
                     ) : (

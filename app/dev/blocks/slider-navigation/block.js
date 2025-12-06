@@ -4,9 +4,11 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {MaterialIcon} from "Components/IconControl";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 import {useEffect, useMemo} from "@wordpress/element";
 import {getCSSFromStyle} from "Includes/helper";
+import {__experimentalGrid as Grid, PanelBody, TextControl} from "@wordpress/components";
+import {InspectorControls} from "@wordpress/block-editor";
 
 const selector = "wpbs-slider-navigation";
 
@@ -20,6 +22,9 @@ const getClassNames = (attributes = {}) => {
 
 
 const getStyles = (attributes = {}) => {
+
+    const {'wpbs-slider-navigation': settings = {}} = attributes;
+
     const style = attributes.style || {};
     const elements = style.elements || {};
     const link = elements.link || {};
@@ -34,6 +39,8 @@ const getStyles = (attributes = {}) => {
         props: Object.fromEntries(
             Object.entries({
                 // Navigation arrows
+                "--swiper-navigation-icon-prev": settings?.['icon-prev']?.name,
+                "--swiper-navigation-icon-next": settings?.['icon-next']?.name,
                 "--swiper-navigation-color": getCSSFromStyle(linkColor, 'color'),
                 "--swiper-navigation-hover-color": getCSSFromStyle(linkHoverColor, 'color'),
                 "--swiper-navigation-size": getCSSFromStyle(fontSize, 'font-size'),
@@ -63,9 +70,9 @@ export default getStyles;
 const NavigationContent = ({options = {}, context = {}}) => {
     const buttonClass = "wpbs-slider-button";
 
-    const prevClass = [buttonClass, "wpbs-slider-button--prev"].join(" ");
+    const prevClass = [buttonClass, "wpbs-slider-button--prev", 'swiper-button-prev'].join(" ");
 
-    const nextClass = [buttonClass, "wpbs-slider-button--next"].join(" ");
+    const nextClass = [buttonClass, "wpbs-slider-button--next", 'swiper-button-next'].join(" ");
 
     const paginationClass = "wpbs-slider-pagination swiper-pagination";
 
@@ -116,6 +123,8 @@ registerBlockType(metadata.name, {
         (props) => {
             const {attributes, BlockWrapper, context, setCss} = props;
             const classNames = getClassNames(attributes);
+            const {'wpbs-slider-navigation': settings = {}} = attributes;
+
             const styles = useMemo(
                 () => getStyles(attributes),
                 [
@@ -127,10 +136,9 @@ registerBlockType(metadata.name, {
                 ]
             );
 
-
             useEffect(() => {
                 console.log(styles);
-//                console.log(attributes);
+                console.log(attributes);
 
                 setCss(styles);
             }, [styles]);
@@ -138,13 +146,43 @@ registerBlockType(metadata.name, {
             const isGroup = classNames.includes("is-style-group");
 
             return (
-                <BlockWrapper props={props} className={classNames}>
-                    {isGroup ? (
-                        <GroupedNavigation options={attributes[selector]} context={context}/>
-                    ) : (
-                        <NavigationContent options={attributes[selector]} context={context}/>
-                    )}
-                </BlockWrapper>
+                <>
+                    <InspectorControls group="styles">
+                        <PanelBody
+                            initialOpen={false}
+                            className="wpbs-block-controls"
+                            title={"Slider Navigation"}
+                        >
+                            <Grid
+                                columns={1}
+                                columnGap={15}
+                                rowGap={20}
+                            >
+                                <IconControl
+                                    fieldKey={'icon-next'}
+                                    label={'Icon Next'}
+                                    props={props}
+                                    value={settings?.['icon-next']}
+                                    onChange={(val) => updateSettings({['icon-next']: val})}
+                                />
+                                <IconControl
+                                    fieldKey={'icon-prev'}
+                                    label={'Icon Prev'}
+                                    props={props}
+                                    value={settings?.['icon-prev']}
+                                    onChange={(val) => updateSettings({['icon-prev']: val})}
+                                />
+                            </Grid>
+                        </PanelBody>
+                    </InspectorControls>
+                    <BlockWrapper props={props} className={classNames}>
+                        {isGroup ? (
+                            <GroupedNavigation options={attributes[selector]} context={context}/>
+                        ) : (
+                            <NavigationContent options={attributes[selector]} context={context}/>
+                        )}
+                    </BlockWrapper>
+                </>
             );
         },
         {

@@ -11,12 +11,7 @@ import {isEqual} from 'lodash';
 
 import {getEditorPalettes} from "Includes/helper";
 
-/**
- * A unified color/gradient selector.
- *
- * Accepts either a color string ("#fff") or a gradient string ("linear-gradient(...)").
- * The parent is expected to store whatever we return via onChange.
- */
+
 export function ColorSelector({label, value, onChange, normalize = true}) {
     const {colors, gradients} = getEditorPalettes();
 
@@ -25,26 +20,26 @@ export function ColorSelector({label, value, onChange, normalize = true}) {
     const gradientValue = isGradient ? value : undefined;
 
     const handleColorChange = (val) => {
-        if (!!normalize) {
-            if (!isEqual(val, local)) {
+        if (normalize) {
+            if (!isEqual(val, value)) {
                 onChange(val);
             }
         } else {
-            const next = {...local, color: val, gradient: local.gradient};
-            if (!isEqual(next, local)) {
+            const next = {...value, color: val, gradient: value?.gradient};
+            if (!isEqual(next, value)) {
                 onChange(next);
             }
         }
     };
 
     const handleGradientChange = (val) => {
-        if (!!normalize) {
-            if (!isEqual(val, local)) {
+        if (normalize) {
+            if (!isEqual(val, value)) {
                 onChange(val);
             }
         } else {
-            const next = {...local, gradient: val, color: local.color};
-            if (!isEqual(next, local)) {
+            const next = {...value, gradient: val, color: value?.color};
+            if (!isEqual(next, value)) {
                 onChange(next);
             }
         }

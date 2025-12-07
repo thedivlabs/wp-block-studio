@@ -1,141 +1,157 @@
+/* wpbs-slider pruned custom CSS */
 
-.wpbs-slider.swiper {
-  .wpbs-slider-navigation {
-    background: transparent !important;
-    width: 100%;
-    --btn-scale: 1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    pointer-events: none;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+/* Slider collapse mode */
+.wpbs-slider.--collapse.swiper--disabled .swiper-slide {
+  flex-grow: 0 !important;
+  height: auto !important;
+}
 
+.wpbs-slider.--collapse.swiper--disabled .swiper-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: inherit !important;
+}
 
-    .wpbs-slider-button {
-      transition: opacity 0.3s;
-      transform-origin: center;
-      transform: translateY(-50%) scale(var(--btn-scale, 1));
-      position: absolute;
-      top: 50%;
-      pointer-events: auto;
-      height: 1.2em;
-      aspect-ratio: 1 / 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      flex-shrink: 0;
-      cursor: pointer;
-      user-select: none;
-      appearance: none;
-      outline: none;
-      border: none;
-      background: transparent;
-      padding: 0;
-      margin: 0;
-      z-index: 100;
+/* Slide spacing and sizing */
+.wpbs-slider .swiper-slide:not(:last-of-type) {
+  margin-right: var(--space, 0px);
+}
 
-      &.swiper-button-prev {
+.wpbs-slider .swiper-slide {
+  max-width: calc((100% - (var(--space, 0px) * (var(--slides, 2) - 1))) / var(--slides, 1));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
 
-        &:after {
-          content: none;
-        }
-      }
+/* Slider navigation */
+.wpbs-slider .wpbs-slider-navigation {
+  background: transparent !important;
+  width: 100%;
+  --btn-scale: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
 
-      &.swiper-button-next {
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-button {
+  transition: opacity 0.3s;
+  transform-origin: center;
+  transform: translateY(-50%) scale(var(--btn-scale, 1));
+  position: absolute;
+  top: 50%;
+  pointer-events: auto;
+  height: 1.2em;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+  appearance: none;
+  outline: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  z-index: 100;
+}
 
-        &:after {
-          content: none;
-        }
-      }
-    }
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-button:active {
+  --btn-scale: 1.07;
+}
 
-    .wpbs-slider-button:active {
-      --btn-scale: 1.07;
-    }
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-button--prev {
+  left: 0.5rem;
+}
 
-    .wpbs-slider-button--prev {
-      left: 0.5rem;
-    }
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-button--next {
+  right: 0.5rem;
+}
 
-    .wpbs-slider-button--next {
-      right: 0.5rem;
-    }
+/* Remove default Swiper arrows */
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-button.swiper-button-prev:after,
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-button.swiper-button-next:after {
+  content: none;
+}
 
-    .wpbs-slider-pagination {
-      position: absolute;
-      top: auto;
-      right: auto;
-      left: 50%;
-      bottom: 0.5rem;
-      transform: translateX(-50%);
-      height: 4px;
-      width: 5rem;
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.25rem;
-      line-height: 1;
+/* Pagination */
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination {
+  left: 50%;
+  bottom: 0.5rem;
+  transform: translateX(-50%);
+  height: 4px;
+  width: 5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
 
-      &:empty {
-        display: none;
-      }
-    }
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination:empty {
+  display: none;
+}
 
-    .wpbs-slider-pagination.swiper-pagination-bullets {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      display: block;
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination.swiper-pagination-bullets {
+  width: auto;
+  max-width: 100%;
+  display: block;
+}
 
-      > .swiper-pagination-bullet {
-        transform: scale(1);
-        opacity: 0.6;
-        pointer-events: auto;
-        aspect-ratio: 1 / 1;
-        width: auto;
+.wpbs-slider .wpbs-slider-navigation
+.wpbs-slider-pagination.swiper-pagination-bullets
+> .swiper-pagination-bullet {
+  transform: scale(1);
+  opacity: 0.6;
+  pointer-events: auto;
+  aspect-ratio: 1 / 1;
+  width: auto;
+}
 
-        &.swiper-pagination-bullet-active {
-          opacity: 1;
-        }
-      }
-    }
-  }
+.wpbs-slider .wpbs-slider-navigation
+.wpbs-slider-pagination.swiper-pagination-bullets
+> .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  opacity: 1;
+}
 
-  .wpbs-slider-navigation.is-style-group {
-    transform: none;
-    top: unset;
-    left: unset;
-    right: unset;
-    bottom: unset;
-    position: relative;
-    width: fit-content;
-    display: inline-flex;
-    height: auto;
+/* Grouped navigation style */
+.wpbs-slider .wpbs-slider-navigation.is-style-group {
+  transform: none;
+  top: unset;
+  left: unset;
+  right: unset;
+  bottom: unset;
+  position: relative;
+  width: fit-content;
+  display: inline-flex;
+  height: auto;
+}
 
-    .wpbs-slider-navigation__group {
-      display: flex;
-      gap: inherit;
-    }
+.wpbs-slider .wpbs-slider-navigation.is-style-group .wpbs-slider-navigation__group {
+  display: flex;
+  gap: inherit;
+}
 
-    .wpbs-slider-button,
-    .wpbs-slider-pagination {
-      transform: none;
-      top: unset;
-      left: unset;
-      right: unset;
-      bottom: unset;
-      position: relative;
-    }
+.wpbs-slider .wpbs-slider-navigation.is-style-group .wpbs-slider-button,
+.wpbs-slider .wpbs-slider-navigation.is-style-group .wpbs-slider-pagination {
+  transform: none;
+  top: unset;
+  left: unset;
+  right: unset;
+  bottom: unset;
+  position: relative;
+}
 
-    .wpbs-slider-button {
-      transform: scale(var(--btn-scale, 1));
-    }
-  }
+.wpbs-slider .wpbs-slider-navigation.is-style-group .wpbs-slider-button {
+  transform: scale(var(--btn-scale, 1));
 }

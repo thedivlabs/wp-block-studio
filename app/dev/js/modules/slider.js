@@ -81,14 +81,7 @@ export default class Slider {
                     swiperInstance.controller.control = slaveInstances;
                 }
 
-                // --- REMOVED SLAVE → MASTER LINKAGE ---
-                // The master should control the slave, but the slave should NOT control the master.
-                // Removing the loop below fixes the inconsistent movement (bidirectional control)
-                /* slaveInstances.forEach(slave => {
-                    slave.controller.control = swiperInstance;
-                });
-                */
-                // ------------------------------------
+      
             }
 
             // Slave linking if initialized first

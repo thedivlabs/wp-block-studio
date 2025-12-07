@@ -119,6 +119,11 @@
     display: inline-flex;
     height: auto;
 
+    .wpbs-slider-navigation__group {
+      display: flex;
+      gap: inherit;
+    }
+
     .wpbs-slider-button,
     .wpbs-slider-pagination {
       transform: none;

@@ -88,6 +88,7 @@
 /* Pagination */
 .wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination {
   left: 50%;
+  top: unset;
   bottom: 0.5rem;
   transform: translateX(-50%);
   height: 4px;

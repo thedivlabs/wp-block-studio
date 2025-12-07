@@ -22,10 +22,12 @@ const getClassNames = (attributes = {}) => {
 
     const {'wpbs-slider-navigation': settings = {}} = attributes;
 
+    const isGroup = attributes?.className.includes("is-style-group");
+
     return [
         selector,
         settings?.compact ? 'w-fit --compact' : 'w-full',
-        settings?.justify ? `justify-${settings.align}` : null,
+        isGroup && settings?.justify ? `justify-${settings.align}` : null,
     ]
         .filter(Boolean)
         .join(" ");

@@ -14,11 +14,11 @@ const selector = "wpbs-slider";
 
 const getClassNames = (attributes = {}, settings = {}) => {
     const baseProps = settings?.props ?? {};
-    
+
     return [
         selector,
         "h-auto w-full max-h-full flex flex-col swiper",
-        !baseProps?.enabled ? '--collapse' : null,
+        !!baseProps?.enabled ? '--collapse' : null,
     ]
         .filter(Boolean)
         .join(" ");
@@ -127,6 +127,7 @@ registerBlockType(metadata.name, {
         const isLoop = (attributes?.className ?? '').includes('is-style-loop');
 
         useEffect(() => {
+            console.log(settings);
             setCss(getCssProps(settings));
         }, [JSON.stringify(settings), setCss]);
 

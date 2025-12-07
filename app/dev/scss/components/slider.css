@@ -133,9 +133,12 @@
   right: unset;
   bottom: unset;
   position: relative;
-  width: fit-content;
-  display: inline-flex;
   height: auto;
+
+  &.--compact {
+    display: inline-flex;
+    width: fit-content;
+  }
 }
 
 .wpbs-slider .wpbs-slider-navigation.is-style-group .wpbs-slider-navigation__group {

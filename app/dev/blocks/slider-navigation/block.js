@@ -184,7 +184,7 @@ registerBlockType(metadata.name, {
                                             __nextHasNoMarginBottom
                                             __next40pxDefaultSize
                                             label={'Justify'}
-                                            value={settings?.align}
+                                            value={settings?.justify}
                                             options={[
                                                 {label: 'Select', value: ''},
                                                 {label: 'Center', value: 'center'},
@@ -192,7 +192,7 @@ registerBlockType(metadata.name, {
                                                 {label: 'End', value: 'end'},
                                                 {label: 'Between', value: 'between'},
                                             ]}
-                                            onChange={(val) => updateSettings({style: val})}
+                                            onChange={(val) => updateSettings({justify: val})}
                                         />
                                     </Grid>
                                     <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '25px'}}>

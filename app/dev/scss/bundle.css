@@ -4,11 +4,8 @@
 @import "./components/modal";
 @import "./components/loader";
 @import "./components/lightbox";
-@import "./components/slider";
 @import "./components/reveal";
 @import "./components/forms";
-
-
 
 
 .odometer {

@@ -1,5 +1,10 @@
 .wpbs-slider-navigation {
   background: transparent !important;
+  width: 100%;
+
+  &.is-style-group {
+    width: fit-content;
+  }
 
   .wpbs-slider-button {
     appearance: none;

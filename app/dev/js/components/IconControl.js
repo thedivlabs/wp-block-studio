@@ -46,11 +46,11 @@ export function getIconCssProps(icon = {}, returnKeys = []) {
    ICON PREVIEW (real Material Icon)
 ------------------------------------------------------------ */
 const IconPreview = memo(
-    ({name, settings}) => {
+    ({name, settings, defaultName}) => {
         const iconName =
             typeof name === "string" && name.trim().length
                 ? name.trim()
-                : "home";
+                : defaultName || "home";
 
         const {style, weight, size, color, gradient} = settings;
 
@@ -92,6 +92,7 @@ export const IconControl = ({
                                 props,
                                 value = {},
                                 onChange,
+                                defaultName,
                                 label = "Icon",
                             }) => {
     const {updateEditorIcons} = window?.WPBS_StyleEditor ?? {};
@@ -107,7 +108,7 @@ export const IconControl = ({
     ------------------------------------------------------------ */
     const normalize = (obj) => {
         const normalized = {
-            name: obj.name || "",
+            name: obj.name || defaultName || "",
             weight: Number(obj.weight ?? 300),
             size: Number(obj.size ?? 32),
             style: obj.style ?? "outlined",
@@ -225,7 +226,7 @@ export const IconControl = ({
                     __next40pxDefaultSize
                 />
 
-                <IconPreview name={name} settings={local}/>
+                <IconPreview name={name} settings={local} defaultName={defaultName}/>
 
                 <div>
                     <Button

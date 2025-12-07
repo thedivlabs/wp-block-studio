@@ -7,7 +7,14 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {IconControl, getIconCssProps, MaterialIcon} from "Components/IconControl";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {cleanObject, getCSSFromStyle} from "Includes/helper";
-import {__experimentalGrid as Grid, PanelBody, TextControl} from "@wordpress/components";
+import {
+    __experimentalGrid as Grid,
+    BaseControl,
+    PanelBody,
+    SelectControl,
+    TextControl,
+    ToggleControl
+} from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
 import {isEqual, merge} from "lodash";
 
@@ -113,7 +120,7 @@ registerBlockType(metadata.name, {
             const {attributes, BlockWrapper, context, setCss, setAttributes} = props;
             const classNames = getClassNames(attributes);
             const {'wpbs-slider-navigation': settings = {}} = attributes;
-            const isGroup = classNames.includes("is-style-group");
+            const isGroup = attributes?.className.includes("is-style-group");
 
             const styles = useMemo(
                 () => getStyles(attributes),
@@ -151,15 +158,12 @@ registerBlockType(metadata.name, {
                             className="wpbs-block-controls"
                             title={"Slider Navigation"}
                         >
-                            <Grid
-                                columns={1}
-                                columnGap={15}
-                                rowGap={20}
-                            >
+                            <Grid columns={1} columnGap={15} rowGap={20}>
                                 <IconControl
                                     fieldKey={'icon-next'}
                                     label={'Icon Next'}
                                     props={props}
+                                    defaultName={'arrow_forward'}
                                     value={settings?.['icon-next']}
                                     onChange={(val) => updateSettings({['icon-next']: val})}
                                 />
@@ -167,9 +171,36 @@ registerBlockType(metadata.name, {
                                     fieldKey={'icon-prev'}
                                     label={'Icon Prev'}
                                     props={props}
+                                    defaultName={'arrow_back'}
                                     value={settings?.['icon-prev']}
                                     onChange={(val) => updateSettings({['icon-prev']: val})}
                                 />
+                                {isGroup && (<BaseControl label={'Group Options'}>
+                                    <Grid columns={2} columnGap={15} rowGap={20}>
+                                        <SelectControl
+                                            __nextHasNoMarginBottom
+                                            __next40pxDefaultSize
+                                            label={'Align'}
+                                            value={settings?.align}
+                                            options={[
+                                                {label: 'Select', value: ''},
+                                                {label: 'Center', value: 'center'},
+                                                {label: 'Left', value: 'left'},
+                                                {label: 'Right', value: 'right'},
+                                            ]}
+                                            onChange={(val) => updateSettings({style: val})}
+                                        />
+                                    </Grid>
+                                    <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+                                        <ToggleControl
+                                            label={'Compact'}
+                                            checked={!!settings?.['compact']}
+                                            onChange={(val) => updateSettings({['compact']: !!val})}
+                                            __nextHasNoMarginBottom
+                                        />
+                                    </Grid>
+                                </BaseControl>)}
+
                             </Grid>
                         </PanelBody>
                     </InspectorControls>

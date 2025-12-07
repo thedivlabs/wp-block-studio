@@ -8,6 +8,7 @@
 @import "./components/container";
 @import "./components/site-header";
 @import "./components/material-icons";
+@import "./components/slider";
 
 .odometer {
   font-family: inherit !important;

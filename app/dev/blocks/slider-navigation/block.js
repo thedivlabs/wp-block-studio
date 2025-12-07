@@ -103,9 +103,7 @@ const NavigationContent = ({options = {}, context = {}}) => {
 };
 
 const GroupedNavigation = ({options = {}, context = {}}) => (
-    <div className="wpbs-slider-navigation__group">
-        <NavigationContent options={options} context={context}/>
-    </div>
+    <NavigationContent options={options} context={context}/>
 );
 
 

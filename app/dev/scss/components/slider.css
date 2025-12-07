@@ -99,10 +99,6 @@
   gap: 0.25rem;
 }
 
-.wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination:empty {
-  display: none;
-}
-
 .wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination.swiper-pagination-bullets {
   width: auto;
   max-width: 100%;
@@ -134,16 +130,14 @@
   bottom: unset;
   position: relative;
   height: auto;
+  display: flex;
+  gap: inherit;
+  align-items: center;
 
   &.--compact {
     display: inline-flex;
     width: fit-content;
   }
-}
-
-.wpbs-slider .wpbs-slider-navigation.is-style-group .wpbs-slider-navigation__group {
-  display: flex;
-  gap: inherit;
 }
 
 .wpbs-slider .wpbs-slider-navigation.is-style-group .wpbs-slider-button,

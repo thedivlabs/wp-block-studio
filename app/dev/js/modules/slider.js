@@ -20,7 +20,6 @@ export default class Slider {
             merged.pagination = merge({}, merged.pagination, args.pagination);
         }
 
-        // Merge all other args
         Object.keys(args).forEach(key => {
             if (key !== 'navigation' && key !== 'pagination') {
                 merged[key] = args[key];
@@ -59,7 +58,11 @@ export default class Slider {
                     // Link master ↔ slaves
                     if (slaveInstances.length) {
                         swiperInstance.controller.control = slaveInstances;
-                        slaveInstances.forEach(slave => slave.controller.control = swiperInstance);
+                        swiperInstance.controller.by = 'slide';
+                        slaveInstances.forEach(slave => {
+                            slave.controller.control = swiperInstance;
+                            slave.controller.by = 'slide';
+                        });
                     }
                 }
 
@@ -68,6 +71,7 @@ export default class Slider {
                     const masterEl = document.querySelector(`.wpbs-slider.swiper[data-slider-controller="${controllerId}"].--master`);
                     if (masterEl?.swiper) {
                         swiperInstance.controller.control = masterEl.swiper;
+                        swiperInstance.controller.by = 'slide';
                     } else if (masterEl) {
                         requestAnimationFrame(initFn); // retry until master is ready
                         return;

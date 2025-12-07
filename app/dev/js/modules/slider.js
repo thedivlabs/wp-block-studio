@@ -26,85 +26,116 @@ export default class Slider {
             }
         });
 
+        // Ensure controller settings are included for slide-based control
+        merged.controller = merge({}, merged.controller, {by: 'slide'});
+
+        // --- NEW SLAVE CONTROL FIX ---
+        // If the element is a slave, prevent any user interaction
+        if (element.classList.contains('--slave')) {
+            merged.allowTouchMove = false;
+            merged.keyboard = false;
+            // Also ensure navigation and pagination are explicitly off for the slave
+            merged.navigation = false;
+            merged.pagination = false;
+        }
+        // -----------------------------
+
         return merged;
     }
 
     static observe(element, args = {}) {
         if (element.classList.contains('swiper-initialized')) return;
 
+        // Use a clone to avoid modifying the original mergeArgs result for the master
         const mergedArgs = this.mergeArgs(element, args);
         const controllerId = element.getAttribute('data-slider-controller');
         const isMaster = element.classList.contains('--master');
         const isSlave = element.classList.contains('--slave');
 
         const initFn = () => {
+            // New Swiper instance
             const swiperInstance = new Swiper(element, mergedArgs);
             element.swiper = swiperInstance;
 
-            if (controllerId) {
-                // Master → Slaves
-                if (isMaster) {
-                    const slaves = Array.from(
-                        document.querySelectorAll(`.wpbs-slider.swiper[data-slider-controller="${controllerId}"].--slave`)
-                    ).filter(slave => !slave.classList.contains('swiper-initialized'));
+            // Master linking
+            if (isMaster && controllerId) {
+                const slaveEls = document.querySelectorAll(
+                    `.wpbs-slider.swiper[data-slider-controller="${controllerId}"].--slave`
+                );
+                const slaveInstances = [];
 
-                    const slaveInstances = slaves.map(slaveEl => {
-                        const slaveArgs = this.mergeArgs(slaveEl);
+                slaveEls.forEach(slaveEl => {
+                    if (!slaveEl.classList.contains('swiper-initialized')) {
+                        // slaveArgs now includes allowTouchMove: false, keyboard: false
+                        const slaveArgs = this.mergeArgs(slaveEl, {});
                         const slaveSwiper = new Swiper(slaveEl, slaveArgs);
                         slaveEl.swiper = slaveSwiper;
-                        return slaveSwiper;
-                    });
-
-                    // Link master ↔ slaves
-                    if (slaveInstances.length) {
-                        swiperInstance.controller.control = slaveInstances;
-                        swiperInstance.controller.by = 'slide';
-                        slaveInstances.forEach(slave => {
-                            slave.controller.control = swiperInstance;
-                            slave.controller.by = 'slide';
-                        });
+                        slaveInstances.push(slaveSwiper);
+                    } else {
+                        slaveInstances.push(slaveEl.swiper);
                     }
+                });
+
+                // Link master → slaves (Master controls Slaves)
+                if (slaveInstances.length) {
+                    swiperInstance.controller.control = slaveInstances;
                 }
 
-                // Slave → Master (if initialized first)
-                if (isSlave) {
-                    const masterEl = document.querySelector(`.wpbs-slider.swiper[data-slider-controller="${controllerId}"].--master`);
-                    if (masterEl?.swiper) {
-                        swiperInstance.controller.control = masterEl.swiper;
-                        swiperInstance.controller.by = 'slide';
-                    } else if (masterEl) {
-                        requestAnimationFrame(initFn); // retry until master is ready
-                        return;
-                    }
+                // --- REMOVED SLAVE → MASTER LINKAGE ---
+                // The master should control the slave, but the slave should NOT control the master.
+                // Removing the loop below fixes the inconsistent movement (bidirectional control)
+                /* slaveInstances.forEach(slave => {
+                    slave.controller.control = swiperInstance;
+                });
+                */
+                // ------------------------------------
+            }
+
+            // Slave linking if initialized first
+            if (isSlave && controllerId) {
+                const masterEl = document.querySelector(`.wpbs-slider.swiper[data-slider-controller="${controllerId}"].--master`);
+                if (masterEl && masterEl.swiper) {
+                    // Link slave → master (Slave instance is controlled by Master instance)
+                    swiperInstance.controller.control = masterEl.swiper;
+                } else if (masterEl) {
+                    requestAnimationFrame(initFn);
+                    return;
                 }
             }
         };
 
-        const observer = new IntersectionObserver((entries, obs) => {
+        const observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
-                obs.unobserve(element);
+
+                observerInstance.unobserve(element);
 
                 const slides = element.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide');
                 if (slides.length <= 1) return;
 
                 this.initLib().then(initFn).catch(console.error);
             });
-        }, {root: null, rootMargin: '90px', threshold: 0});
+        }, {
+            root: null,
+            rootMargin: '90px',
+            threshold: 0,
+        });
 
         observer.observe(element);
     }
 
+    // ... initLib remains unchanged
     static initLib() {
         if (!this._libPromise) {
             if (typeof window.Swiper === 'function') {
                 this._libPromise = Promise.resolve();
             } else {
-                const link = document.createElement('link');
-                link.id = 'wpbs-swiper-styles';
-                link.rel = 'stylesheet';
-                link.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-                document.head.appendChild(link);
+                const stylesheet = document.createElement('link');
+                stylesheet.id = 'wpbs-swiper-styles';
+                stylesheet.rel = 'stylesheet';
+                stylesheet.type = 'text/css';
+                stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+                document.head.appendChild(stylesheet);
 
                 this._libPromise = new Promise((resolve, reject) => {
                     const script = document.createElement('script');

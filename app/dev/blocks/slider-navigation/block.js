@@ -19,8 +19,13 @@ import {isEqual, merge} from "lodash";
 const selector = "wpbs-slider-navigation";
 
 const getClassNames = (attributes = {}) => {
+
+    const {'wpbs-slider-navigation': settings = {}} = attributes;
+
     return [
         selector,
+        settings?.compact ? 'w-fit --compact' : 'w-full',
+        settings?.justify ? `justify-${settings.align}` : null,
     ]
         .filter(Boolean)
         .join(" ");
@@ -85,7 +90,7 @@ const NavigationContent = ({options = {}, context = {}}) => {
                 <MaterialIcon {...options?.['icon-prev']} defaultName={'arrow_back'}/>
             </button>
 
-            <div className={paginationClass}></div>
+            {!!options?.['pagination'] && (<div className={paginationClass}></div>)}
 
             <button type="button" className={nextClass}>
                 <span className="screen-reader-text">Next Slide</span>
@@ -178,22 +183,29 @@ registerBlockType(metadata.name, {
                                         <SelectControl
                                             __nextHasNoMarginBottom
                                             __next40pxDefaultSize
-                                            label={'Align'}
+                                            label={'Justify'}
                                             value={settings?.align}
                                             options={[
                                                 {label: 'Select', value: ''},
                                                 {label: 'Center', value: 'center'},
-                                                {label: 'Left', value: 'left'},
-                                                {label: 'Right', value: 'right'},
+                                                {label: 'Start', value: 'start'},
+                                                {label: 'End', value: 'end'},
+                                                {label: 'Between', value: 'between'},
                                             ]}
                                             onChange={(val) => updateSettings({style: val})}
                                         />
                                     </Grid>
-                                    <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+                                    <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '25px'}}>
                                         <ToggleControl
                                             label={'Compact'}
                                             checked={!!settings?.['compact']}
                                             onChange={(val) => updateSettings({['compact']: !!val})}
+                                            __nextHasNoMarginBottom
+                                        />
+                                        <ToggleControl
+                                            label={'Pagination'}
+                                            checked={!!settings?.['pagination']}
+                                            onChange={(val) => updateSettings({['pagination']: !!val})}
                                             __nextHasNoMarginBottom
                                         />
                                     </Grid>

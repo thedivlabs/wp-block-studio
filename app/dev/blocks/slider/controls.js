@@ -38,6 +38,7 @@ const BASE_SLIDER_NUMERIC_FIELDS = [
         ],
     },
     {slug: "slidesOffset", type: "number", label: "Offset Slides", step: 10},
+    {slug: "controller", type: "number", label: "Controller", step: 1, min: 1},
 ];
 
 const BASE_SLIDER_TOGGLE_FIELDS = [
@@ -50,6 +51,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
     {slug: "preventClicks", type: "toggle", label: "Clicks"},
     {slug: "rewind", type: "toggle", label: "Rewind"},
     {slug: "enabled", type: "toggle", label: "Collapse"},
+    {slug: "master", type: "toggle", label: "Master"},
 ];
 
 // Breakpoint slider fields

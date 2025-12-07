@@ -19,6 +19,8 @@ const getClassNames = (attributes = {}, settings = {}) => {
         selector,
         "h-auto w-full max-h-full flex flex-col swiper",
         !!baseProps?.enabled ? '--collapse' : null,
+        !!baseProps?.master ? '--master' : null,
+        !!baseProps?.controller && !baseProps?.master ? '--slave' : null,
     ]
         .filter(Boolean)
         .join(" ");
@@ -193,12 +195,15 @@ registerBlockType(metadata.name, {
         const settings = attributes["wpbs-slider"];
         const classNames = getClassNames(attributes, settings);
 
+        const controllerProps = Object.fromEntries(Object.entries({'data-slider-controller': settings?.props?.controller}).filter(([key, val]) => !!val));
+
         return (
             <BlockWrapper
                 className={classNames}
                 data-wp-interactive="wpbs/slider"
                 data-wp-init="actions.observe"
                 data-wp-context={JSON.stringify(normalizeSliderSettings(settings || {}))}
+                {...controllerProps}
             />
         );
     }, {

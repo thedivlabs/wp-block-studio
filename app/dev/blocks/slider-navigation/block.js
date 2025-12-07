@@ -27,7 +27,7 @@ const getClassNames = (attributes = {}) => {
     return [
         selector,
         isGroup && settings?.compact ? 'w-fit --compact' : 'w-full',
-        isGroup && settings?.justify ? `justify-${settings.align}` : null,
+        isGroup && settings?.justify ? `justify-${settings.justify}` : null,
     ]
         .filter(Boolean)
         .join(" ");

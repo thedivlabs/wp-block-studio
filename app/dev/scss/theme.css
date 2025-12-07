@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@source inline("justify-{start,end,center,between}");
+
 @import "./core/tw-base";
 @import "./core/tw-components";
 @import "./core/tw-utilities";

@@ -61,9 +61,7 @@
     "file:./block.js",
     "swiper-js"
   ],
-  "viewScriptModule": "file:./view.js",
   "style": [
-    "file:./block.css",
     "swiper-css"
   ],
   "icon": "slides"

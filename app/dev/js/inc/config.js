@@ -418,9 +418,11 @@ export const SWIPER_ARGS_DEFAULT = {
         dynamicBullets: false
     },
     passiveListeners: true,
+    watchOverflow: true,
+    roundLengths: true,
     draggable: true,
     preventClicks: false,
-    //watchSlidesProgress: true,
+    watchSlidesProgress: true,
     updateOnWindowResize: true,
     grabCursor: true,
     uniqueNavElements: true,
@@ -436,13 +438,12 @@ export const SWIPER_ARGS_DEFAULT = {
     effect: 'slide',
     freeMode: false,
     centeredSlides: false,
+    centerInsufficientSlides: false,
     loop: false,
     rewind: false,
     initialSlide: 0,
     breakpoints: {},
     simulateTouch: true,
-    loopAdditionalSlides: 3,
-
 };
 
 export const SWIPER_ARGS_VIEW = {

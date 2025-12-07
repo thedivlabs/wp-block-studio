@@ -200,9 +200,7 @@ registerBlockType(metadata.name, {
         return (
             <BlockWrapper
                 className={classNames}
-                data-wp-interactive="wpbs/slider"
-                data-wp-init="actions.observe"
-                data-wp-context={JSON.stringify(normalizeSliderSettings(settings || {}))}
+                data-context={JSON.stringify(normalizeSliderSettings(settings || {}))}
                 {...controllerProps}
             />
         );

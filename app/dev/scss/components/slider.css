@@ -39,6 +39,22 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+
+  &.justify-center {
+    justify-content: center;
+  }
+
+  &.justify-end {
+    justify-content: flex-end;
+  }
+
+  &.justify-start {
+    justify-content: flex-start;
+  }
+
+  &.justify-between {
+    justify-content: space-between;
+  }
 }
 
 .wpbs-slider .wpbs-slider-navigation .wpbs-slider-button {

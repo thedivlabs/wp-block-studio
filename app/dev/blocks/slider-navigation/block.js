@@ -2,15 +2,14 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {IconControl, getIconCssProps, MaterialIcon} from "Components/IconControl";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
-import {cleanObject, getCSSFromStyle} from "Includes/helper";
+import {getCSSFromStyle} from "Includes/helper";
 import {
     __experimentalGrid as Grid,
     BaseControl,
     PanelBody,
     SelectControl,
-    TextControl,
     ToggleControl
 } from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
@@ -138,6 +137,8 @@ registerBlockType(metadata.name, {
             );
 
             useEffect(() => {
+                console.log(attributes);
+
                 setCss(styles);
             }, [styles]);
 

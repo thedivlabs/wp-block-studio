@@ -6,7 +6,7 @@ import Video from './modules/video'
 import Slider from './modules/slider'
 import Reveal from './modules/reveal'
 import Team from './modules/team'
-import {gridDividers} from './modules/gridDividers'
+import {gridDividers} from 'Modules/gridDividers'
 
 
 class WPBS_Theme {

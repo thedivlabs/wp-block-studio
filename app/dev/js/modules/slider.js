@@ -3,11 +3,15 @@ import merge from 'lodash/merge';
 
 export default class Slider {
 
-    static init() {
-        // You can uncomment this if you want auto-init on DOMContentLoaded
-        // [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
-        //     this.observe(el);
-        // });
+    static init(search = false) {
+
+        if (search) {
+            [...document.querySelectorAll('.wpbs-slider.swiper')].forEach(el => {
+                this.observe(el);
+            });
+        }
+
+
     }
 
     /**

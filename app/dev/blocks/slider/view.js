@@ -1,19 +1,21 @@
-import { store, getElement, getContext } from '@wordpress/interactivity';
+import {store, getElement, getContext} from '@wordpress/interactivity';
 
 const SPECIAL_PROP_MAP = {
-    // propName: transformFunction
     enabled: (val) => !val, // invert for Swiper
     // add more special cases here if needed
 };
 
+// List of base props to suppress from breakpoints
+const propsToSuppress = ['enabled']; // add more keys as needed
+
 store('wpbs/slider', {
     actions: {
         observe: () => {
-            const { ref: element } = getElement();
+            const {ref: element} = getElement();
             const rawArgs = getContext();
             const breakpointsConfig = WPBS?.settings?.breakpoints ?? {};
 
-            const swiperArgs = { breakpoints: {} };
+            const swiperArgs = {breakpoints: {}};
 
             const normalizeProp = (key, value) => {
                 if (value === 'true') value = true;
@@ -37,22 +39,24 @@ store('wpbs/slider', {
             const rawBreakpoints = rawArgs.breakpoints || {};
             for (const customKey in rawBreakpoints) {
                 const bpMap = breakpointsConfig[customKey];
-                if (bpMap?.size) {
-                    const bpProps = rawBreakpoints[customKey].props || {};
-                    const normalizedBpProps = {};
+                if (!bpMap?.size) continue;
 
-                    // Copy all base props first
-                    for (const key in baseProps) {
+                const bpProps = rawBreakpoints[customKey].props || {};
+                const normalizedBpProps = {};
+
+                // Copy all base props first, except suppressed keys
+                for (const key in baseProps) {
+                    if (!propsToSuppress.includes(key)) {
                         normalizedBpProps[key] = normalizeProp(key, baseProps[key]);
                     }
-
-                    // Then override with breakpoint-specific props
-                    for (const key in bpProps) {
-                        normalizedBpProps[key] = normalizeProp(key, bpProps[key]);
-                    }
-
-                    swiperArgs.breakpoints[bpMap.size] = normalizedBpProps;
                 }
+
+                // Then override with breakpoint-specific props
+                for (const key in bpProps) {
+                    normalizedBpProps[key] = normalizeProp(key, bpProps[key]);
+                }
+
+                swiperArgs.breakpoints[bpMap.size] = normalizedBpProps;
             }
 
             WPBS.slider.observe(element, swiperArgs);

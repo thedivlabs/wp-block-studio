@@ -58,7 +58,8 @@
     }
   },
   "editorScript": [
-    "file:./block.js"
+    "file:./block.js",
+    "swiper-js"
   ],
   "viewScriptModule": "file:./view.js",
   "style": [

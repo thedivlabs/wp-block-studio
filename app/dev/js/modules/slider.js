@@ -4,12 +4,8 @@ import merge from 'lodash/merge';
 export default class Slider {
 
     static init() {
-        // intentionally empty
     }
 
-    /**
-     * Deep merge args, merging objects into defaults
-     */
     static mergeArgs(element, args = {}) {
         const merged = merge({}, SWIPER_ARGS_VIEW);
 
@@ -33,9 +29,6 @@ export default class Slider {
         return merged;
     }
 
-    /**
-     * Observe and initialize any slider (standalone, master, or slave)
-     */
     static observe(element, args = {}) {
         if (element.classList.contains('swiper-initialized')) return;
 
@@ -48,33 +41,40 @@ export default class Slider {
             const swiperInstance = new Swiper(element, mergedArgs);
             element.swiper = swiperInstance;
 
-            // Master logic: link all slaves
+            // Master linking
             if (isMaster && controllerId) {
-                const slaves = document.querySelectorAll(
+                const slaveEls = document.querySelectorAll(
                     `.wpbs-slider.swiper[data-slider-controller="${controllerId}"].--slave`
                 );
+                const slaveInstances = [];
 
-                slaves.forEach(slaveEl => {
+                slaveEls.forEach(slaveEl => {
                     if (!slaveEl.classList.contains('swiper-initialized')) {
                         const slaveArgs = this.mergeArgs(slaveEl, {});
-                        // Important: move slave slide-by-slide
-                        slaveArgs.controller = {control: swiperInstance, controlBy: 'slide'};
                         const slaveSwiper = new Swiper(slaveEl, slaveArgs);
                         slaveEl.swiper = slaveSwiper;
+                        slaveInstances.push(slaveSwiper);
                     } else {
-                        slaveEl.swiper.controller.control = swiperInstance;
-                        // force slide-by-slide control
-                        slaveEl.swiper.controller.controlBy = 'slide';
+                        slaveInstances.push(slaveEl.swiper);
                     }
+                });
+
+                // Link master → slaves
+                if (slaveInstances.length) {
+                    swiperInstance.controller.control = slaveInstances;
+                }
+
+                // Link slaves → master
+                slaveInstances.forEach(slave => {
+                    slave.controller.control = swiperInstance;
                 });
             }
 
-            // Slave logic: wait for master
+            // Slave linking if initialized first
             if (isSlave && controllerId) {
                 const masterEl = document.querySelector(`.wpbs-slider.swiper[data-slider-controller="${controllerId}"].--master`);
                 if (masterEl && masterEl.swiper) {
                     swiperInstance.controller.control = masterEl.swiper;
-                    swiperInstance.controller.controlBy = 'slide';
                 } else if (masterEl) {
                     requestAnimationFrame(initFn);
                     return;
@@ -82,7 +82,6 @@ export default class Slider {
             }
         };
 
-        // Lazy-init with IntersectionObserver
         const observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
@@ -103,9 +102,6 @@ export default class Slider {
         observer.observe(element);
     }
 
-    /**
-     * Lazy-load Swiper JS/CSS from CDN
-     */
     static initLib() {
         if (!this._libPromise) {
             if (typeof window.Swiper === 'function') {

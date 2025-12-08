@@ -21,7 +21,7 @@ const getClassNames = (attributes = {}) => {
 
     const {'wpbs-slider-navigation': settings = {}} = attributes;
 
-    const isGroup = attributes?.className.includes("is-style-group");
+    const isGroup = (attributes?.className ?? "").includes("is-style-group");
 
     return [
         selector,
@@ -123,7 +123,7 @@ registerBlockType(metadata.name, {
             const classNames = getClassNames(attributes);
             const {'wpbs-slider-navigation': settings = {}} = attributes;
             const isGroup = (attributes?.className ?? "").includes("is-style-group");
-            
+
             const styles = useMemo(
                 () => getStyles(attributes),
                 [
@@ -234,7 +234,7 @@ registerBlockType(metadata.name, {
             const {attributes, BlockWrapper} = props;
             const classNames = getClassNames(attributes);
 
-            const isGroup = classNames.includes("is-style-group");
+            const isGroup = (attributes?.className ?? "").includes("is-style-group");
 
             return (
                 <BlockWrapper props={props} className={classNames}>

@@ -207,13 +207,12 @@ registerBlockType(metadata.name, {
         const {attributes, BlockWrapper, setAttributes, setCss, clientId} = props;
 
         const settings = attributes["wpbs-slider"];
-        const querySettings = attributes["wpbs-query"];
-        const gallerySettings = settings?.gallery;
         const loopSettings = settings?.loop;
+        const gallerySettings = settings?.gallery;
         const classNames = getClassNames(attributes, settings);
+
         const isLoop = (attributes?.className ?? '').includes('is-style-loop');
         const isGallery = (attributes?.className ?? '').includes('is-style-gallery');
-
 
         // Count slides inside wpbs/slider-wrapper
         const totalSlides = useMemo(() => {
@@ -227,6 +226,7 @@ registerBlockType(metadata.name, {
             setCss(getCssProps(settings, totalSlides));
         }, [JSON.stringify(settings), totalSlides, setCss]);
 
+        // Centralized settings update
         const updateSettings = useCallback(
             (nextValue) => {
                 if (!isEqual(settings, nextValue)) {
@@ -236,36 +236,22 @@ registerBlockType(metadata.name, {
             [settings, setAttributes]
         );
 
-        const handleLoopChange = useCallback(
-            (nextQuery) => {
-                const newQuerySettings = {...querySettings, ...nextQuery};
-                if (!isEqual(querySettings, newQuerySettings)) {
-                    setAttributes({"wpbs-query": newQuerySettings});
-                }
-            },
-            [querySettings, setAttributes]
-        );
-
-        const handleGalleryCallback = useCallback(
-            (updatedGallerySettings) => {
-                setAttributes({
-                    'wpbs-query': updatedGallerySettings,
-                });
-            },
-            [setAttributes]
-        );
-
+        // Track block style flags
         useEffect(() => {
-            if (attributes?.isLoop !== isLoop) {
-                setAttributes({isLoop: !!isLoop});
+            if (attributes?.isLoop !== isLoop || attributes?.isGallery !== isGallery) {
+                setAttributes({isLoop, isGallery});
             }
-        }, [isLoop, setAttributes]);
+        }, [isLoop, isGallery, setAttributes, attributes]);
 
         const inspectorPanel = useMemo(() => (
             <>
                 {isLoop && (
                     <PanelBody title="Loop" initialOpen={false} className="wpbs-block-controls">
-                        <Loop settings={loopSettings} onChange={handleLoopChange} setAttributes={setAttributes}/>
+                        <Loop
+                            settings={loopSettings}
+                            setAttributes={setAttributes}
+                            callback={(newValue) => updateSettings({loop: newValue})} // passes changes back through updateSettings
+                        />
                     </PanelBody>
                 )}
 
@@ -274,13 +260,14 @@ registerBlockType(metadata.name, {
                         <MediaGalleryControls
                             settings={gallerySettings}
                             setAttributes={setAttributes}
-                            callback={handleGalleryCallback}
+                            callback={(newValue) => updateSettings({gallery: newValue})} // passes changes back through updateSettings
                         />
                     </PanelBody>
                 )}
+
                 <SliderInspector attributes={attributes} updateSettings={updateSettings}/>
             </>
-        ), [updateSettings, settings, handleLoopChange, isLoop, querySettings]);
+        ), [updateSettings, settings, isLoop, isGallery, loopSettings, gallerySettings]);
 
         return (
             <>

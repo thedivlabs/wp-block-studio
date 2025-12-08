@@ -10,6 +10,7 @@ import {useCallback, useState} from "@wordpress/element";
 import {loopFieldsMap} from "Includes/config";
 import {Field} from "Components/Field";
 import {PostSelectField} from "Components/PostSelectField";
+import {isEqual} from "lodash";
 
 
 export const LoopBasicSettings = ({value = {}, onChange}) => {
@@ -42,15 +43,15 @@ export const LoopBasicSettings = ({value = {}, onChange}) => {
     );
 };
 
-export const Loop = ({value = {}, onChange}) => {
-    const {post_type, taxonomy, term, exclude, include, loopTerms} = value;
+// Loop component
+export const Loop = ({ value = {}, onChange, setAttributes }) => {
+    const { post_type, taxonomy, term, exclude, include, loopTerms } = value;
 
+    // Selectors
     const postTypes = useSelect((select) => {
-        const types = select(coreStore).getPostTypes({per_page: -1});
+        const types = select(coreStore).getPostTypes({ per_page: -1 });
         if (!types) return null;
-        return Object.values(types).filter(
-            (type) => type?.viewable && type.slug !== "attachment"
-        );
+        return Object.values(types).filter((type) => type?.viewable && type.slug !== "attachment");
     }, []);
 
     const taxonomies = useSelect((select) => {
@@ -62,123 +63,85 @@ export const Loop = ({value = {}, onChange}) => {
     const terms = useSelect(
         (select) => {
             if (!taxonomy) return [];
-            const args = {per_page: -1, hide_empty: false};
+            const args = { per_page: -1, hide_empty: false };
             const records = select(coreStore).getEntityRecords("taxonomy", taxonomy, args);
             return records || [];
         },
         [taxonomy]
     );
 
+    // Unified update handler
     const update = useCallback(
-        (patch) => onChange({...value, ...patch}),
-        [value, onChange]
+        (patch) => {
+            const nextValue = { ...value, ...patch };
+
+            // Only update if the new value actually differs
+            if (!isEqual(value, nextValue)) {
+                onChange(nextValue); // update the loop object in wpbs-slider
+                setAttributes({ 'wpbs-query': nextValue }); // directly update wpbs-query
+            }
+        },
+        [value, onChange, setAttributes]
     );
-
-    const postTypeOptions = [
-        {value: "", label: "Select a post type"},
-        {value: "current", label: "Archive"},
-        {label: "— Registered Post Types", value: "", disabled: true},
-        ...(postTypes || []).map((pt) => ({
-            value: pt.slug,
-            label: pt.name,
-        })),
-    ];
-
-    const taxonomyOptions = [
-        {value: "", label: "Select a taxonomy"},
-        ...(taxonomies || []).map((tax) => ({
-            value: tax.slug,
-            label: tax.name,
-        })),
-    ];
-
-    const termOptions = [
-        {value: "", label: "Select a term"},
-        {value: "current", label: "Archive"},
-        {label: "— Registered Terms", value: "", disabled: true},
-        ...(terms || []).map((t) => ({
-            value: t.id,
-            label: t.name,
-        })),
-    ];
 
     return (
         <Grid columns={1} rowGap={16}>
             <SelectControl
                 label="Post Type"
                 value={post_type || ""}
-                options={postTypeOptions}
-                onChange={(newValue) => {
-                    update({
-                        post_type: newValue,
-                        taxonomy: "",
-                        term: "",
-                    });
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
+                options={[
+                    { value: "", label: "Select a post type" },
+                    { value: "current", label: "Archive" },
+                    { label: "— Registered Post Types", value: "", disabled: true },
+                    ...(postTypes || []).map((pt) => ({ value: pt.slug, label: pt.name })),
+                ]}
+                onChange={(newValue) => update({ post_type: newValue, taxonomy: "", term: "" })}
             />
 
             <SelectControl
                 label="Taxonomy"
                 value={taxonomy || ""}
-                options={taxonomyOptions}
-                onChange={(newValue) => {
-                    update({
-                        taxonomy: newValue,
-                        term: "",
-                    });
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
+                options={[
+                    { value: "", label: "Select a taxonomy" },
+                    ...(taxonomies || []).map((tax) => ({ value: tax.slug, label: tax.name })),
+                ]}
+                onChange={(newValue) => update({ taxonomy: newValue, term: "" })}
             />
 
             <SelectControl
                 label="Term"
                 value={term || ""}
-                options={termOptions}
-                onChange={(newValue) => {
-                    update({term: newValue});
-                }}
+                options={[
+                    { value: "", label: "Select a term" },
+                    { value: "current", label: "Archive" },
+                    { label: "— Registered Terms", value: "", disabled: true },
+                    ...(terms || []).map((t) => ({ value: t.id, label: t.name })),
+                ]}
+                onChange={(newValue) => update({ term: newValue })}
                 disabled={!taxonomy}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
             />
 
             <PostSelectField
                 value={include}
-                onChange={(newValue) => {
-                    update({include: newValue});
-                }}
-                label={'Select Posts'}
+                onChange={(newValue) => update({ include: newValue })}
+                label="Select Posts"
                 querySettings={value}
             />
 
             <PostSelectField
                 value={exclude}
-                onChange={(newValue) => {
-                    update({exclude: newValue});
-                }}
-                label={'Exclude Posts'}
+                onChange={(newValue) => update({ exclude: newValue })}
+                label="Exclude Posts"
                 querySettings={value}
             />
 
-            <Grid columns={2} rowGap={16} columnGap={10}>
-                <ToggleControl
-                    checked={!!loopTerms}
-                    onChange={(newValue) => {
-                        update({loopTerms: !!newValue});
-                    }}
-                    label={'Loop Terms'}
-                />
-            </Grid>
-
-
-            {/* ⭐ NEW: Basic Query Settings (collapsible) */}
-            <LoopBasicSettings
-                value={value}
-                onChange={onChange}
+            <ToggleControl
+                checked={!!loopTerms}
+                onChange={(newValue) => update({ loopTerms: !!newValue })}
+                label="Loop Terms"
             />
+
+            <LoopBasicSettings value={value} onChange={update} />
         </Grid>
     );
 };

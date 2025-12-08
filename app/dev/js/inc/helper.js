@@ -1,6 +1,62 @@
 import _, {merge} from "lodash";
 
 
+export function normalizeVideo(videoObj = {}) {
+    const {
+        link = "",
+        poster = null,
+        title = "",
+        description = "",
+        platform: platformInput = "youtube",
+    } = videoObj;
+
+    let platform = platformInput;
+    let videoId = null;
+
+    // Extract video ID for known platforms
+    if (link) {
+        try {
+            const url = new URL(link);
+            if (url.hostname.includes("youtu") || platform === "youtube") {
+                platform = "youtube";
+                videoId = url.pathname.startsWith("/watch")
+                    ? url.searchParams.get("v")
+                    : url.pathname.replace(/^\/+/, "");
+            } else if (url.hostname.includes("vimeo") || platform === "vimeo") {
+                platform = "vimeo";
+                videoId = url.pathname.replace(/^\/+/, "");
+            } else if (url.hostname.includes("rumble") || platform === "rumble") {
+                platform = "rumble";
+                videoId = url.pathname.replace(/^\/+/, "");
+            }
+        } catch (e) {
+            videoId = null;
+        }
+    }
+
+    // Normalize poster image
+    let normalizedPoster = poster ? normalizeMedia(poster) : null;
+
+    // Fallback to YouTube thumbnail if no poster
+    if (!normalizedPoster?.source && platform === "youtube" && videoId) {
+        normalizedPoster = {
+            source: `https://i3.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            type: "image",
+            isPlaceholder: false,
+            sizes: null,
+        };
+    }
+
+    return {
+        link,
+        platform,
+        videoId,
+        poster: normalizedPoster,
+        title,
+        description,
+    };
+}
+
 export const getBreakpointPropsList = (raw = {}) => {
     const breakpoints = raw.breakpoints || {};
     return Object.values(breakpoints).map((bp) => bp?.props || {});

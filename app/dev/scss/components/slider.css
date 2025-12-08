@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.wpbs-slider:not(.--vertical) .swiper-wrapper {
+.wpbs-slider:not(.--vertical):not(.is-style-loop) .swiper-wrapper {
   display: flex; /* Forces slides onto a single horizontal line */
   min-height: 1px; /* Reserves space if the wrapper has no content initially */
   width: calc((100% / var(--slides)) * var(--total-slides) + (var(--space) * (var(--total-slides) - var(--slides)))) !important;

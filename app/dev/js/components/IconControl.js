@@ -8,7 +8,7 @@ import {
     Popover,
 } from '@wordpress/components';
 import {useEffect, useState, memo, useCallback} from "@wordpress/element";
-import {isEqual} from "lodash";
+import {isEqual, debounce} from "lodash";
 import {ColorSelector} from "Components/ColorSelector";
 
 const generateCSS = (fill, weight, opsz) =>
@@ -98,6 +98,8 @@ export const IconControl = ({
     const {updateEditorIcons} = window?.WPBS_StyleEditor ?? {};
 
     const [local, setLocal] = useState(value);
+    const [localName, setLocalName] = useState(local.name || "");
+
     const [isOpen, setIsOpen] = useState(false);
 
     const icons = props.attributes["wpbs-icons"] || [];
@@ -170,6 +172,14 @@ export const IconControl = ({
         [icons, fieldId, onChange, props.setAttributes, updateEditorIcons]
     );
 
+    const debouncedUpdate = useCallback(
+        debounce((patch) => {
+            update(patch);
+        }, 1200),
+        [update]
+    );
+
+
     /* ------------------------------------------------------------
        EXTERNAL → INTERNAL SYNC
     ------------------------------------------------------------ */
@@ -178,6 +188,7 @@ export const IconControl = ({
             setLocal(value);
         }
     }, [value]);
+
 
     /* ------------------------------------------------------------
        UI
@@ -218,8 +229,11 @@ export const IconControl = ({
         <BaseControl label={labelNode} style={{marginBottom: 0}}>
             <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
                 <TextControl
-                    value={name}
-                    onChange={(val) => update({name: val})}
+                    value={localName}
+                    onChange={(val) => {
+                        setLocalName(val);
+                        debouncedUpdate({name: val});
+                    }}
                     placeholder="Icon name"
                     style={{flex: 1}}
                     __nextHasNoMarginBottom

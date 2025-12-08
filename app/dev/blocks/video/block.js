@@ -1,39 +1,39 @@
 import "./scss/block.scss";
 
-import { registerBlockType } from "@wordpress/blocks";
+import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import { withStyle, withStyleSave, STYLE_ATTRIBUTES } from "Components/Style";
-import { Field } from "Components/Field";
-import { OVERLAY_GRADIENTS, RESOLUTION_OPTIONS } from "Includes/config";
+import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from "Components/Style";
+import {Field} from "Components/Field";
+import {OVERLAY_GRADIENTS, RESOLUTION_OPTIONS} from "Includes/config";
 
-import { useCallback, useEffect, useMemo } from "@wordpress/element";
-import { InspectorControls } from "@wordpress/block-editor";
-import { PanelBody, __experimentalGrid as Grid } from "@wordpress/components";
+import {useCallback, useEffect, useMemo} from "@wordpress/element";
+import {InspectorControls} from "@wordpress/block-editor";
+import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 
-import { isEqual } from "lodash";
+import {isEqual} from "lodash";
 import ResponsivePicture from "Components/ResponsivePicture";
-import { cleanObject, getImageUrlForResolution, normalizeVideo, normalizeMedia } from "Includes/helper";
-import { MaterialIcon } from "Components/IconControl";
+import {cleanObject, getImageUrlForResolution, normalizeVideo, normalizeMedia} from "Includes/helper";
+import {MaterialIcon} from "Components/IconControl";
 
 //
 // -------------------------------------------------------------
 // FIELD MAP
 //
 const fieldsMap = [
-    { type: "text", slug: "link", label: "Share Link", full: true },
-    { type: "text", slug: "title", label: "Title", full: true },
-    { type: "text", slug: "description", label: "Description", full: true },
-    { type: "image", slug: "poster", label: "Poster", full: true },
-    { type: "select", slug: "resolution", label: "Resolution", options: RESOLUTION_OPTIONS },
+    {type: "text", slug: "link", label: "Share Link", full: true},
+    {type: "text", slug: "title", label: "Title", full: true},
+    {type: "text", slug: "description", label: "Description", full: true},
+    {type: "image", slug: "poster", label: "Poster", full: true},
+    {type: "select", slug: "resolution", label: "Resolution", options: RESOLUTION_OPTIONS},
     {
         type: "select",
         slug: "title-position",
         label: "Title Position",
         options: [
-            { label: "Select", value: "" },
-            { label: "Top", value: "top" },
-            { label: "Bottom", value: "bottom" },
+            {label: "Select", value: ""},
+            {label: "Top", value: "top"},
+            {label: "Bottom", value: "bottom"},
         ],
     },
     {
@@ -42,8 +42,8 @@ const fieldsMap = [
         label: "Options",
         full: true,
         fields: [
-            { type: "toggle", slug: "eager", label: "Eager" },
-            { type: "toggle", slug: "lightbox", label: "Lightbox" },
+            {type: "toggle", slug: "eager", label: "Eager"},
+            {type: "toggle", slug: "lightbox", label: "Lightbox"},
         ],
     },
     {
@@ -52,13 +52,13 @@ const fieldsMap = [
         label: "Colors",
         full: true,
         colors: [
-            { slug: "icon-color", label: "Icon" },
-            { slug: "title-text", label: "Title Text" },
-            { slug: "title-bar", label: "Title Bar" },
+            {slug: "icon-color", label: "Icon"},
+            {slug: "title-text", label: "Title Text"},
+            {slug: "title-bar", label: "Title Bar"},
         ],
     },
-    { type: "gradient", slug: "overlay", label: "Overlay", full: true, gradients: OVERLAY_GRADIENTS },
-    { type: "icon", slug: "button-icon", label: "Icon", full: true },
+    {type: "gradient", slug: "overlay", label: "Overlay", full: true, gradients: OVERLAY_GRADIENTS},
+    {type: "icon", slug: "button-icon", label: "Icon", full: true},
 ];
 
 //
@@ -121,7 +121,7 @@ function getPreload(settings = {}) {
 }
 
 function getPosterSrc(settings) {
-    const { poster, resolution = "medium" } = settings;
+    const {poster, resolution = "medium"} = settings;
     const vid = getVideoId(settings.link);
 
     if (poster?.source) return getImageUrlForResolution(poster, resolution);
@@ -148,13 +148,14 @@ function renderVideoContent(settings, attributes, isEditor) {
                 </div>
             )}
 
-            <div className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
+            <div
+                className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
                 <span className="screen-reader-text">Play video</span>
                 <MaterialIcon {...(settings?.["button-icon"] ?? {})} />
             </div>
 
             <img
-                {...(eager ? { src: posterSrc } : { "data-src": posterSrc })}
+                {...(eager || isEditor ? {src: posterSrc} : {"data-src": posterSrc})}
                 alt={settings.title || ""}
                 className="w-full h-full absolute top-0 left-0 z-0 object-cover object-center"
             />
@@ -172,40 +173,26 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
         "wpbs-video": {
-            type: "object",
-            default: {
-                poster: undefined,
-                eager: false,
-                lightbox: false,
-                overlay: undefined,
-                link: "",
-                platform: "youtube",
-                title: "",
-                description: "",
-                resolution: "medium",
-                "button-icon": undefined,
-                "icon-color": undefined,
-                "title-color": undefined,
-                "title-position": "top",
-            },
+            type: "object"
         },
     },
 
     edit: withStyle((props) => {
-        const { attributes, setAttributes, BlockWrapper, setCss, setPreload } = props;
+        const {attributes, setAttributes, BlockWrapper, setCss, setPreload} = props;
         const settings = attributes["wpbs-video"] || {};
 
         const updateSettings = useCallback(
             (patchObj) => {
-                const next = { ...settings, ...patchObj };
+                const next = {...settings, ...patchObj};
                 const normalized = normalizeVideo(next);
-                const merged = { ...next, ...normalized }; // preserve extra props
-                if (!isEqual(settings, merged)) setAttributes({ "wpbs-video": merged });
+                const merged = {...next, ...normalized}; // preserve extra props
+                if (!isEqual(settings, merged)) setAttributes({"wpbs-video": merged});
             },
             [settings, setAttributes]
         );
 
         useEffect(() => {
+            console.log(settings);
             setCss(getCssProps(settings));
             setPreload(getPreload(settings));
         }, [settings]);
@@ -256,7 +243,7 @@ registerBlockType(metadata.name, {
     }),
 
     save: withStyleSave((props) => {
-        const { attributes, styleData, BlockWrapper } = props;
+        const {attributes, styleData, BlockWrapper} = props;
         const settings = attributes["wpbs-video"] || {};
         const classNames = getClassNames(attributes, settings);
 

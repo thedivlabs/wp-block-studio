@@ -122,8 +122,8 @@ registerBlockType(metadata.name, {
             const {attributes, BlockWrapper, context, setCss, setAttributes} = props;
             const classNames = getClassNames(attributes);
             const {'wpbs-slider-navigation': settings = {}} = attributes;
-            const isGroup = attributes?.className.includes("is-style-group");
-
+            const isGroup = (attributes?.className ?? "").includes("is-style-group");
+            
             const styles = useMemo(
                 () => getStyles(attributes),
                 [

@@ -2,3 +2,9 @@
 @import "./admin/editor";
 @import "./admin/layout-tools";
 @import "./components/slider";
+
+.is-root-container.wp-block-post-content {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}

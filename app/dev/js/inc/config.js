@@ -419,7 +419,7 @@ export const SWIPER_ARGS_DEFAULT = {
     },
     passiveListeners: true,
     watchOverflow: true,
-    roundLengths: true,
+    roundLengths: false,
     draggable: true,
     preventClicks: false,
     watchSlidesProgress: true,

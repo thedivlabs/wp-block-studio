@@ -1,11 +1,14 @@
+// slider class
+
 import {SWIPER_ARGS_VIEW} from 'Includes/config';
 import merge from 'lodash/merge';
 
 export default class Slider {
 
     // --- Constants ---
-    static SPECIAL_PROP_MAP = {enabled: val => !val};
-    static propsToSuppress = ['enabled'];
+    // These constants are no longer needed as normalization is done in the block.
+    // static SPECIAL_PROP_MAP = {enabled: val => !val};
+    // static propsToSuppress = ['enabled'];
     static _libPromise = null;
 
     /**
@@ -20,69 +23,30 @@ export default class Slider {
 
         // Process in the order: Slaves, then Others, then Masters (who handle linking)
         [...slaves, ...others, ...masters].forEach(element => {
-            const rawArgs = this.getRawContext(element);
-            const swiperArgs = this.normalizeAndGetSwiperArgs(rawArgs);
+            // The context is now the fully normalized Swiper args object
+            const swiperArgs = this.getRawContext(element);
             this.observe(element, swiperArgs);
         });
     }
 
-    // --- Data Retrieval & Normalization Logic ---
+    // --- Data Retrieval ---
 
     static getRawContext(element) {
         const configAttr = element.dataset?.context;
         if (configAttr) {
             try {
+                // Returns the fully normalized Swiper args object
                 return JSON.parse(configAttr);
             } catch (e) {
                 console.error('Error parsing Swiper config JSON from data-context:', e);
             }
         }
-        return {props: {}, breakpoints: {}};
+        // Return an empty object ready for merging
+        return {};
     }
 
-    static normalizeProp = (key, value) => {
-        if (value === 'true') value = true;
-        else if (value === 'false') value = false;
-        else if (typeof value === 'string' && value !== '' && !isNaN(Number(value))) value = Number(value);
-
-        return this.SPECIAL_PROP_MAP[key] ? this.SPECIAL_PROP_MAP[key](value) : value;
-    }
-
-    static normalizeAndGetSwiperArgs(rawArgs) {
-        const breakpointsConfig = WPBS?.settings?.breakpoints ?? {};
-        const swiperArgs = {breakpoints: {}};
-        const {props: baseProps = {}, breakpoints: rawBreakpoints = {}} = rawArgs;
-
-        // Base Props
-        for (const key in baseProps) {
-            swiperArgs[key] = this.normalizeProp(key, baseProps[key]);
-        }
-
-        // Breakpoints
-        for (const customKey in rawBreakpoints) {
-            const bpMap = breakpointsConfig[customKey];
-            if (!bpMap?.size || !rawBreakpoints[customKey].props) continue;
-
-            const bpProps = rawBreakpoints[customKey].props || {};
-            const normalizedBpProps = {};
-
-            // Inherit base props, excluding suppressed ones
-            for (const key in baseProps) {
-                if (!this.propsToSuppress.includes(key)) {
-                    normalizedBpProps[key] = this.normalizeProp(key, baseProps[key]);
-                }
-            }
-
-            // Override with breakpoint-specific props
-            for (const key in bpProps) {
-                normalizedBpProps[key] = this.normalizeProp(key, bpProps[key]);
-            }
-
-            swiperArgs.breakpoints[bpMap.size] = normalizedBpProps;
-        }
-
-        return swiperArgs;
-    }
+    // ❌ DELETE normalizeProp
+    // ❌ DELETE normalizeAndGetSwiperArgs
 
     // --- Original Methods (Used to merge and initialize) ---
 
@@ -91,16 +55,24 @@ export default class Slider {
         const isMaster = element.classList.contains('--master');
         const isSlave = element.classList.contains('--slave');
 
+        // NAVIGATION: Merge in args.navigation (if present), and add DOM element selectors.
         merged.navigation = merge({}, merged.navigation, args.navigation, {
             nextEl: element.querySelector('.wpbs-slider-button--next'),
             prevEl: element.querySelector('.wpbs-slider-button--prev'),
         });
 
-        if (args.pagination) {
+        // PAGINATION FIX: Pagination object is already fully compliant in args.
+        // We only merge if the args contains a pagination object. This fixes the issue
+        // of `merge` iterating over string characters if `args.pagination` was a string.
+        if (typeof args.pagination === 'object' && args.pagination !== null) {
             merged.pagination = merge({}, merged.pagination, args.pagination);
+        } else if (args.pagination === false) {
+            // Explicitly handle disabling pagination
+            merged.pagination = false;
         }
 
-        // Apply all normalized props from the block context
+
+        // Apply all normalized props from the block context (excluding navigation/pagination)
         Object.keys(args).forEach(key => {
             if (key !== 'navigation' && key !== 'pagination') {
                 merged[key] = args[key];
@@ -108,8 +80,15 @@ export default class Slider {
         });
 
         // CONTROLLER FIX: Master uses 'container'
+        const controllerId = element.getAttribute('data-slider-controller');
+
+        // Use the controller ID from the block's data attribute if it exists, otherwise fall back to 'slide'
+        const controllerBy = controllerId ? (isMaster ? 'container' : 'slide') : (args.controller?.by || 'slide');
+
+        // Note: args.controller is *not* present in the normalized object, as it's extracted
+        // to data-slider-controller. Re-adding minimal controller config here.
         merged.controller = merge({}, merged.controller, {
-            by: isMaster ? 'container' : (args.controller?.by || 'slide')
+            by: controllerBy
         });
 
         // SLAVE CONTROL FIX (LOCKOUT)
@@ -127,6 +106,7 @@ export default class Slider {
 
     // --- New Refactored Linking Method ---
     static linkMasterGroup(masterElement, masterInstance, controllerId) {
+        // ... (function logic remains the same) ...
         const allLinkedElements = document.querySelectorAll(
             `.wpbs-slider.swiper[data-slider-controller="${controllerId}"]`
         );
@@ -137,7 +117,7 @@ export default class Slider {
             let instance;
             if (!linkedEl.classList.contains('swiper-initialized')) {
                 // Initialize any uninitialized linked element (Slaves)
-                const linkedArgs = this.mergeArgs(linkedEl, {});
+                const linkedArgs = this.mergeArgs(linkedEl, this.getRawContext(linkedEl)); // Use getRawContext here
                 instance = new Swiper(linkedEl, linkedArgs);
                 linkedEl.swiper = instance;
                 instance.update();
@@ -181,9 +161,7 @@ export default class Slider {
         const isSlave = element.classList.contains('--slave');
 
         if (element.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide').length <= 1) return;
-
-        console.log(mergedArgs);
-
+        
         const initFn = () => {
             const swiperInstance = new Swiper(element, mergedArgs);
             element.swiper = swiperInstance;
@@ -224,7 +202,7 @@ export default class Slider {
         if (typeof window.Swiper === 'function') {
             this._libPromise = Promise.resolve();
         } else {
-        
+
             // Load JS
             this._libPromise = new Promise((resolve, reject) => {
                 const script = document.createElement('script');

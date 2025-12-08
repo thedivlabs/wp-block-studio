@@ -1,3 +1,5 @@
+// block
+
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
@@ -12,6 +14,12 @@ import {Loop} from "Components/Loop";
 
 const selector = "wpbs-slider";
 
+// --- NEW/MOVED CONSTANTS ---
+// These are used for normalization and are moved from the Slider class.
+const SPECIAL_PROP_MAP = {enabled: (val) => !val};
+const PROPS_TO_SUPPRESS = ['enabled'];
+const PAGINATION_PROPS = ['enabled', 'el', 'type', 'clickable', 'dynamicBullets', 'renderBullet', 'renderFraction', 'renderProgressbar', 'renderCustom'];
+
 const getClassNames = (attributes = {}, settings = {}) => {
     const baseProps = settings?.props ?? {};
     return [
@@ -23,33 +31,126 @@ const getClassNames = (attributes = {}, settings = {}) => {
     ].filter(Boolean).join(" ");
 };
 
-function normalizeSliderSettings(settings = {}) {
-    const {props = {}, breakpoints = {}} = settings;
+// --- NEW/MOVED HELPER FUNCTION ---
+/**
+ * Normalizes a single property value: coerces types (string -> boolean/number),
+ * and applies special transformations (like inverting 'enabled').
+ */
+function normalizeProp(key, value) {
+    if (value === 'true') value = true;
+    else if (value === 'false') value = false;
+    else if (typeof value === 'string' && value !== '' && !isNaN(Number(value))) value = Number(value);
 
-    const normalizeProps = (obj = {}) => {
-        const out = {...obj};
-        for (const key in out) {
-            const value = out[key];
-            if (key === "slidesOffset") {
-                out.slidesOffsetAfter = value;
-                out.slidesOffsetBefore = value;
+    // Treat the empty string as null/undefined for proper cleaning
+    if (value === "" || value === "null" || value === null) return undefined;
+
+    return SPECIAL_PROP_MAP[key] ? SPECIAL_PROP_MAP[key](value) : value;
+}
+
+/**
+ * Creates a fully compliant Swiper args object from block settings.
+ */
+function normalizeSliderSettings(settings = {}) {
+    const breakpointsConfig = window.WPBS?.settings?.breakpoints ?? {};
+    const {props: rawProps = {}, breakpoints: rawBreakpoints = {}} = settings;
+
+    // Helper to normalize, clean, and convert props to Swiper format
+    const normalizeAndCleanProps = (obj = {}) => {
+        const swiperProps = {};
+        const paginationProps = {};
+
+        for (const key in obj) {
+            let value = obj[key];
+
+            // 1. Handle Pagination (extract into its own object)
+            if (key === 'pagination') {
+                // If pagination is a string (e.g., 'bullets', 'progressbar'), set type
+                paginationProps.type = value;
+                paginationProps.enabled = !!value;
+                // Add default elements if enabled
+                if (!!value) {
+                    paginationProps.el = paginationProps.el ?? '.swiper-pagination';
+                }
+                continue;
+            } else if (PAGINATION_PROPS.includes(key)) {
+                // If an explicit pagination sub-prop is set (e.g., 'clickable': true)
+                paginationProps[key] = normalizeProp(key, value);
+                continue;
             }
-            const isEmpty = value === "" || value == null || (typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0);
-            if (isEmpty) delete out[key];
+
+            // 2. Handle slidesOffset translation
+            if (key === "slidesOffset") {
+                // Apply Swiper-compliant property split
+                const normalizedValue = normalizeProp(key, value);
+                if (normalizedValue !== undefined) {
+                    swiperProps.slidesOffsetAfter = normalizedValue;
+                    swiperProps.slidesOffsetBefore = normalizedValue;
+                }
+                continue;
+            }
+
+            // 3. Normalize all other props
+            value = normalizeProp(key, value);
+
+            if (value !== undefined) {
+                swiperProps[key] = value;
+            }
         }
-        return out;
+
+        // Finalize Pagination: merge explicit props, and add to swiperProps if enabled
+        const cleanedPagination = cleanObject(paginationProps);
+        if (Object.keys(cleanedPagination).length > 0) {
+            swiperProps.pagination = cleanedPagination;
+        }
+
+        return swiperProps;
     };
 
-    const normalized = {props: normalizeProps(props), breakpoints: {}};
+    // --- 1. Base Props ---
+    const baseProps = normalizeAndCleanProps(rawProps);
+    // Remove temporary flags that should not be in the final args object
+    delete baseProps.controller;
+    delete baseProps.master;
 
-    for (const [bp, entry] of Object.entries(breakpoints)) {
-        const bpProps = normalizeProps(entry?.props || {});
-        if (Object.keys(bpProps).length > 0) {
-            normalized.breakpoints[bp] = {props: bpProps};
+    const swiperArgs = {...baseProps, breakpoints: {}};
+
+    // --- 2. Breakpoints ---
+    for (const [customKey, entry] of Object.entries(rawBreakpoints)) {
+        const bpProps = normalizeAndCleanProps(entry?.props || {});
+
+        // Skip if no props are defined for this breakpoint
+        if (Object.keys(bpProps).length === 0) continue;
+
+        // 🌟 Map custom breakpoint key ('sm', 'md') to Swiper's required pixel size
+        const bpMap = breakpointsConfig[customKey];
+        if (!bpMap?.size) continue;
+
+        const normalizedBp = {};
+
+        // Apply Inheritance/Suppression Logic (Moved from Slider class)
+
+        // Inherit base props (the base props of the block, not the base props of the Swiper args)
+        // We iterate over the *raw* props to ensure we only inherit what was explicitly set.
+        for (const key in rawProps) {
+            if (PROPS_TO_SUPPRESS.includes(key) || key === 'slidesOffset') continue;
+
+            // Inherit only if the breakpoint doesn't override it and it's not a pagination sub-prop
+            if (bpProps[key] === undefined && !PAGINATION_PROPS.includes(key)) {
+                normalizedBp[key] = baseProps[key]; // Use the already normalized value from baseProps
+            }
+        }
+
+        // Override and add with breakpoint-specific normalized props
+        Object.assign(normalizedBp, bpProps);
+
+
+        if (Object.keys(normalizedBp).length > 0) {
+            // Use the pixel size as the key
+            swiperArgs.breakpoints[bpMap.size] = cleanObject(normalizedBp);
         }
     }
 
-    return normalized;
+    return cleanObject(swiperArgs); // Remove any empty top-level properties
 }
 
 function getCssProps(settings, totalSlides = 0) {
@@ -63,7 +164,7 @@ function getCssProps(settings, totalSlides = 0) {
         props: {
             "--space": space,
             "--slides": slides,
-            "--total-slides": totalSlides, // ← added here
+            "--total-slides": totalSlides,
         },
         breakpoints: {},
     };
@@ -77,7 +178,7 @@ function getCssProps(settings, totalSlides = 0) {
             props: {
                 "--space": space,
                 "--slides": slides,
-                "--total-slides": totalSlides, // ← added here
+                "--total-slides": totalSlides,
             },
         };
     });
@@ -162,15 +263,20 @@ registerBlockType(metadata.name, {
         const settings = attributes["wpbs-slider"];
         const classNames = getClassNames(attributes, settings);
 
+        // 🌟 Fully normalized Swiper args object
+        const swiperArgs = normalizeSliderSettings(settings || {});
+
+        const controllerProp = settings?.props?.controller;
+
         const controllerProps = Object.fromEntries(
-            Object.entries({'data-slider-controller': settings?.props?.controller}).filter(([key, val]) => !!val)
+            Object.entries({'data-slider-controller': controllerProp}).filter(([key, val]) => !!val)
         );
 
-        // Save function untouched — no totalSlides logic
         return (
             <BlockWrapper
                 className={classNames}
-                data-context={JSON.stringify(normalizeSliderSettings(settings || {}))}
+                // 🌟 Output the fully compliant Swiper args
+                data-context={JSON.stringify(swiperArgs)}
                 {...controllerProps}
             />
         );

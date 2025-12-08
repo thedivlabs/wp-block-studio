@@ -137,8 +137,6 @@ registerBlockType(metadata.name, {
             );
 
             useEffect(() => {
-                console.log(attributes);
-
                 setCss(styles);
             }, [styles]);
 

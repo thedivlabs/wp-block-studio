@@ -1,12 +1,11 @@
 
 .wpbs-slider {
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .wpbs-slider .swiper-wrapper {
   display: flex; /* Forces slides onto a single horizontal line */
-  flex-wrap: nowrap; /* Ensures they don't wrap and cause vertical shift */
-  overflow: hidden; /* Hides slides that extend past the viewport width */
   min-height: 1px; /* Reserves space if the wrapper has no content initially */
   width: calc((100% / var(--slides)) * var(--total-slides) + (var(--space) * (var(--total-slides) - var(--slides)))) !important;
 }
@@ -25,6 +24,7 @@
   flex-direction: column !important;
   justify-content: flex-start !important;
   gap: inherit !important;
+  box-sizing: border-box;
 }
 
 .wpbs-slider.--collapse.swiper--disabled .wpbs-slider-navigation {
@@ -42,7 +42,6 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  flex-shrink: unset !important;
 }
 
 /* Slider navigation */
@@ -140,17 +139,17 @@
 .wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination.swiper-pagination-bullets {
   width: auto;
   max-width: 100%;
-  display: block;
+  display: flex;
+  gap: var(--swiper-pagination-bullet-horizontal-gap, 5px);
 }
 
-.wpbs-slider .wpbs-slider-navigation
-.wpbs-slider-pagination.swiper-pagination-bullets
-> .swiper-pagination-bullet {
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination.swiper-pagination-bullets > .swiper-pagination-bullet {
   transform: scale(1);
   opacity: 0.6;
   pointer-events: auto;
   aspect-ratio: 1 / 1;
   width: auto;
+  margin: 0;
 }
 
 .wpbs-slider .wpbs-slider-navigation

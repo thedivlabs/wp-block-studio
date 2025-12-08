@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useRef} from "@wordpress/element";
+import {Fragment, useCallback, useEffect, useRef, forwardRef} from "@wordpress/element";
 import {StyleEditorUI} from "Includes/style";
 import {BlockWrapper} from "Components/BlockWrapper";
 import {useInstanceId} from "@wordpress/compose";
@@ -229,6 +229,7 @@ export const withStyle = (Component, config) => (props) => {
 
     const wrappedBlockWrapperCallback = useCallback(
         ({children, props: blockProps, ...wrapperProps}) => {
+
             return (
                 <BlockWrapper
                     props={blockProps}

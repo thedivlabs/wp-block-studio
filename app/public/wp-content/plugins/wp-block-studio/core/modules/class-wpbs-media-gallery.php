@@ -10,8 +10,8 @@ class WPBS_Media_Gallery {
 	public const PLURAL = 'Media Galleries';
 	public const SLUG = 'media-gallery';
 
-	public const TAX_SINGULAR = 'Category';
-	public const TAX_PLURAL = 'Categories';
+	public const TAX_SINGULAR = 'Gallery Category';
+	public const TAX_PLURAL = 'Gallery Categories';
 	public const TAX_SLUG = 'media-gallery-category';
 
 

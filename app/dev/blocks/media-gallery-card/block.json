@@ -1,0 +1,44 @@
+{
+  "name": "wpbs/media-gallery-card",
+  "title": "Media Card",
+  "description": "Display a media card",
+  "selectors": {
+    "root": ".wpbs-media-gallery-card"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
+  },
+  "parent": [
+    "wpbs/media-gallery-container"
+  ],
+  "usesContext": [
+    "wpbs/lightbox",
+    "wpbs/index",
+    "wpbs/media",
+    "wpbs/settings"
+  ],
+  "supports": {
+    "interactivity": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
+  "editorStyle": "file:./block.css",
+  "icon": "format-gallery",
+  "render": "file:./render.php"
+}
+
+

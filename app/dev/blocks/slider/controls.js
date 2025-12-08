@@ -52,6 +52,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
     {slug: "rewind", type: "toggle", label: "Rewind"},
     {slug: "enabled", type: "toggle", label: "Collapse"},
     {slug: "master", type: "toggle", label: "Master"},
+    {slug: "vertical", type: "toggle", label: "Vertical"},
 ];
 
 // Breakpoint slider fields

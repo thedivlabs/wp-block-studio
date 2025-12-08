@@ -230,7 +230,7 @@ export default class Slider {
                 id: 'wpbs-swiper-styles',
                 rel: 'stylesheet',
                 type: 'text/css',
-                href: 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'
+                href: 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css'
             });
             document.head.appendChild(stylesheet);
 
@@ -239,7 +239,7 @@ export default class Slider {
                 const script = document.createElement('script');
                 Object.assign(script, {
                     id: 'wpbs-swiper-js',
-                    src: 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+                    src: 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js',
                     defer: true,
                     async: true,
                     onload: resolve,

@@ -9,7 +9,7 @@ let cleanList = [];
 let dirtyList = [];
 let parsed = false;
 
-const LINK_ID = "wpbs-material-icons-css";
+const LINK_ID = "wpbs-material-icons-editor-css-css";
 
 const BASE_URL =
     "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:" +
@@ -54,6 +54,7 @@ function updateLinkTag() {
     const href = `${BASE_URL}&icon_names=${allNames.join(",")}&display=swap`;
 
     let link = document.getElementById(LINK_ID);
+
     if (!link) {
         link = document.createElement("link");
         link.id = LINK_ID;

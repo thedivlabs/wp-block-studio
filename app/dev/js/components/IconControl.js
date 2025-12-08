@@ -161,10 +161,8 @@ export const IconControl = ({
                         : icons.filter((i) => i.key !== fieldId);
 
                 props.setAttributes({"wpbs-icons": nextIcons});
-
-                if (typeof updateEditorIcons === "function") {
-                    updateEditorIcons(nextIcons);
-                }
+                
+                updateEditorIcons(nextIcons);
 
                 return next;
             });

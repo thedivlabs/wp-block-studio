@@ -89,6 +89,13 @@ function normalizeSliderSettings(settings = {}) {
                 continue;
             }
 
+            if (key === "vertical") {
+
+                swiperProps.direction = 'vertical';
+
+                continue;
+            }
+
             // 3. Normalize all other props
             value = normalizeProp(key, value);
 

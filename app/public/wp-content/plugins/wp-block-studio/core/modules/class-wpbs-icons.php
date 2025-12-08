@@ -106,7 +106,6 @@ final class WPBS_Icons {
 		if ( empty( $names ) ) {
 			return null;
 		}
-		WPBS::console_log( $names );
 
 		return sprintf(
 			'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200..500,0..1,0&icon_names=%s&display=swap',

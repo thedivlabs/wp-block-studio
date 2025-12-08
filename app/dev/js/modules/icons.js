@@ -52,7 +52,7 @@ function ensureParsed() {
 function updateLinkTag() {
     const allNames = Array.from(new Set([...cleanList, ...dirtyList])).sort();
     const href = `${BASE_URL}&icon_names=${allNames.join(",")}&display=swap`;
-
+    
     let link = document.getElementById(LINK_ID);
 
     if (!link) {

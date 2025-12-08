@@ -11,6 +11,7 @@ import {cleanObject} from "Includes/helper";
 import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody} from "@wordpress/components";
 import {Loop} from "Components/Loop";
+import {MediaGalleryControls} from "Components/MediaGallery";
 
 const selector = "wpbs-slider";
 
@@ -207,8 +208,12 @@ registerBlockType(metadata.name, {
 
         const settings = attributes["wpbs-slider"];
         const querySettings = attributes["wpbs-query"];
+        const gallerySettings = settings?.gallery;
+        const loopSettings = settings?.loop;
         const classNames = getClassNames(attributes, settings);
         const isLoop = (attributes?.className ?? '').includes('is-style-loop');
+        const isGallery = (attributes?.className ?? '').includes('is-style-gallery');
+
 
         // Count slides inside wpbs/slider-wrapper
         const totalSlides = useMemo(() => {
@@ -241,6 +246,15 @@ registerBlockType(metadata.name, {
             [querySettings, setAttributes]
         );
 
+        const handleGalleryCallback = useCallback(
+            (updatedGallerySettings) => {
+                setAttributes({
+                    'wpbs-query': updatedGallerySettings,
+                });
+            },
+            [setAttributes]
+        );
+
         useEffect(() => {
             if (attributes?.isLoop !== isLoop) {
                 setAttributes({isLoop: !!isLoop});
@@ -251,7 +265,17 @@ registerBlockType(metadata.name, {
             <>
                 {isLoop && (
                     <PanelBody title="Loop" initialOpen={false} className="wpbs-block-controls">
-                        <Loop value={querySettings || {}} onChange={handleLoopChange}/>
+                        <Loop settings={loopSettings} onChange={handleLoopChange} setAttributes={setAttributes}/>
+                    </PanelBody>
+                )}
+
+                {isGallery && (
+                    <PanelBody title="Gallery" initialOpen={false} className="wpbs-block-controls">
+                        <MediaGalleryControls
+                            settings={gallerySettings}
+                            setAttributes={setAttributes}
+                            callback={handleGalleryCallback}
+                        />
                     </PanelBody>
                 )}
                 <SliderInspector attributes={attributes} updateSettings={updateSettings}/>

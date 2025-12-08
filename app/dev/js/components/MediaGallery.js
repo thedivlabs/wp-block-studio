@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "@wordpress/element";
+import {useCallback, useEffect, useMemo, useState} from "@wordpress/element";
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -6,28 +6,16 @@ import {
     TextControl,
     ToggleControl,
 } from "@wordpress/components";
-import { useSelect } from "@wordpress/data";
-import { RESOLUTION_OPTIONS } from "Includes/config";
-import { normalizeMedia, getImageUrlForResolution } from "Includes/helper";
+import {useSelect} from "@wordpress/data";
+import {RESOLUTION_OPTIONS} from "Includes/config";
+import {normalizeMedia, normalizeVideo} from "Includes/helper";
+import {isEqual} from "lodash";
 
-export const MEDIA_GALLERY_ATTRIBUTES = {
-    "wpbs-media-gallery": {
-        type: "object",
-        default: {
-            gallery_id: undefined,
-            lightbox: false,
-            page_size: undefined,
-            video_first: false,
-            resolution: "large",
-            button_label: "Load More",
-            eager: false,
-        },
-    },
-};
 
-export function MediaGalleryControls({ attributes = {}, setAttributes }) {
-    const { "wpbs-media-gallery": settings } = attributes;
+export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
+    const [localSettings, setLocalSettings] = useState({...settings});
 
+    // Load all galleries
     const galleries = useSelect(
         (select) =>
             select("core").getEntityRecords("postType", "media-gallery", {
@@ -36,91 +24,73 @@ export function MediaGalleryControls({ attributes = {}, setAttributes }) {
         []
     );
 
+    // Load selected gallery
     const selectedGallery = useSelect(
         (select) => {
-            if (!settings.gallery_id || settings.gallery_id === "current") return null;
+            if (!localSettings.gallery_id || localSettings.gallery_id === "current") return null;
             return select("core").getEntityRecord(
                 "postType",
                 "media-gallery",
-                parseInt(settings.gallery_id, 10)
+                parseInt(localSettings.gallery_id, 10)
             );
         },
-        [settings.gallery_id]
+        [localSettings.gallery_id]
     );
 
-    // Normalize gallery media
+    // Build normalized media array
     const buildMediaArray = useCallback(() => {
         if (!selectedGallery) return [];
 
         const wpbsData = selectedGallery?.acf?.wpbs || {};
-        const images = (wpbsData.images || []).map((img) => ({
-            type: "image",
-            image: normalizeMedia(img),
-            video: null,
-            resolution: settings.resolution || "large",
-            isEager: !!settings.eager,
-            lightbox: !!settings.lightbox,
-        }));
 
-        const videos = (wpbsData.video || []).map((item) => {
-            const videoClone = item.video_clone || {};
-            return {
-                type: "video",
-                image: null,
-                video: {
-                    id: null,
-                    source: videoClone.link || null,
-                    mime: "video/mp4", // assume mp4 by default; could extend for platform
-                    poster: videoClone.poster ? normalizeMedia(videoClone.poster) : null,
-                    title: videoClone.title || null,
-                    description: videoClone.description || null,
-                    platform: videoClone.platform || "youtube",
-                },
-                resolution: settings.resolution || "large",
-                isEager: !!settings.eager,
-                lightbox: !!settings.lightbox,
-            };
-        });
+        const images = (wpbsData.images || []).map(normalizeMedia);
+        const videos = (wpbsData.video || []).map((item) =>
+            normalizeVideo(item.video_clone || {})
+        );
 
-        return settings.video_first ? [...videos, ...images] : [...images, ...videos];
-    }, [selectedGallery, settings]);
+        return localSettings.video_first ? [...videos, ...images] : [...images, ...videos];
+    }, [selectedGallery, localSettings.video_first]);
 
+    // Update local settings and media array
     const updateSettings = useCallback(
         (newValue) => {
-            const merged = {
-                ...attributes["wpbs-media-gallery"],
-                ...newValue,
-            };
+            const merged = {...localSettings, ...newValue};
+
+            // Only update if there is a difference
+            if (isEqual(merged, localSettings)) return;
+
+            setLocalSettings(merged);
 
             const mediaArray = buildMediaArray();
 
-            setAttributes({
-                "wpbs-media-gallery": merged,
-                "wpbs-query": mediaArray,
-            });
+            // Push updated settings back to parent
+            callback(merged);
+
+            // Update query in block attributes
+            setAttributes({"wpbs-query": mediaArray});
         },
-        [setAttributes, attributes, buildMediaArray]
+        [buildMediaArray, callback, setAttributes, localSettings]
     );
 
-    // Rebuild media array whenever gallery or settings change
+    // Sync local state if external settings change
     useEffect(() => {
-        updateSettings({});
-    }, [settings.gallery_id, settings.video_first, settings.resolution, settings.eager, settings.lightbox]);
+        setLocalSettings({...settings});
+    }, [settings]);
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 label="Select Gallery"
-                value={settings?.gallery_id ?? ""}
+                value={localSettings?.gallery_id ?? ""}
                 options={[
-                    { label: "Select a gallery", value: "" },
-                    { label: "Current", value: "current" },
+                    {label: "Select a gallery", value: ""},
+                    {label: "Current", value: "current"},
                     ...(galleries || []).map((post) => ({
                         label: post.title.rendered,
                         value: String(post.id),
                     })),
                 ]}
-                onChange={(value) => updateSettings({ gallery_id: value })}
+                onChange={(value) => updateSettings({gallery_id: value})}
             />
 
             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -128,37 +98,37 @@ export function MediaGalleryControls({ attributes = {}, setAttributes }) {
                     label="Page Size"
                     min={1}
                     isShiftStepEnabled={false}
-                    onChange={(value) => updateSettings({ page_size: value })}
-                    value={settings?.page_size}
+                    value={localSettings?.page_size}
+                    onChange={(value) => updateSettings({page_size: value})}
                 />
                 <TextControl
                     label="Button Label"
-                    onChange={(value) => updateSettings({ button_label: value })}
-                    value={settings?.button_label}
+                    value={localSettings?.button_label}
+                    onChange={(value) => updateSettings({button_label: value})}
                 />
                 <SelectControl
                     label="Resolution"
+                    value={localSettings?.resolution}
                     options={RESOLUTION_OPTIONS}
-                    onChange={(value) => updateSettings({ resolution: value })}
-                    value={settings?.resolution}
+                    onChange={(value) => updateSettings({resolution: value})}
                 />
             </Grid>
 
-            <Grid columns={2} columnGap={15} rowGap={20} style={{ marginTop: "10px" }}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: "10px"}}>
                 <ToggleControl
                     label="Lightbox"
-                    checked={!!settings?.lightbox}
-                    onChange={(value) => updateSettings({ lightbox: value })}
+                    checked={!!localSettings?.lightbox}
+                    onChange={(value) => updateSettings({lightbox: value})}
                 />
                 <ToggleControl
                     label="Video First"
-                    checked={!!settings?.video_first}
-                    onChange={(value) => updateSettings({ video_first: value })}
+                    checked={!!localSettings?.video_first}
+                    onChange={(value) => updateSettings({video_first: value})}
                 />
                 <ToggleControl
                     label="Eager"
-                    checked={!!settings?.eager}
-                    onChange={(value) => updateSettings({ eager: value })}
+                    checked={!!localSettings?.eager}
+                    onChange={(value) => updateSettings({eager: value})}
                 />
             </Grid>
         </Grid>

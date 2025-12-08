@@ -1,4 +1,3 @@
-import {InspectorControls} from "@wordpress/block-editor";
 import {useMemo, useCallback} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";

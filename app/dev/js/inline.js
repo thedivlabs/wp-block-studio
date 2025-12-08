@@ -1,7 +1,7 @@
 import MediaWatcher from './modules/MediaWatcher';
 
 (function () {
-    const MAX_WAIT = 5000;
+    const MAX_WAIT = 20000;
     const INTERVAL = 100;
     const startTime = Date.now();
 
@@ -16,10 +16,10 @@ import MediaWatcher from './modules/MediaWatcher';
         });
     }
 
-
-    // start watching
-    watchIconsFont();
-
+    document.addEventListener("DOMContentLoaded", () => {
+        // start watching
+        watchIconsFont();
+    });
 
 })();
 

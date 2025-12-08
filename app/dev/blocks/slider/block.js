@@ -8,22 +8,19 @@ import {isEqual} from "lodash";
 import {cleanObject} from "Includes/helper";
 import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody} from "@wordpress/components";
-import {Loop} from "Components/Loop"; // ← import Loop component
+import {Loop} from "Components/Loop";
 
 const selector = "wpbs-slider";
 
 const getClassNames = (attributes = {}, settings = {}) => {
     const baseProps = settings?.props ?? {};
-
     return [
         selector,
         "h-auto w-full max-h-full flex flex-col swiper",
         !!baseProps?.enabled ? '--collapse' : null,
         !!baseProps?.master ? '--master' : null,
         !!baseProps?.controller && !baseProps?.master ? '--slave' : null,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    ].filter(Boolean).join(" ");
 };
 
 function normalizeSliderSettings(settings = {}) {
@@ -31,41 +28,20 @@ function normalizeSliderSettings(settings = {}) {
 
     const normalizeProps = (obj = {}) => {
         const out = {...obj};
-
         for (const key in out) {
             const value = out[key];
-
-            switch (key) {
-                case "slidesOffset":
-
-                    out.slidesOffsetAfter = value;
-                    out.slidesOffsetBefore = value;
-
-                    break;
-                default:
-                    break;
+            if (key === "slidesOffset") {
+                out.slidesOffsetAfter = value;
+                out.slidesOffsetBefore = value;
             }
-
-            // Cleanup for empty values
-            const isEmpty =
-                value === "" ||
-                value == null ||
-                (typeof value === "object" &&
-                    !Array.isArray(value) &&
-                    Object.keys(value).length === 0);
-
+            const isEmpty = value === "" || value == null || (typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0);
             if (isEmpty) delete out[key];
         }
-
         return out;
     };
 
-    const normalized = {
-        props: normalizeProps(props),
-        breakpoints: {},
-    };
+    const normalized = {props: normalizeProps(props), breakpoints: {}};
 
-    // Normalize breakpoints exactly the same way
     for (const [bp, entry] of Object.entries(breakpoints)) {
         const bpProps = normalizeProps(entry?.props || {});
         if (Object.keys(bpProps).length > 0) {
@@ -76,8 +52,7 @@ function normalizeSliderSettings(settings = {}) {
     return normalized;
 }
 
-
-function getCssProps(settings) {
+function getCssProps(settings, totalSlides = 0) {
     const baseProps = settings?.props || {};
     const breakpoints = settings?.breakpoints || {};
 
@@ -88,6 +63,7 @@ function getCssProps(settings) {
         props: {
             "--space": space,
             "--slides": slides,
+            "--total-slides": totalSlides, // ← added here
         },
         breakpoints: {},
     };
@@ -101,6 +77,7 @@ function getCssProps(settings) {
             props: {
                 "--space": space,
                 "--slides": slides,
+                "--total-slides": totalSlides, // ← added here
             },
         };
     });
@@ -113,27 +90,29 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
-        "wpbs-slider": {
-            type: "object",
-            default: {props: {}, breakpoints: {}}, // query stored here
-        },
+        "wpbs-slider": {type: "object", default: {props: {}, breakpoints: {}}},
     },
 
     edit: withStyle((props) => {
-        const {attributes, BlockWrapper, setAttributes, setCss} = props;
+        const {attributes, BlockWrapper, setAttributes, setCss, clientId} = props;
 
         const settings = attributes["wpbs-slider"];
         const querySettings = attributes["wpbs-query"];
         const classNames = getClassNames(attributes, settings);
-
         const isLoop = (attributes?.className ?? '').includes('is-style-loop');
 
-        useEffect(() => {
-            console.log(settings);
-            setCss(getCssProps(settings));
-        }, [JSON.stringify(settings), setCss]);
+        // Count slides inside wpbs/slider-wrapper
+        const totalSlides = useMemo(() => {
+            const wrapperBlock = wp.data.select('core/block-editor').getBlocks(clientId)
+                ?.find(block => block.name === 'wpbs/slider-wrapper');
+            return wrapperBlock?.innerBlocks?.length || 0;
+        }, [clientId]);
 
-        // Update wpbs-slider attribute
+        // Set CSS including --total-slides
+        useEffect(() => {
+            setCss(getCssProps(settings, totalSlides));
+        }, [JSON.stringify(settings), totalSlides, setCss]);
+
         const updateSettings = useCallback(
             (nextValue) => {
                 if (!isEqual(settings, nextValue)) {
@@ -145,15 +124,9 @@ registerBlockType(metadata.name, {
 
         const handleLoopChange = useCallback(
             (nextQuery) => {
-                const newQuerySettings = {
-                    ...querySettings,
-                    ...nextQuery,
-                };
-
+                const newQuerySettings = {...querySettings, ...nextQuery};
                 if (!isEqual(querySettings, newQuerySettings)) {
-                    setAttributes({
-                        "wpbs-query": newQuerySettings,
-                    });
+                    setAttributes({"wpbs-query": newQuerySettings});
                 }
             },
             [querySettings, setAttributes]
@@ -178,25 +151,22 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <InspectorControls group="styles">
-                    {inspectorPanel}
-                </InspectorControls>
+                <InspectorControls group="styles">{inspectorPanel}</InspectorControls>
                 <BlockWrapper props={props} className={classNames}/>
             </>
         );
-    }, {
-        hasChildren: true,
-        hasBackground: false,
-        bpMin: true,
-    }),
+    }, {hasChildren: true, hasBackground: false, bpMin: true}),
 
     save: withStyleSave((props) => {
         const {attributes, BlockWrapper} = props;
         const settings = attributes["wpbs-slider"];
         const classNames = getClassNames(attributes, settings);
 
-        const controllerProps = Object.fromEntries(Object.entries({'data-slider-controller': settings?.props?.controller}).filter(([key, val]) => !!val));
+        const controllerProps = Object.fromEntries(
+            Object.entries({'data-slider-controller': settings?.props?.controller}).filter(([key, val]) => !!val)
+        );
 
+        // Save function untouched — no totalSlides logic
         return (
             <BlockWrapper
                 className={classNames}
@@ -204,9 +174,5 @@ registerBlockType(metadata.name, {
                 {...controllerProps}
             />
         );
-    }, {
-        hasChildren: true,
-        hasBackground: false,
-        bpMin: true,
-    }),
+    }, {hasChildren: true, hasBackground: false, bpMin: true}),
 });

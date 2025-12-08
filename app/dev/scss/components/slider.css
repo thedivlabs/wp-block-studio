@@ -1,4 +1,12 @@
 /* wpbs-slider pruned custom CSS */
+/* Crucial CLS Fix: Prevents vertical stacking before JS initializes Swiper */
+.wpbs-slider .swiper-wrapper {
+  display: flex; /* Forces slides onto a single horizontal line */
+  flex-wrap: nowrap; /* Ensures they don't wrap and cause vertical shift */
+  overflow: hidden; /* Hides slides that extend past the viewport width */
+  min-height: 1px; /* Reserves space if the wrapper has no content initially */
+  min-width: 100%;
+}
 
 /* Slider collapse mode */
 .wpbs-slider.--collapse.swiper--disabled .swiper-slide {
@@ -104,6 +112,10 @@
 .wpbs-slider .wpbs-slider-navigation .wpbs-slider-button.swiper-button-prev:after,
 .wpbs-slider .wpbs-slider-navigation .wpbs-slider-button.swiper-button-next:after {
   content: none;
+}
+
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-button > svg {
+  display: none;
 }
 
 /* Pagination */

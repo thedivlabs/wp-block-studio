@@ -5,7 +5,7 @@
   flex-wrap: nowrap; /* Ensures they don't wrap and cause vertical shift */
   overflow: hidden; /* Hides slides that extend past the viewport width */
   min-height: 1px; /* Reserves space if the wrapper has no content initially */
-  min-width: 100%;
+  min-width: fit-content;
 }
 
 /* Slider collapse mode */

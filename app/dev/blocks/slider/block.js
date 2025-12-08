@@ -25,6 +25,7 @@ const getClassNames = (attributes = {}, settings = {}) => {
     return [
         selector,
         "h-auto w-full max-h-full flex flex-col swiper",
+        !!baseProps?.vertical ? '--vertical' : null,
         !!baseProps?.enabled ? '--collapse' : null,
         !!baseProps?.master ? '--master' : null,
         !!baseProps?.controller && !baseProps?.master ? '--slave' : null,

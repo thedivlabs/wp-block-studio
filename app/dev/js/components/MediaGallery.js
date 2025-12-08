@@ -14,7 +14,7 @@ import {isEqual} from "lodash";
 
 export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
     const [localSettings, setLocalSettings] = useState({...settings});
-
+console.log(settings);
     // Load all galleries
     const galleries = useSelect(
         (select) =>
@@ -72,10 +72,7 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
         [buildMediaArray, callback, setAttributes, localSettings]
     );
 
-    // Sync local state if external settings change
-    useEffect(() => {
-        setLocalSettings({...settings});
-    }, [settings]);
+
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>

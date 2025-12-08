@@ -58,8 +58,7 @@
     }
   },
   "editorScript": [
-    "file:./block.js",
-    "swiper-js"
+    "file:./block.js"
   ],
   "style": [
     "swiper-css"

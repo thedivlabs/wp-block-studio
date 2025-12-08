@@ -1,5 +1,5 @@
-.wpbs-slider:not(.swiper-initialized) {
-  width: 100%;
+
+.wpbs-slider {
   overflow: hidden;
 }
 
@@ -8,7 +8,6 @@
   flex-wrap: nowrap; /* Ensures they don't wrap and cause vertical shift */
   overflow: hidden; /* Hides slides that extend past the viewport width */
   min-height: 1px; /* Reserves space if the wrapper has no content initially */
-  min-width: 100% !important;
   width: calc((100% / var(--slides)) * var(--total-slides) + (var(--space) * (var(--total-slides) - var(--slides)))) !important;
 }
 
@@ -43,6 +42,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  flex-shrink: unset !important;
 }
 
 /* Slider navigation */
@@ -161,13 +161,14 @@
 
 /* Grouped navigation style */
 .wpbs-slider .wpbs-slider-navigation.is-style-group {
+  height: 1lh;
+  overflow: hidden;
   transform: none;
   top: unset;
   left: unset;
   right: unset;
   bottom: unset;
   position: relative;
-  height: auto;
   display: flex;
   align-items: center;
 

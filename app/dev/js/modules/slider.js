@@ -224,16 +224,7 @@ export default class Slider {
         if (typeof window.Swiper === 'function') {
             this._libPromise = Promise.resolve();
         } else {
-            // Load CSS
-            const stylesheet = document.createElement('link');
-            Object.assign(stylesheet, {
-                id: 'wpbs-swiper-styles',
-                rel: 'stylesheet',
-                type: 'text/css',
-                href: 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css'
-            });
-            document.head.appendChild(stylesheet);
-
+        
             // Load JS
             this._libPromise = new Promise((resolve, reject) => {
                 const script = document.createElement('script');

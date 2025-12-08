@@ -236,6 +236,10 @@ registerBlockType(metadata.name, {
             [settings, setAttributes]
         );
 
+        useEffect(()=>{
+            console.log(attributes?.['wpbs-query']);
+        },[settings]);
+
         // Track block style flags
         useEffect(() => {
             if (attributes?.isLoop !== isLoop || attributes?.isGallery !== isGallery) {

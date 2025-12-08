@@ -4,7 +4,6 @@
 
 @import "./admin/acf";
 @import "./admin/admin-menu";
-@import "./components/material-icons";
 
 p:empty {
   display: none;

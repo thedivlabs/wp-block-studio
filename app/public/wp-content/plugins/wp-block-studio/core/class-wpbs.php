@@ -344,7 +344,7 @@ class WPBS {
 
 	public function block_assets(): void {
 
-
+		wp_enqueue_style( 'wpbs-theme-css' );
 		//wp_enqueue_script( 'wpbs-theme-js' );
 		//wp_enqueue_script( 'wpbs-admin-js' );
 		//wp_enqueue_script( 'swiper-js' );
@@ -365,7 +365,7 @@ class WPBS {
 
 	public function editor_assets(): void {
 
-		//wp_enqueue_style( 'wpbs-theme-css' );
+
 		wp_enqueue_style( 'wpbs-admin-css' );
 		//wp_enqueue_style( 'wpbs-bundle-css' );
 

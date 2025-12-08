@@ -134,9 +134,7 @@ export default class Slider {
 
         const slides = element.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide');
         if (slides.length <= 1) return;
-
-        console.log(mergedArgs);
-
+        
         const initFn = () => {
             // This is the working initFn logic (Master initializes itself, then initializes uninitialized linked elements)
 

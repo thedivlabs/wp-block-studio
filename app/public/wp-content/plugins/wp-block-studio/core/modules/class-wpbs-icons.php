@@ -15,7 +15,7 @@ final class WPBS_Icons {
 
 		// Load editor/blocks CSS
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_stylesheet' ] );
-		add_action( 'enqueue_block_assets', [ $this, 'enqueue_editor_stylesheet' ] );
+		//add_action( 'enqueue_block_assets', [ $this, 'enqueue_editor_stylesheet' ] );
 	}
 
 	public static function init(): WPBS_Icons {
@@ -72,13 +72,18 @@ final class WPBS_Icons {
 
 	private function get_global_icon_names(): array {
 		$cached = get_transient( 'wpbs_global_icon_names' );
-		if ( is_array( $cached ) ) return $cached;
+		if ( is_array( $cached ) ) {
+			return $cached;
+		}
 
-		if ( ! function_exists( 'get_field' ) ) return [];
+		if ( ! function_exists( 'get_field' ) ) {
+			return [];
+		}
 
 		$raw = get_field( 'theme_settings_api_material_icons', 'option' );
 		if ( ! $raw ) {
 			set_transient( 'wpbs_global_icon_names', [], DAY_IN_SECONDS );
+
 			return [];
 		}
 
@@ -90,14 +95,19 @@ final class WPBS_Icons {
 	}
 
 	private function get_default_safelist(): array {
-		$raw = 'help,home,arrow_forward,arrow_back';
+		$raw  = 'help,home,arrow_forward,arrow_back';
 		$list = array_filter( array_map( 'trim', explode( ',', $raw ) ) );
 		sort( $list, SORT_STRING );
+
 		return $list;
 	}
 
 	private function build_url( array $names ): ?string {
-		if ( empty( $names ) ) return null;
+		if ( empty( $names ) ) {
+			return null;
+		}
+		WPBS::console_log( $names );
+
 		return sprintf(
 			'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200..500,0..1,0&icon_names=%s&display=swap',
 			implode( ',', $names )
@@ -115,11 +125,13 @@ final class WPBS_Icons {
 		}
 
 		$names = array_values( array_unique( array_filter( array_map( 'trim', $names ) ) ) );
-		if ( empty( $names ) ) return;
+		if ( empty( $names ) ) {
+			return;
+		}
 
 		$url = $this->build_url( $names );
 		if ( $url ) {
-			echo '<link onload="this.rel=\'stylesheet\'" type="text/css" rel="preload" as="style" href="'.esc_url( $url ) .'" crossorigin fetchpriority="high">' . "\n";
+			echo '<link onload="this.rel=\'stylesheet\'" type="text/css" rel="preload" as="style" href="' . esc_url( $url ) . '" crossorigin fetchpriority="high">' . "\n";
 		}
 	}
 

@@ -12,10 +12,10 @@ export default class Slider {
 
     /**
      * Initializes all Swiper instances on the page by querying the DOM.
+     * Processes Slaves first to ensure they start the library load and are ready (uninitialized) in the DOM
+     * when the Master's Observer runs.
      */
     static init() {
-        // --- OPTIMIZATION: Process Slaves first, then Masters ---
-        // This ensures Slaves are ready when Masters try to link all controlled instances.
         const allSliderElements = Array.from(document.querySelectorAll('.wpbs-slider.swiper'));
 
         const slaves = allSliderElements.filter(el => el.classList.contains('--slave'));
@@ -26,19 +26,14 @@ export default class Slider {
         [...slaves, ...others, ...masters].forEach(element => {
             const rawArgs = this.getRawContext(element);
             const swiperArgs = this.normalizeAndGetSwiperArgs(rawArgs);
-            // 🟢 Pass the processed config to the immediate initializer
             this.observe(element, swiperArgs);
         });
     }
 
-    // --- Data Retrieval & Normalization Logic ---
+    // --- Data Retrieval & Normalization Logic (Unchanged) ---
 
-    /**
-     * Reads the raw configuration JSON from the 'data-context' attribute.
-     */
     static getRawContext(element) {
         const configAttr = element.dataset?.context;
-
         if (configAttr) {
             try {
                 return JSON.parse(configAttr);
@@ -49,54 +44,38 @@ export default class Slider {
         return {props: {}, breakpoints: {}};
     }
 
-    /**
-     * Contains the core logic from the old view.js to normalize and merge props.
-     */
     static normalizeAndGetSwiperArgs(rawArgs) {
         const breakpointsConfig = WPBS?.settings?.breakpoints ?? {};
         const swiperArgs = {breakpoints: {}};
-
         const normalizeProp = (key, value) => {
             if (value === 'true') value = true;
             else if (value === 'false') value = false;
             else if (typeof value === 'string' && value !== '' && !isNaN(Number(value))) value = Number(value);
-
             if (this.SPECIAL_PROP_MAP[key]) {
                 value = this.SPECIAL_PROP_MAP[key](value);
             }
             return value;
         };
-
-        // --- Base Props ---
         const baseProps = rawArgs.props || {};
         for (const key in baseProps) {
             swiperArgs[key] = normalizeProp(key, baseProps[key]);
         }
-
-        // --- Breakpoints ---
         const rawBreakpoints = rawArgs.breakpoints || {};
         for (const customKey in rawBreakpoints) {
             const bpMap = breakpointsConfig[customKey];
             if (!bpMap?.size || !rawBreakpoints[customKey].props) continue;
-
             const bpProps = rawBreakpoints[customKey].props || {};
             const normalizedBpProps = {};
-
-            // Copy all base props first, except suppressed keys
             for (const key in baseProps) {
                 if (!this.propsToSuppress.includes(key)) {
                     normalizedBpProps[key] = normalizeProp(key, baseProps[key]);
                 }
             }
-
-            // Then override with breakpoint-specific props
             for (const key in bpProps) {
                 normalizedBpProps[key] = normalizeProp(key, bpProps[key]);
             }
-
             swiperArgs.breakpoints[bpMap.size] = normalizedBpProps;
         }
-
         return swiperArgs;
     }
 
@@ -104,8 +83,6 @@ export default class Slider {
 
     static mergeArgs(element, args = {}) {
         const merged = merge({}, SWIPER_ARGS_VIEW);
-
-        // Determine if this instance is the Master
         const isMaster = element.classList.contains('--master');
 
         merged.navigation = {
@@ -119,43 +96,33 @@ export default class Slider {
             merged.pagination = merge({}, merged.pagination, args.pagination);
         }
 
-        // Apply all normalized props from the block context (WITHOUT altering them)
         Object.keys(args).forEach(key => {
             if (key !== 'navigation' && key !== 'pagination') {
                 merged[key] = args[key];
             }
         });
 
-        // --- CONTROLLER FIX ---
-        // Use 'container' control for Masters for optimal synchronization
         const controllerType = isMaster ? 'container' : (args.controller?.by || 'slide');
-
         merged.controller = merge({}, merged.controller, {
             by: controllerType
         });
-        // ----------------------
 
-        // --- SLAVE CONTROL FIX (FOR LOCKOUT) ---
         if (element.classList.contains('--slave')) {
-            // Use touchRatio: 0 to disable all user interaction, which is safer than using allowTouchMove=false
             merged.touchRatio = 0;
-            // Explicitly disable navigation/pagination UI if they exist.
             merged.navigation = false;
             merged.pagination = false;
-            // Removed redundant/conflicting properties from the base code:
             delete merged.allowTouchMove;
             delete merged.keyboard;
         }
-        // -----------------------------
-
         return merged;
     }
 
-    // ⛔️ MODIFIED: Bypasses IntersectionObserver and initializes immediately.
+    /**
+     * 🟢 REVISED: Uses Observer for Masters/Others, immediate initialization for Slaves.
+     */
     static observe(element, args = {}) {
         if (element.classList.contains('swiper-initialized')) return;
 
-        // args is the fully processed config from normalizeAndGetSwiperArgs
         const mergedArgs = Object.fromEntries(
             Object.entries(this.mergeArgs(element, args)).filter(
                 ([key, value]) => value !== undefined && value !== null && value !== ""
@@ -163,19 +130,19 @@ export default class Slider {
         );
         const controllerId = element.getAttribute('data-slider-controller');
         const isMaster = element.classList.contains('--master');
+        const isSlave = element.classList.contains('--slave'); // NEW CHECK
 
-        // Check slide count early
         const slides = element.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide');
         if (slides.length <= 1) return;
 
         console.log(mergedArgs);
 
         const initFn = () => {
+            // This is the working initFn logic (Master initializes itself, then initializes uninitialized linked elements)
+
             // New Swiper instance
             const swiperInstance = new Swiper(element, mergedArgs);
             element.swiper = swiperInstance;
-
-            // Explicitly update Swiper instance to force layout calculation
             swiperInstance.update();
 
             // Master linking (Handles bidirectional control for all linked sliders)
@@ -190,12 +157,13 @@ export default class Slider {
                 allLinkedElements.forEach(linkedEl => {
                     let instance;
                     if (!linkedEl.classList.contains('swiper-initialized')) {
-                        // Initialize any uninitialized linked element
+                        // Initialize any uninitialized linked element (this handles slaves and other masters that haven't been observed yet)
                         const linkedArgs = this.mergeArgs(linkedEl, {});
                         instance = new Swiper(linkedEl, linkedArgs);
                         linkedEl.swiper = instance;
                         instance.update();
                     } else {
+                        // Element was already initialized (usually the Master itself, or a Slave that initialized immediately)
                         instance = linkedEl.swiper;
                     }
 
@@ -205,26 +173,41 @@ export default class Slider {
                 });
 
                 // --- BIDIRECTIONAL CONTROL FIX ---
-                // Link ALL sliders to ALL other sliders in the group.
                 if (allLinkedInstances.length > 1) {
                     allLinkedInstances.forEach(currentInstance => {
-                        // Control array contains all other instances in the group
                         currentInstance.controller.control = allLinkedInstances.filter(
                             targetInstance => targetInstance !== currentInstance
                         );
                         currentInstance.update();
                     });
                 }
-                // ---------------------------------
             }
-
-            // Note: The original separate Slave linking block is no longer needed
-            // because the Master linking block handles the initialization and linking
-            // of ALL related sliders in one pass.
         };
 
-        // 🟢🟢 BYPASS: Call initialization immediately without waiting for intersection.
-        this.initLib().then(initFn).catch(console.error);
+        // 🟢 CONDITIONAL LOADING LOGIC 🟢
+
+        if (isSlave) {
+            // ➡️ SLAVES: Must initialize immediately to be present in the DOM with the 'swiper-initialized' class
+            // and the 'element.swiper' property, so the Master can find and link them correctly later.
+            // This also ensures the Swiper library load starts as early as possible.
+            this.initLib().then(initFn).catch(console.error);
+        } else {
+            // ➡️ MASTERS / OTHERS: Use Intersection Observer for lazy loading.
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+
+                    observerInstance.unobserve(element);
+                    this.initLib().then(initFn).catch(console.error);
+                });
+            }, {
+                root: null,
+                rootMargin: '90px',
+                threshold: 0,
+            });
+
+            observer.observe(element);
+        }
     }
 
     static initLib() {

@@ -206,6 +206,7 @@ registerBlockType(metadata.name, {
         );
 
         useEffect(() => {
+            console.log(settings);
             setCss(getCssProps(settings));
             setPreload(getPreload(settings));
         }, [settings]);

@@ -16,9 +16,9 @@ import MediaWatcher from './modules/MediaWatcher';
         });
     }
 
+        watchIconsFont();
     document.addEventListener("DOMContentLoaded", () => {
         // start watching
-        watchIconsFont();
     });
 
 })();

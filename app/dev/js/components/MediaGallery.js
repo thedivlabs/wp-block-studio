@@ -36,6 +36,10 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
         },
         [localSettings.gallery_id]
     );
+    
+    useEffect(()=>{
+        console.log(selectedGallery);
+    },[settings]);
 
     // Build normalized media array
     const buildMediaArray = useCallback(() => {
@@ -67,11 +71,14 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
             callback(merged);
 
             // Update query in block attributes
-            setAttributes({"wpbs-query": mediaArray});
+            setAttributes({
+                "wpbs-query": {
+                    gallery: mediaArray
+                }
+            });
         },
         [buildMediaArray, callback, setAttributes, localSettings]
     );
-
 
 
     return (

@@ -14,7 +14,7 @@ import {isEqual} from "lodash";
 
 export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
     const [localSettings, setLocalSettings] = useState({...settings});
-console.log(settings);
+
     // Load all galleries
     const galleries = useSelect(
         (select) =>
@@ -88,6 +88,8 @@ console.log(settings);
                     })),
                 ]}
                 onChange={(value) => updateSettings({gallery_id: value})}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
             />
 
             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -97,17 +99,23 @@ console.log(settings);
                     isShiftStepEnabled={false}
                     value={localSettings?.page_size}
                     onChange={(value) => updateSettings({page_size: value})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
                 <TextControl
                     label="Button Label"
                     value={localSettings?.button_label}
                     onChange={(value) => updateSettings({button_label: value})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
                 <SelectControl
                     label="Resolution"
                     value={localSettings?.resolution}
                     options={RESOLUTION_OPTIONS}
                     onChange={(value) => updateSettings({resolution: value})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             </Grid>
 

@@ -4,8 +4,6 @@ class WPBS_Media_Gallery {
 
 	private static WPBS_Media_Gallery $instance;
 
-	private const TRANSIENT_PREFIX = 'wpbs_media_gallery_';
-
 	public const SINGULAR = 'Media Gallery';
 	public const PLURAL = 'Media Galleries';
 	public const SLUG = 'media-gallery';

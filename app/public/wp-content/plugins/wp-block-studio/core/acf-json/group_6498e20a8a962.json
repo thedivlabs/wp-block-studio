@@ -107,7 +107,7 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "id",
+            "return_format": "array",
             "library": "all",
             "min_width": "",
             "min_height": "",
@@ -116,6 +116,7 @@
             "max_height": "",
             "max_size": "",
             "mime_types": "",
+            "allow_in_bindings": 1,
             "preview_size": "thumbnail"
         }
     ],
@@ -137,5 +138,6 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1750976320
+    "display_title": "",
+    "modified": 1765204293
 }

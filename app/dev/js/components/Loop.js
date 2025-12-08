@@ -42,7 +42,6 @@ export const LoopBasicSettings = ({value = {}, onChange}) => {
     );
 };
 
-
 export const Loop = ({value = {}, onChange}) => {
     const {post_type, taxonomy, term, exclude, include, loopTerms} = value;
 

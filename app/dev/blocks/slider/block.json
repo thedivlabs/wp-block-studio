@@ -28,6 +28,10 @@
     {
       "name": "loop",
       "label": "Loop"
+    },
+    {
+      "name": "gallery",
+      "label": "Gallery"
     }
   ],
   "providesContext": {

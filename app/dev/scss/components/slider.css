@@ -2,6 +2,10 @@
 .wpbs-slider {
   overflow: hidden;
   box-sizing: border-box;
+
+  .swiper-wrapper {
+    min-width: 100%;
+  }
 }
 
 .wpbs-slider:not(.--vertical):not(.is-style-loop) .swiper-wrapper {

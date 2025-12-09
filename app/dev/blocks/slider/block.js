@@ -229,12 +229,27 @@ registerBlockType(metadata.name, {
         // Centralized settings update
         const updateSettings = useCallback(
             (nextValue) => {
-                if (!isEqual(settings, nextValue)) {
-                    setAttributes({"wpbs-slider": nextValue});
+                // Merge nextValue into existing wpbs-slider
+                const merged = {
+                    ...settings,
+                    ...nextValue,
+                    props: {
+                        ...(settings.props || {}),
+                        ...(nextValue.props || {}),
+                    },
+                    breakpoints: {
+                        ...(settings.breakpoints || {}),
+                        ...(nextValue.breakpoints || {}),
+                    },
+                };
+
+                if (!isEqual(settings, merged)) {
+                    setAttributes({"wpbs-slider": merged});
                 }
             },
             [settings, setAttributes]
         );
+
 
         useEffect(() => {
             console.log(attributes);

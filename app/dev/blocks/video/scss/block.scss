@@ -8,7 +8,6 @@
   &:not(.active) {
     &.--overlay:hover:after {
       opacity: .2;
-      transition: opacity .3s linear;
     }
 
     &.--overlay:after {
@@ -19,8 +18,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: var(--overlay, none);
+      background: var(--overlay, rgba(0, 0, 0, .4));
       pointer-events: none;
+      transition: opacity .3s linear;
     }
   }
 

@@ -95,7 +95,7 @@ final class WPBS_Icons {
 	}
 
 	private function get_default_safelist(): array {
-		$raw  = 'help,home,arrow_forward,arrow_back';
+		$raw  = 'help,home,arrow_forward,arrow_back,play_circle';
 		$list = array_filter( array_map( 'trim', explode( ',', $raw ) ) );
 		sort( $list, SORT_STRING );
 

@@ -1,105 +1,132 @@
 <?php
 /**
- * Simplified WPBS Video Block PHP rendering
+ * WPBS Video Element — matches JS block logic exactly
  */
 
-// If editor content exists, output it and skip the rest
 if ( ! empty( $content ) ) {
     echo $content;
 
     return;
 }
 
-// Block attributes
 $settings = $attributes['wpbs-video'] ?? [];
-$unique   = $attributes['uniqueId'] ?? '';
-$link     = $settings['link'] ?? '';
-$title    = $settings['title'] ?? '';
-$desc     = $settings['description'] ?? '';
-$res      = $settings['resolution'] ?? 'medium';
-$overlay  = ! empty( $settings['overlay'] );
-$lightbox = ! empty( $settings['options']['lightbox'] );
-$icon     = $settings['button-icon'] ?? [];
 
-// Extract YouTube video ID
+// --------------------------------------------------
+// Extract flat settings
+// --------------------------------------------------
+$link       = $settings['link'] ?? '';
+$title      = $settings['title'] ?? '';
+$desc       = $settings['description'] ?? '';
+$resolution = $settings['resolution'] ?? 'medium';
+$title_pos  = $settings['title-position'] ?? 'top';
+$poster_id  = isset( $settings['poster'] ) ? intval( $settings['poster'] ) : null;
+
+$lightbox = ! empty( $settings['lightbox'] );
+$overlay  = $settings['overlay'] ?? true;
+$eager    = ! empty( $settings['eager'] );
+
+$icon = $settings['button-icon']['name'] ?? 'play_circle';
+
+
+// --------------------------------------------------
+// Extract YouTube ID
+// --------------------------------------------------
 $video_id = null;
-if ( ! empty( $link ) ) {
+
+if ( $link ) {
     $parsed = wp_parse_url( $link );
+
     if ( ! empty( $parsed['host'] ) && str_contains( $parsed['host'], 'youtu' ) ) {
+
+        // 1. Try ?v=xxxx case like JS
         if ( ! empty( $parsed['query'] ) ) {
             parse_str( $parsed['query'], $q );
-            $video_id = $q['v'] ?? null;
-        } elseif ( ! empty( $parsed['path'] ) ) {
+            if ( ! empty( $q['v'] ) ) {
+                $video_id = $q['v'];
+            }
+        }
+
+        // 2. Fallback to pathname (youtu.be / embed URLs)
+        if ( ! $video_id && ! empty( $parsed['path'] ) ) {
             $video_id = ltrim( $parsed['path'], '/' );
         }
     }
 }
 
-// Poster fallback
+
+// --------------------------------------------------
+// Poster logic = EXACT mirror of JS getPosterSrc()
+// --------------------------------------------------
 $poster_src = '';
-if ( ! empty( $settings['poster']['id'] ) ) {
-    // Use wp_get_attachment_image_src for the chosen resolution
-    $attachment_id = intval( $settings['poster']['id'] );
-    $poster_image  = wp_get_attachment_image_src( $attachment_id, $res );
-    if ( ! empty( $poster_image[0] ) ) {
-        $poster_src = $poster_image[0];
+
+if ( $poster_id ) {
+    $img = wp_get_attachment_image_src( $poster_id, $resolution );
+    if ( ! empty( $img[0] ) ) {
+        $poster_src = $img[0];
     }
 } elseif ( $video_id ) {
     $poster_src = "https://i3.ytimg.com/vi/" . esc_attr( $video_id ) . "/hqdefault.jpg";
 }
 
-// Wrapper classes
-$classes    = [
-        'wpbs-video-element',
-        $unique,
-        'wpbs-video',
-        $lightbox ? '--lightbox' : '',
-        $overlay ? '--overlay' : '',
-];
-$classes    = array_filter( $classes );
-$class_attr = implode( ' ', $classes );
 
-// Wrapper attributes
+// --------------------------------------------------
+// Classes (mirrors getClassNames() in JS)
+// --------------------------------------------------
+$classes = implode( ' ', array_filter( [
+        'wpbs-video-element',
+        'wpbs-video',
+        'flex',
+        'items-center',
+        'justify-center',
+        'relative',
+        'w-full',
+        'h-auto',
+        'overflow-hidden',
+        'cursor-pointer',
+        'aspect-video',
+        $lightbox ? '--lightbox' : null,
+        $overlay ? '--overlay' : null,
+] ) );
+
 $wrapper_attrs = get_block_wrapper_attributes( [
-        'class'         => $class_attr,
+        'class'         => $classes,
         'data-platform' => 'youtube',
         'data-vid'      => $video_id ?: '',
         'data-title'    => $title ?: '',
 ] );
 
-ob_start();
+
+// --------------------------------------------------
+// Output
+// --------------------------------------------------
 ?>
+<div <?php echo $wrapper_attrs; ?>>
 
-    <div <?php echo $wrapper_attrs; ?>>
-
-        <?php if ( $title ): ?>
-            <div class="wpbs-video__title absolute z-20 left-0 w-full <?php echo ( $settings['title-position'] ?? '' ) === 'bottom' ? 'bottom-0' : 'top-0'; ?>">
-                <span><?php echo esc_html( $title ); ?></span>
-            </div>
-        <?php endif; ?>
-
-        <?php if ( $desc ): ?>
-            <div class="wpbs-video__description absolute z-20 left-0 w-full bottom-0">
-                <span><?php echo esc_html( $desc ); ?></span>
-            </div>
-        <?php endif; ?>
-
-        <div class="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
-            <span class="screen-reader-text">Play video</span>
-            <?php if ( ! empty( $icon['name'] ) ) : ?>
-                <i class="material-icons"><?php echo esc_html( $icon['name'] ); ?></i>
-            <?php endif; ?>
+    <?php if ( $title ): ?>
+        <div class="wpbs-video__title absolute z-20 left-0 w-full <?php echo $title_pos === 'bottom' ? 'bottom-0' : 'top-0'; ?>">
+            <span><?php echo esc_html( $title ); ?></span>
         </div>
+    <?php endif; ?>
 
-        <?php if ( $poster_src ): ?>
-            <img
-                    src="<?php echo esc_url( $poster_src ); ?>"
-                    alt="<?php echo esc_attr( $title ); ?>"
-                    class="w-full h-full absolute top-0 left-0 z-0 object-cover object-center"
-            />
-        <?php endif; ?>
+    <?php if ( $desc ): ?>
+        <div class="wpbs-video__description absolute z-20 left-0 w-full bottom-0">
+            <span><?php echo esc_html( $desc ); ?></span>
+        </div>
+    <?php endif; ?>
 
+    <div class="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
+        <span class="screen-reader-text">Play video</span>
+        <span class="material-symbols-outlined wpbs-icon" style="font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 69;
+             font-size:69px;
+             font-weight:300;"><?php echo esc_html( $icon ); ?></span>
     </div>
 
-<?php
-echo ob_get_clean();
+    <?php if ( $poster_src ): ?>
+        <img
+                <?php echo $eager ? 'src="' . esc_url( $poster_src ) . '"' : 'data-src="' . esc_url( $poster_src ) . '"'; ?>
+                alt="<?php echo esc_attr( $title ); ?>"
+                class="w-full h-full absolute top-0 left-0 z-0 object-cover object-center"
+        />
+    <?php endif; ?>
+
+</div>

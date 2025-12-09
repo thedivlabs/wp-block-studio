@@ -2,6 +2,7 @@ import {useMemo, useCallback} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
 import {BreakpointPanels} from "Components/BreakpointPanels";
+import {cleanObject} from "Includes/helper";
 
 // Base slider fields
 const BASE_SLIDER_NUMERIC_FIELDS = [
@@ -72,7 +73,126 @@ const BREAKPOINT_SLIDER_TOGGLE_FIELDS = [
     {slug: "enabled", type: "toggle", label: "Collapse"},
 ];
 
-export function SliderInspector({attributes, updateSettings}) {
+// --- Parsing / normalization helpers moved from block.js ---
+
+const SPECIAL_PROP_MAP = {enabled: (val) => !val};
+const PROPS_TO_SUPPRESS = ["enabled"];
+const PAGINATION_PROPS = [
+    "enabled",
+    "el",
+    "type",
+    "clickable",
+    "dynamicBullets",
+    "renderBullet",
+    "renderFraction",
+    "renderProgressbar",
+    "renderCustom",
+];
+
+function normalizeProp(key, value) {
+    if (value === "true") value = true;
+    else if (value === "false") value = false;
+    else if (typeof value === "string" && value !== "" && !isNaN(Number(value))) {
+        value = Number(value);
+    }
+
+    if (value === "" || value === "null" || value === null) return undefined;
+
+    return SPECIAL_PROP_MAP[key] ? SPECIAL_PROP_MAP[key](value) : value;
+}
+
+function normalizeAndCleanProps(obj = {}) {
+    const swiperProps = {};
+    const paginationProps = {};
+
+    for (const key in obj) {
+        let value = obj[key];
+
+        if (key === "pagination") {
+            paginationProps.type = value;
+            paginationProps.enabled = !!value;
+            if (!!value) {
+                paginationProps.el = paginationProps.el ?? ".swiper-pagination";
+            }
+            continue;
+        } else if (PAGINATION_PROPS.includes(key)) {
+            paginationProps[key] = normalizeProp(key, value);
+            continue;
+        }
+
+        if (key === "slidesOffset") {
+            const normalizedValue = normalizeProp(key, value);
+            if (normalizedValue !== undefined) {
+                swiperProps.slidesOffsetAfter = normalizedValue;
+                swiperProps.slidesOffsetBefore = normalizedValue;
+            }
+            continue;
+        }
+
+        if (key === "vertical") {
+            swiperProps.direction = "vertical";
+            continue;
+        }
+
+        value = normalizeProp(key, value);
+
+        if (value !== undefined) {
+            swiperProps[key] = value;
+        }
+    }
+
+    const cleanedPagination = cleanObject(paginationProps);
+    if (Object.keys(cleanedPagination).length > 0) {
+        swiperProps.pagination = cleanedPagination;
+    }
+
+    return swiperProps;
+}
+
+// --- Exported Swiper args builder, used only in save() ---
+
+export function normalizeSliderSettings(settings = {}) {
+    const breakpointsConfig = window.WPBS?.settings?.breakpoints ?? {};
+    const {props: rawProps = {}, breakpoints: rawBreakpoints = {}} = settings;
+
+    const baseProps = normalizeAndCleanProps(rawProps);
+    delete baseProps.controller;
+    delete baseProps.master;
+
+    const swiperArgs = {...baseProps, breakpoints: {}};
+
+    for (const [customKey, entry] of Object.entries(rawBreakpoints)) {
+        const bpProps = normalizeAndCleanProps(entry?.props || {});
+
+        if (Object.keys(bpProps).length === 0) continue;
+
+        const bpMap = breakpointsConfig[customKey];
+        if (!bpMap?.size) continue;
+
+        const normalizedBp = {};
+
+        // Inherit base props (only explicitly set in rawProps)
+        for (const key in rawProps) {
+            if (PROPS_TO_SUPPRESS.includes(key) || key === "slidesOffset") continue;
+
+            if (bpProps[key] === undefined && !PAGINATION_PROPS.includes(key)) {
+                normalizedBp[key] = baseProps[key];
+            }
+        }
+
+        Object.assign(normalizedBp, bpProps);
+
+        if (Object.keys(normalizedBp).length > 0) {
+            swiperArgs.breakpoints[bpMap.size] = cleanObject(normalizedBp);
+        }
+    }
+
+    return cleanObject(swiperArgs);
+}
+
+// --- SliderInspector: now uses attributes + setAttributes ---
+
+export function SliderInspector({attributes, setAttributes}) {
     const rawSettings = attributes["wpbs-slider"] || {};
 
     const value = useMemo(() => {
@@ -89,12 +209,26 @@ export function SliderInspector({attributes, updateSettings}) {
 
     const handlePanelsChange = useCallback(
         (nextValue) => {
-            updateSettings({
-                props: nextValue?.props || {},
-                breakpoints: nextValue?.breakpoints || {},
+            const current = attributes["wpbs-slider"] || {};
+
+            const merged = {
+                ...current,
+                ...nextValue,
+                props: {
+                    ...(current.props || {}),
+                    ...(nextValue?.props || {}),
+                },
+                breakpoints: {
+                    ...(current.breakpoints || {}),
+                    ...(nextValue?.breakpoints || {}),
+                },
+            };
+
+            setAttributes({
+                "wpbs-slider": merged,
             });
         },
-        [updateSettings]
+        [attributes, setAttributes]
     );
 
     const renderFields = useCallback(
@@ -166,18 +300,21 @@ export function SliderInspector({attributes, updateSettings}) {
         [sharedConfig]
     );
 
-    const renderBase = useCallback(({entry, update}) => renderFields(entry, update, false), [renderFields]);
-    const renderBreakpoints = useCallback(({
-                                               bpKey,
-                                               entry,
-                                               update
-                                           }) => renderFields(entry, update, true), [renderFields]);
+    const renderBase = useCallback(
+        ({entry, update}) => renderFields(entry, update, false),
+        [renderFields]
+    );
+
+    const renderBreakpoints = useCallback(
+        ({bpKey, entry, update}) => renderFields(entry, update, true),
+        [renderFields]
+    );
 
     return (
         <PanelBody
             initialOpen={false}
             className="wpbs-block-controls is-style-unstyled"
-            title={"Slider"}
+            title="Slider"
         >
             <BreakpointPanels
                 value={value}

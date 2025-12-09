@@ -9,8 +9,6 @@ $is_gallery      = ! empty( $block->context['wpbs/isGallery'] );
 $is_current      = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
 
-WPBS::console_log( $query_settings );
-
 // If not a loop, output the normal content and exit
 if ( ! $is_loop && ! $is_gallery ) {
 	echo $content ?? null;

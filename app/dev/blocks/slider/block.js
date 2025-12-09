@@ -92,11 +92,6 @@ registerBlockType(metadata.name, {
             setCss(getCssProps(settings, totalSlides));
         }, [JSON.stringify(settings), totalSlides, setCss]);
 
-        useEffect(() => {
-            // keep this debug log as in original
-            console.log(attributes);
-        }, [attributes]);
-
 
         const inspectorPanel = useMemo(
             () => (

@@ -63,8 +63,6 @@ class WPBS {
 
 		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
 
-		add_action( 'rest_api_init', [ $this, 'lightbox_endpoint' ] );
-
 		add_action( 'after_setup_theme', [ $this, 'register_image_sizes' ], 1 );
 
 		if (
@@ -849,26 +847,6 @@ class WPBS {
 		return new WP_REST_Response( $response_data, 200 );
 	}
 
-	public function lightbox_endpoint(): void {
-		register_rest_route( 'wpbs/v1', '/lightbox', array(
-			'methods'             => 'POST',
-			'callback'            => [ $this, 'render_lightbox' ],
-			'permission_callback' => '__return_true',
-			'args'                => array(
-				'uniqueId'     => array(
-					'type'              => 'string',
-					'sanitize_callback' => 'sanitize_text_field',
-					'validate_callback' => function ( $param, $request, $key ) {
-						// Basic validation: check if it's not empty
-						return ! empty( $param );
-					},
-				),
-				'blockContext' => array(
-					'type' => 'object',
-				)
-			),
-		) );
-	}
 
 }
 

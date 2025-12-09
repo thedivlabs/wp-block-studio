@@ -21,8 +21,9 @@ $resolution = $settings['resolution'] ?? 'medium';
 $title_pos  = $settings['title-position'] ?? 'top';
 $poster_id  = isset( $settings['poster'] ) ? intval( $settings['poster'] ) : null;
 
-$lightbox = true;
+$lightbox = $settings['lightbox'] ?? true;
 $overlay  = $settings['overlay'] ?? true;
+$disabled = ! empty( $settings['disabled'] );
 $eager    = ! empty( $settings['eager'] );
 
 $icon = $settings['button-icon']['name'] ?? 'play_circle';
@@ -73,7 +74,7 @@ if ( $poster_id ) {
 // Classes (mirrors getClassNames() in JS)
 // --------------------------------------------------
 $classes = implode( ' ', array_filter( [
-        'wpbs-video-element --disabled',
+        'wpbs-video-element',
         'wpbs-video',
         'flex',
         'items-center',
@@ -86,6 +87,7 @@ $classes = implode( ' ', array_filter( [
         'aspect-video',
         $lightbox ? '--lightbox' : null,
         $overlay ? '--overlay' : null,
+        $disabled ? '--disabled' : null
 ] ) );
 
 $wrapper_attrs = get_block_wrapper_attributes( [

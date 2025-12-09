@@ -4,13 +4,13 @@ export default class MediaWatcher {
 
     static videos = [];
 
-    static init() {
+    static init(root) {
 
         // 1. Watch video / images / background
-        this.observeMedia(document);
+        this.observeMedia(root || document);
 
         // 2. Watch visibility-only elements
-        this.observeVisibility(document);
+        this.observeVisibility(root || document);
 
         // 3. Debounced MQ checking for videos
         const recheck = debounce(() => {

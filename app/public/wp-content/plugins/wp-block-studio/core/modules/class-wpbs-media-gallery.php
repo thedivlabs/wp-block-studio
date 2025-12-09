@@ -41,7 +41,7 @@ class WPBS_Media_Gallery {
 	// REST ENDPOINTS
 	// ---------------------------------------------------------
 
-	public function register_rest_endpoints() {
+	public function register_rest_endpoints(): void {
 
 		register_rest_route( 'wpbs/v1', '/lightbox', [
 			'methods'             => 'POST',
@@ -97,10 +97,11 @@ class WPBS_Media_Gallery {
 
 			$block = new WP_Block( [
 				'blockName'   => 'wpbs/slide',
-				'attrs'       => [ 'uniqueId' => 'lightbox-slide-' . $i ],
-				'innerBlocks' => [],
-				'context'     => $context,
-			] );
+				'attrs'       => [
+					'className' => 'wpbs-lightbox-slide'
+				],
+				'innerBlocks' => []
+			], $context );
 
 			$slides_html .= $block->render();
 		}
@@ -114,12 +115,15 @@ class WPBS_Media_Gallery {
 				<div class="swiper-wrapper">
 					' . $slides_html . '
 				</div>
+				<div class="wpbs-lightbox-nav">NAVIGATION</div>
 			</div>
 		</div>';
 
 		return new WP_REST_Response( [
-			'success'  => true,
-			'rendered' => $html,
+			'success'      => true,
+			'rendered'     => $html,
+			'$media_items' => $media_items,
+			'$slides_html' => $slides_html,
 		], 200 );
 	}
 }
@@ -191,8 +195,10 @@ class WPBS_Media {
 
 	protected function render_video( array $args ): string {
 
+		$is_rest = wp_is_json_request();
+
 		// Merge ACF video props + settings
-		$merged = array_merge( $this->video, $args );
+		$merged = array_merge( $this->video, $args, [ 'disabled' => ! $is_rest, 'lightbox' => ! $is_rest ] );
 
 		$block = [
 			'blockName'   => 'wpbs/video-element',

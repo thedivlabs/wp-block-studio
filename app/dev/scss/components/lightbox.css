@@ -12,6 +12,7 @@
   ;
 
   img, picture {
+    pointer-events: auto !important;
     @apply
     object-contain
     w-auto
@@ -19,39 +20,13 @@
     max-w-full
     max-h-full
     select-none
+    m-auto
   }
 
-  .wpbs-lightbox-slide {
-    @apply
-    w-full
-    h-full
-    pointer-events-none
-    relative
-    overflow-hidden
-    max-w-full
-    flex
-    justify-center
-    items-center
-    max-h-full
-    ;
 
-    .wpbs-video {
-
-      img {
-        @apply
-        w-full
-        h-full
-        object-cover
-      }
-    }
-
-    & > .swiper-zoom-container * {
-      pointer-events: auto;
-    }
-  }
-
-  .wpbs-lightbox__slider.swiper.wpbs-slider {
+  .wpbs-lightbox-swiper {
     grid-template-rows: calc(100% - clamp(24px, 3rem, 5vh)) 1fr;
+
     @apply
     grid
     grid-cols-1
@@ -65,17 +40,39 @@
       grid-template-rows: 100%;
     }
 
-    .swiper-slide {
+    .wpbs-lightbox-slide {
       pointer-events: none;
       grid-template-columns: 100%;
       grid-template-rows: 100%;
       @apply
+      w-full
+      h-full
+      pointer-events-none
+      relative
+      overflow-hidden
+      max-w-full
+      max-h-full
       grid
       justify-center
       items-center
       p-3
       lg:p-5
       xl:p-6
+      ;
+
+      .wpbs-video {
+
+        img {
+          @apply
+          w-full
+          h-full
+          object-cover
+        }
+      }
+
+      & > .swiper-zoom-container * {
+        pointer-events: auto;
+      }
     }
 
     .wpbs-lightbox-nav {

@@ -1,5 +1,7 @@
 import MediaWatcher from './modules/MediaWatcher';
 
+window.MediaWatcher = MediaWatcher;
+
 (function () {
     const MAX_WAIT = 20000;
     const INTERVAL = 100;
@@ -26,7 +28,7 @@ import MediaWatcher from './modules/MediaWatcher';
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!document.body.classList.contains('wp-admin')) {
-        MediaWatcher.init();
+        window.MediaWatcher.init();
     }
 
     document.querySelectorAll('link[data-href]:not([rel="preload"])').forEach(link => {

@@ -30,6 +30,10 @@ $loop_data = $loop_instance->render_from_php(
 	max( 1, get_query_var( 'paged', 1 ) )
 );
 
+WPBS::console_log( $loop_data );
+WPBS::console_log( $merged_query );
+
+
 // Build wrapper attributes using the core block wrapper helper.
 $wrapper_attrs = get_block_wrapper_attributes( [
 	'class' => trim( implode( ' ', array_filter( [

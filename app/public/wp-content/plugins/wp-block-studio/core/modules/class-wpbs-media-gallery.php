@@ -4,48 +4,126 @@ class WPBS_Media_Gallery {
 
 	private static WPBS_Media_Gallery $instance;
 
-	public const SINGULAR = 'Media Gallery';
-	public const PLURAL = 'Media Galleries';
 	public const SLUG = 'media-gallery';
-
-	public const TAX_SINGULAR = 'Gallery Category';
-	public const TAX_PLURAL = 'Gallery Categories';
 	public const TAX_SLUG = 'media-gallery-category';
-
 
 	private function __construct() {
 
-
-		$args = [
-			'supports'      => [ 'title', 'editor', 'permalink', 'thumbnail', 'excerpt' ],
-			'menu_position' => 25,
-			'menu_icon'     => 'dashicons-format-gallery',
-			'has_archive'   => 'media-gallery',
-			'taxonomies'    => [
-				'media-gallery-category'
+		// CPT + Taxonomy
+		WPBS_CPT::register(
+			'Media Gallery', 'Media Galleries', self::SLUG,
+			[
+				'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
+				'menu_position' => 25,
+				'menu_icon'     => 'dashicons-format-gallery',
+				'has_archive'   => self::SLUG,
+			],
+			[
+				'menu_name' => 'Media Gallery',
+				'archives'  => 'Media Gallery',
 			]
-		];
+		);
 
-		$labels = [
-			'menu_name' => 'Media Gallery',
-			'archives'  => 'Media Gallery',
-		];
+		WPBS_Taxonomy::register(
+			'Gallery Category', 'Gallery Categories',
+			self::SLUG, self::TAX_SLUG, false
+		);
 
-		WPBS_CPT::register( self::SINGULAR, self::PLURAL, self::SLUG, $args, $labels );
-
-		WPBS_Taxonomy::register( self::TAX_SINGULAR, self::TAX_PLURAL, self::SLUG, self::TAX_SLUG, false );
-
+		// REST
+		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 	}
 
 	public static function init(): WPBS_Media_Gallery {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new WPBS_Media_Gallery();
-		}
-
-		return self::$instance;
+		return self::$instance ??= new WPBS_Media_Gallery();
 	}
 
+	// ---------------------------------------------------------
+	// REST ENDPOINTS
+	// ---------------------------------------------------------
+
+	public function register_rest_endpoints() {
+
+		register_rest_route( 'wpbs/v1', '/lightbox', [
+			'methods'             => 'POST',
+			'callback'            => [ $this, 'render_lightbox' ],
+			'permission_callback' => '__return_true',
+			'args'                => [
+				'media'    => [
+					'type'     => 'array',
+					'required' => true,
+				],
+				'index'    => [
+					'type'    => 'integer',
+					'default' => 0,
+				],
+				'settings' => [
+					'type'    => 'object',
+					'default' => [],
+				],
+			],
+		] );
+	}
+
+	// ---------------------------------------------------------
+	// LIGHTBOX SSR
+	// ---------------------------------------------------------
+
+	public function render_lightbox( WP_REST_Request $request ): WP_REST_Response {
+
+		$media_items = $request->get_param( 'media' ) ?? [];
+		$settings    = $request->get_param( 'settings' ) ?? [];
+		$index       = intval( $request->get_param( 'index' ) ?? 0 );
+
+		if ( empty( $media_items ) ) {
+			return new WP_REST_Response( [
+				'success'  => false,
+				'rendered' => '',
+			], 200 );
+		}
+
+		// -----------------------------------------------------
+		// Build slide HTML using existing wpbs/slide block
+		// -----------------------------------------------------
+		$slides_html = '';
+
+		foreach ( $media_items as $i => $item ) {
+
+			// Inject loop-style block context
+			$context = [
+				'wpbs/query' => $settings,     // resolution, lightbox, eager, etc.
+				'wpbs/media' => $item,
+				'wpbs/index' => $i,
+			];
+
+			$block = new WP_Block( [
+				'blockName'   => 'wpbs/slide',
+				'attrs'       => [ 'uniqueId' => 'lightbox-slide-' . $i ],
+				'innerBlocks' => [],
+				'context'     => $context,
+			] );
+
+			$slides_html .= $block->render();
+		}
+
+		// -----------------------------------------------------
+		// Lightbox Skeleton
+		// -----------------------------------------------------
+		$html = '
+		<div class="wpbs-lightbox" data-start="' . esc_attr( $index ) . '">
+			<div class="swiper wpbs-lightbox-swiper">
+				<div class="swiper-wrapper">
+					' . $slides_html . '
+				</div>
+			</div>
+		</div>';
+
+		return new WP_REST_Response( [
+			'success'  => true,
+			'rendered' => $html,
+		], 200 );
+	}
 }
+
 
 class WPBS_Media {
 
@@ -130,7 +208,6 @@ class WPBS_Media {
 
 		return $instance->render();
 	}
-
 
 	protected function render_image( array $args ): string {
 		$resolution = $args['resolution'] ?? 'large';

@@ -17,6 +17,7 @@ class WPBS_Loop {
 		add_action( 'rest_api_init', [ $this, 'register_endpoint' ] );
 	}
 
+
 	/**
 	 * Output loop template JSON for frontend hydration
 	 */
@@ -190,36 +191,39 @@ class WPBS_Loop {
 
 			$gallery_id = intval( $query['gallery_id'] );
 
-			/**
-			 * Load full ACF field: expected structure:
-			 * [
-			 *   'images' => [ ID, ID, ... ],
-			 *   'videos' => [ [videoData], [videoData], ... ]
-			 * ]
-			 */
 			$acf = get_field( 'wpbs', $gallery_id );
 
 			if ( empty( $acf ) || ! is_array( $acf ) ) {
 				return [
-					'html'  => '',
-					'total' => 0,
-					'pages' => 1,
-					'page'  => $page,
+					'html'     => '',
+					'total'    => 0,
+					'pages'    => 1,
+					'page'     => $page,
+					'lightbox' => [
+						'media'    => [],
+						'settings' => $query,
+					],
 				];
 			}
 
 			$images = ! empty( $acf['images'] ) && is_array( $acf['images'] ) ? $acf['images'] : [];
 			$videos = ! empty( $acf['video'] ) && is_array( $acf['video'] ) ? $acf['video'] : [];
 
-			// Merge into one list
-			$merged = ! empty( $query['video_first'] ) ? array_values( array_merge( $videos, $images ) ) : array_values( array_merge( $images, $videos ) );;
+			// Full merged list (not paginated)
+			$merged = ! empty( $query['video_first'] )
+				? array_values( array_merge( $videos, $images ) )
+				: array_values( array_merge( $images, $videos ) );
 
 			if ( empty( $merged ) ) {
 				return [
-					'html'  => '',
-					'total' => 0,
-					'pages' => 1,
-					'page'  => $page,
+					'html'     => '',
+					'total'    => 0,
+					'pages'    => 1,
+					'page'     => $page,
+					'lightbox' => [
+						'media'    => [],
+						'settings' => $query,
+					],
 				];
 			}
 
@@ -235,25 +239,29 @@ class WPBS_Loop {
 			$index = 0;
 
 			foreach ( $paged_items as $media ) {
-
 				$html .= $this->render_card_from_ast(
 					$template_block,
-					$query,                // gallery query object
-					null,    // attachment ID or null
+					$query,
+					null,
 					$index,
 					null,
-					$media                 // new $media argument
+					$media
 				);
-
 				$index ++;
 			}
 
 			return [
-				'html'  => $html,
-				'total' => $total_items,
-				'pages' => $total_pages,
-				'page'  => $page,
-				'query' => $query,
+				'html'     => $html,
+				'total'    => $total_items,
+				'pages'    => $total_pages,
+				'page'     => $page,
+				'query'    => $query,
+
+				// ⭐ NEW: unified lightbox payload
+				'lightbox' => [
+					'media'    => $merged,  // full gallery array, unpaginated
+					'settings' => $query,   // includes eager/lightbox/resolution/video_first/etc
+				],
 			];
 		}
 

@@ -211,7 +211,7 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle(
-        ({attributes, BlockWrapper, setAttributes, setCss, setPreload, clientId}) => {
+        ({attributes, BlockWrapper, setAttributes, setCss, setPreload, clientId, context}) => {
             const rawSettings = attributes["wpbs-slide"] || {};
             const settings = useMemo(() => normalizeSettings(rawSettings), [rawSettings]);
             const classNames = getClassNames(attributes);
@@ -278,10 +278,10 @@ registerBlockType(metadata.name, {
     ),
 
     save: withStyleSave(({attributes, BlockWrapper}) => {
-        console.log(attributes);
-        const isGallery = !!attributes?.isGallery;
 
-        if (isGallery) return null;
+        const {isGallery, isLoop} = attributes;
+
+        if (isGallery || isLoop) return null;
 
         const settings = normalizeSettings(attributes["wpbs-slide"]);
         const classNames = getClassNames(attributes);

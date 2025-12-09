@@ -117,10 +117,14 @@ class WPBS_Media {
 		$merged = array_merge( $this->video, $args );
 
 		$block = [
-			'blockName'   => 'wpbs/video',
-			'attrs'       => [ 'wpbs-video' => $merged ],
+			'blockName'   => 'wpbs/video-element',
+			'attrs'       => [
+				'wpbs-video' => $merged,
+				'className'  => 'w-full h-full'
+			],
 			'innerBlocks' => [],
 		];
+
 
 		$instance = new WP_Block( $block );
 
@@ -131,10 +135,13 @@ class WPBS_Media {
 	protected function render_image( array $args ): string {
 		$resolution = $args['resolution'] ?? 'large';
 
-		$attr = [];
-		if ( ! empty( $args['contain'] ) ) {
-			$attr['style'] = 'object-fit: contain;';
-		}
+		$attr = [
+			'class' => implode( ' ', array_filter( [
+				'w-full h-full',
+				! empty( $args['contain'] ) ? 'object-contain' : 'object-cover',
+				! empty( $args['lightbox'] ) ? '--lightbox' : 'object-cover',
+			] ) )
+		];
 
 		return wp_get_attachment_image( $this->id, $resolution, false, $attr );
 	}

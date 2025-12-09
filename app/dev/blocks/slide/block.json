@@ -29,15 +29,14 @@
       "type": "boolean"
     },
     "isGallery": {
-      "type": "boolean",
-      "source": "context",
-      "context": "wpbs/isGallery"
+      "type": "boolean"
     },
     "media": {
       "type": "boolean"
     }
   },
   "usesContext": [
+    "wpbs/query",
     "wpbs/media",
     "wpbs/isGallery",
     "wpbs/isLoop",

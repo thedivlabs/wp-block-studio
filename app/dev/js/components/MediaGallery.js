@@ -51,12 +51,10 @@ export function MediaGalleryControls({attributes, setAttributes, enabled}) {
         if (!isEnabled) return;
 
         if (!isEqual(attributes["wpbs-query"], localSettings)) {
-            setAttributes({
-                "wpbs-query": localSettings,
-            });
+            setAttributes({"wpbs-query": localSettings});
         }
 
-    }, [isEnabled]);
+    }, [isEnabled, localSettings, attributes["wpbs-query"]]);
 
 
     return (

@@ -1,11 +1,19 @@
 <?php
 
+if ( empty( $block->context ) ) {
+	echo wp_kses_post( $content ?? '' );
+
+	return;
+}
 
 $settings   = $block->context['wpbs/query'] ?? [];
 $media_item = $block->context['wpbs/media'] ?? null;
 
 $wrapper_attrs = get_block_wrapper_attributes( [
-	'class' => 'wpbs-slide swiper-slide',
+	'class' => implode( ' ', array_filter( [
+		'wpbs-slide swiper-slide',
+		$attributes['uniqueId'] ?? ''
+	] ) ),
 ] );
 
 echo '<div ' . $wrapper_attrs . '>';
@@ -38,7 +46,5 @@ $post_id = $block->context['wpbs/postId'] ?? null;
 if ( $post_id ) {
 	$content = str_replace( '%%__POST_LINK_URL__%%', get_permalink( (int) $post_id ), $content );
 }
-
-echo wp_kses_post( $content );
 
 echo '</div>';

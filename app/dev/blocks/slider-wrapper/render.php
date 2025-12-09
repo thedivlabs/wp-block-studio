@@ -17,13 +17,7 @@ if ( ! $is_loop && ! $is_gallery ) {
 }
 
 // Merge block query settings with defaults
-$default_query = [
-	'post_type' => 'post',
-	'taxonomy'  => '',
-	'term'      => '',
-	'orderby'   => 'date',
-	'order'     => 'DESC',
-];
+$default_query = [];
 $merged_query  = array_merge( $default_query, $query_settings );
 
 // Initialize the loop

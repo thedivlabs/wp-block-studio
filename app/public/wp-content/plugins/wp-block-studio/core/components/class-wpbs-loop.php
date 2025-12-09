@@ -199,8 +199,6 @@ class WPBS_Loop {
 			 */
 			$acf = get_field( 'wpbs', $gallery_id );
 
-			WPBS::console_log( $acf );
-
 			if ( empty( $acf ) || ! is_array( $acf ) ) {
 				return [
 					'html'  => '',
@@ -465,6 +463,7 @@ class WPBS_Loop {
 			'termId'   => $term_id,
 			'taxonomy' => $taxonomy,
 
+			'wpbs/query'    => $query,
 			'wpbs/media'    => $media,
 			'wpbs/postId'   => $post_id,
 			'wpbs/termId'   => $term_id,

@@ -180,9 +180,6 @@ class WPBS_Loop {
 		$html  = '';
 		$index = 0;
 
-
-		WPBS::console_log( $query );
-
 		/*
  * ===============================================================
  * 0. MEDIA GALLERY LOOP MODE (gallery object passed)
@@ -214,7 +211,7 @@ class WPBS_Loop {
 			}
 
 			$images = ! empty( $acf['images'] ) && is_array( $acf['images'] ) ? $acf['images'] : [];
-			$videos = ! empty( $acf['videos'] ) && is_array( $acf['videos'] ) ? $acf['videos'] : [];
+			$videos = ! empty( $acf['video'] ) && is_array( $acf['video'] ) ? $acf['video'] : [];
 
 			// Normalize → unified media objects
 			$normalized_images = array_map(

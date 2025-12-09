@@ -9,7 +9,7 @@ if ( ! empty( $content ) ) {
 
     return;
 }
-
+WPBS::console_log( 'video' );
 // Block attributes
 $settings = $attributes['wpbs-video'] ?? [];
 $unique   = $attributes['uniqueId'] ?? '';

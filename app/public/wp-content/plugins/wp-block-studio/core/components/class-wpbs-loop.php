@@ -213,28 +213,8 @@ class WPBS_Loop {
 			$images = ! empty( $acf['images'] ) && is_array( $acf['images'] ) ? $acf['images'] : [];
 			$videos = ! empty( $acf['video'] ) && is_array( $acf['video'] ) ? $acf['video'] : [];
 
-			// Normalize → unified media objects
-			$normalized_images = array_map(
-				fn( $id ) => [
-					'type' => 'image',
-					'id'   => intval( $id ),
-				],
-				$images
-			);
-
-			$normalized_videos = array_values(
-				array_filter(
-					array_map(
-						fn( $item ) => is_array( $item )
-							? array_merge( [ 'type' => 'video' ], $item )
-							: null,
-						$videos
-					)
-				)
-			);
-
 			// Merge into one list
-			$merged = array_values( array_merge( $normalized_images, $normalized_videos ) );
+			$merged = ! empty( $query['video_first'] ) ? array_values( array_merge( $videos, $images ) ) : array_values( array_merge( $images, $videos ) );;
 
 			if ( empty( $merged ) ) {
 				return [
@@ -494,8 +474,8 @@ class WPBS_Loop {
 
 		$instance = new WP_Block( $block, $context );
 
-		$instance->context['termId']    = $term_id;
-		$instance->attributes['termId'] = $term_id;
+		$instance->context['termId'] = $term_id;
+		$instance->context['media']  = $media;
 
 		return $instance->render();
 	}

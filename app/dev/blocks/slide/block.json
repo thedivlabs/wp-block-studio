@@ -27,6 +27,14 @@
     },
     "isLoop": {
       "type": "boolean"
+    },
+    "isGallery": {
+      "type": "boolean",
+      "source": "context",
+      "context": "wpbs/isGallery"
+    },
+    "media": {
+      "type": "boolean"
     }
   },
   "usesContext": [

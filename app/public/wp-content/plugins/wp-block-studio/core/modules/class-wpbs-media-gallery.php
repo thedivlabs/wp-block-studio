@@ -47,4 +47,96 @@ class WPBS_Media_Gallery {
 
 }
 
+class WPBS_Media {
+
+	/** @var int|array|null */
+	protected int|array|null $raw;
+
+	/** @var string|null  'image' | 'video' | null */
+	protected ?string $type = null;
+
+	/** @var int|null  Attachment ID for images */
+	protected ?int $id = null;
+
+	/** @var array|null  Video metadata array */
+	protected ?array $video = null;
+
+	/** @var array  Rendering arguments */
+	protected array $args = [];
+
+	/**
+	 * @param int|array|null $item
+	 * @param array $args
+	 */
+	public function __construct( int|array|null $item, array $args = [] ) {
+		$this->raw  = $item;
+		$this->args = $args;
+
+		// ---------------------------
+		// CASE 1: Video array
+		// ---------------------------
+		if ( is_array( $item ) && ! empty( $item ) ) {
+
+			if ( ! empty( $item['link'] ) || ! empty( $item['share_link'] ) ) {
+				$this->type  = 'video';
+				$this->video = $item;
+
+				return;
+			}
+		}
+
+		// ---------------------------
+		// CASE 2: Image ID
+		// ---------------------------
+		if ( is_int( $item ) && $item > 0 ) {
+			$this->type = 'image';
+			$this->id   = $item;
+
+			return;
+		}
+
+		// ---------------------------
+		// CASE 3: Invalid or empty
+		// ---------------------------
+		$this->type = null;
+	}
+
+	public function render( array $override = [] ): string {
+		$args = array_merge( $this->args, $override );
+
+		return match ( $this->type ) {
+			'video' => $this->render_video( $args ),
+			'image' => $this->render_image( $args ),
+			default => '',
+		};
+	}
+
+	protected function render_video( array $args ): string {
+
+		// Merge ACF video props + settings
+		$merged = array_merge( $this->video, $args );
+
+		$block = [
+			'blockName'   => 'wpbs/video',
+			'attrs'       => [ 'wpbs-video' => $merged ],
+			'innerBlocks' => [],
+		];
+
+		$instance = new WP_Block( $block );
+
+		return $instance->render();
+	}
+
+
+	protected function render_image( array $args ): string {
+		$resolution = $args['resolution'] ?? 'large';
+
+		$attr = [];
+		if ( ! empty( $args['contain'] ) ) {
+			$attr['style'] = 'object-fit: contain;';
+		}
+
+		return wp_get_attachment_image( $this->id, $resolution, false, $attr );
+	}
+}
 

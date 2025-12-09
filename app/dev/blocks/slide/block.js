@@ -231,6 +231,30 @@ registerBlockType(metadata.name, {
                 }
             }, [isImage]);
 
+            useEffect(() => {
+                // Context booleans
+                const isGallery = !!context?.["wpbs/isGallery"];
+                const isLoop = !!context?.["wpbs/isLoop"];
+
+                // Only update if different from current attributes
+                const next = {
+                    isGallery,
+                    isLoop,
+                };
+
+                const current = {
+                    isGallery: !!attributes?.isGallery,
+                    isLoop: !!attributes?.isLoop,
+                };
+
+                if (!isEqual(current, next)) {
+                    setAttributes(next);
+                }
+            }, [
+                context?.["wpbs/isGallery"],
+                context?.["wpbs/isLoop"],
+            ]);
+
             const updateSettings = useCallback(
                 (nextValue) => {
                     const normalized = normalizeSettings(nextValue);
@@ -254,6 +278,11 @@ registerBlockType(metadata.name, {
     ),
 
     save: withStyleSave(({attributes, BlockWrapper}) => {
+        console.log(attributes);
+        const isGallery = !!attributes?.isGallery;
+
+        if (isGallery) return null;
+
         const settings = normalizeSettings(attributes["wpbs-slide"]);
         const classNames = getClassNames(attributes);
         const link = attributes["wpbs-slide"]?.props?.link;

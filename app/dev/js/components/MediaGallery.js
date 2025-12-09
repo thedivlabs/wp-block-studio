@@ -15,9 +15,11 @@ export const GALLERY_ATTRIBUTES = {
     "wpbs-query": {type: "object", default: {}},
 };
 
-export function MediaGalleryControls({attributes, setAttributes}) {
+export function MediaGalleryControls({attributes, setAttributes, enabled}) {
     const gallerySettings = attributes?.["wpbs-gallery"] || {};
     const [localSettings, setLocalSettings] = useState({...gallerySettings});
+
+    const isEnabled = !!enabled;
 
     // Load gallery CPT items
     const galleries = useSelect(
@@ -44,6 +46,18 @@ export function MediaGalleryControls({attributes, setAttributes}) {
         },
         [localSettings, setAttributes]
     );
+
+    useEffect(() => {
+        if (!isEnabled) return;
+
+        if (!isEqual(attributes["wpbs-query"], localSettings)) {
+            setAttributes({
+                "wpbs-query": localSettings,
+            });
+        }
+
+    }, [isEnabled]);
+
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>

@@ -5,6 +5,14 @@ declare( strict_types=1 );
  * Render the Slide block dynamically inside a swiper-slide wrapper.
  */
 
+if ( ! empty( $content ) && empty( $block->context['wpbs/isGallery'] ?? $block->context['wpbs/isLoop'] ?? false ) ) {
+	echo $content;
+
+	return;
+}
+
+WPBS::console_log( $block ?? false );
+
 $wrapper_attrs = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-slide',
@@ -18,6 +26,8 @@ echo '<div ' . $wrapper_attrs . '>';
 // Media rendering
 // ------------------------
 $media = $block->context['wpbs/media'] ?? null;
+
+WPBS::console_log( $media );
 
 if ( is_array( $media ) && ! empty( $media ) ) {
 

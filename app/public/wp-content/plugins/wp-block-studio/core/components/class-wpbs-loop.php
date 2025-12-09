@@ -185,27 +185,23 @@ class WPBS_Loop {
  * 0. MEDIA GALLERY LOOP MODE (gallery object passed)
  * ===============================================================
  */
+		WPBS::console_log( $query );
 		if ( ! empty( $query['gallery_id'] ) ) {
 
 			$gallery_id = intval( $query['gallery_id'] );
 
-			// Load gallery post
-			$gallery_post = get_post( $gallery_id );
+			/**
+			 * Load full ACF field: expected structure:
+			 * [
+			 *   'images' => [ ID, ID, ... ],
+			 *   'videos' => [ [videoData], [videoData], ... ]
+			 * ]
+			 */
+			$acf = get_field( 'wpbs', $gallery_id );
 
-			if ( ! $gallery_post || $gallery_post->post_type !== 'media-gallery' ) {
-				return [
-					'html'  => '',
-					'total' => 0,
-					'pages' => 1,
-					'page'  => $page,
-					'error' => 'Invalid gallery ID.',
-				];
-			}
+			WPBS::console_log( $acf );
 
-			// Get gallery items (assume stored as post meta 'media_items', array of attachment IDs)
-			$items = get_post_meta( $gallery_id, 'media_items', true );
-
-			if ( empty( $items ) || ! is_array( $items ) ) {
+			if ( empty( $acf ) || ! is_array( $acf ) ) {
 				return [
 					'html'  => '',
 					'total' => 0,
@@ -214,38 +210,72 @@ class WPBS_Loop {
 				];
 			}
 
-			// Handle pagination
-			$per_page    = intval( $query['page_size'] ?? count( $items ) );
-			$offset      = ( $page - 1 ) * $per_page;
-			$paged_items = array_slice( $items, $offset, $per_page );
+			$images = ! empty( $acf['images'] ) && is_array( $acf['images'] ) ? $acf['images'] : [];
+			$videos = ! empty( $acf['videos'] ) && is_array( $acf['videos'] ) ? $acf['videos'] : [];
+
+			// Normalize → unified media objects
+			$normalized_images = array_map(
+				fn( $id ) => [
+					'type' => 'image',
+					'id'   => intval( $id ),
+				],
+				$images
+			);
+
+			$normalized_videos = array_values(
+				array_filter(
+					array_map(
+						fn( $item ) => is_array( $item )
+							? array_merge( [ 'type' => 'video' ], $item )
+							: null,
+						$videos
+					)
+				)
+			);
+
+			// Merge into one list
+			$merged = array_values( array_merge( $normalized_images, $normalized_videos ) );
+
+			if ( empty( $merged ) ) {
+				return [
+					'html'  => '',
+					'total' => 0,
+					'pages' => 1,
+					'page'  => $page,
+				];
+			}
+
+			// Pagination
+			$per_page = intval( $query['page_size'] ?? count( $merged ) );
+			$offset   = ( $page - 1 ) * $per_page;
+
+			$paged_items = array_slice( $merged, $offset, $per_page );
+			$total_items = count( $merged );
+			$total_pages = $per_page > 0 ? ceil( $total_items / $per_page ) : 1;
 
 			$html  = '';
 			$index = 0;
 
-			foreach ( $paged_items as $attachment_id ) {
-				$post_id = intval( $attachment_id );
+			foreach ( $paged_items as $media ) {
 
-				// Pass the original gallery query object directly
 				$html .= $this->render_card_from_ast(
 					$template_block,
-					$query, // <-- pass the gallery query object directly
-					$post_id,
+					$query,                // gallery query object
+					null,    // attachment ID or null
 					$index,
-					null
+					null,
+					$media                 // new $media argument
 				);
 
 				$index ++;
 			}
 
-
-			$total_pages = $per_page > 0 ? ceil( count( $items ) / $per_page ) : 1;
-
 			return [
-				'html'   => $html,
-				'total'  => count( $items ),
-				'pages'  => $total_pages,
-				'page'   => $page,
-				'$query' => $query,
+				'html'  => $html,
+				'total' => $total_items,
+				'pages' => $total_pages,
+				'page'  => $page,
+				'query' => $query,
 			];
 		}
 
@@ -429,7 +459,8 @@ class WPBS_Loop {
 		array $query,
 		?int $post_id,
 		int $index,
-		?int $term_id = null
+		?int $term_id = null,
+		$media = []
 	): string {
 
 		$block = $template;
@@ -454,6 +485,7 @@ class WPBS_Loop {
 			'termId'   => $term_id,
 			'taxonomy' => $taxonomy,
 
+			'wpbs/media'    => $media,
 			'wpbs/postId'   => $post_id,
 			'wpbs/termId'   => $term_id,
 			'wpbs/taxonomy' => $taxonomy,

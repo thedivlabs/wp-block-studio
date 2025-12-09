@@ -96,7 +96,7 @@ registerBlockType(metadata.name, {
             // keep this debug log as in original
             console.log(attributes);
         }, [attributes]);
-        
+
 
         const inspectorPanel = useMemo(
             () => (
@@ -139,8 +139,6 @@ registerBlockType(metadata.name, {
                 settings,
                 isLoop,
                 isGallery,
-                loopSettings,
-                gallerySettings,
             ]
         );
 

@@ -44,7 +44,7 @@ export const LoopAdvancedSettings = ({settings = {}, update}) => {
 // -------------------------------------------------------
 // Loop component
 // -------------------------------------------------------
-export const Loop = ({attributes = {}, setAttributes}) => {
+export const Loop = ({attributes = {}, setAttributes, enabled}) => {
     const settings = attributes?.["wpbs-loop"] || {};
     const [localSettings, setLocalSettings] = useState({...settings});
 
@@ -92,6 +92,17 @@ export const Loop = ({attributes = {}, setAttributes}) => {
         },
         [localSettings, setAttributes]
     );
+
+    useEffect(() => {
+        if (!enabled) return;
+
+        if (!isEqual(attributes["wpbs-query"], localSettings)) {
+            setAttributes({
+                "wpbs-query": localSettings,
+            });
+        }
+
+    }, [enabled]);
 
     // ------------------------
     // Render

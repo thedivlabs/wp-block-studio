@@ -110,6 +110,7 @@ registerBlockType(metadata.name, {
                             <Loop
                                 attributes={attributes}
                                 setAttributes={setAttributes}
+                                enabled={isLoop}
                             />
                         </PanelBody>
                     )}
@@ -123,6 +124,7 @@ registerBlockType(metadata.name, {
                             <MediaGalleryControls
                                 attributes={attributes}
                                 setAttributes={setAttributes}
+                                enabled={isGallery}
                             />
                         </PanelBody>
                     )}

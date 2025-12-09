@@ -36,10 +36,10 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
         },
         [localSettings.gallery_id]
     );
-    
-    useEffect(()=>{
-        console.log(selectedGallery);
-    },[settings]);
+
+    useEffect(() => {
+        // console.log(selectedGallery);
+    }, [settings]);
 
     // Build normalized media array
     const buildMediaArray = useCallback(() => {
@@ -48,8 +48,9 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
         const wpbsData = selectedGallery?.acf?.wpbs || {};
 
         const images = (wpbsData.images || []).map(normalizeMedia);
-        const videos = (wpbsData.video || []).map((item) =>
-            normalizeVideo(item.video_clone || {})
+        const videos = (wpbsData.video || []).map((item) => {
+                return normalizeVideo(item || {});
+            }
         );
 
         return localSettings.video_first ? [...videos, ...images] : [...images, ...videos];

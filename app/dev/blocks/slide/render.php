@@ -11,7 +11,6 @@ if ( ! empty( $content ) && empty( $block->context['wpbs/isGallery'] ?? $block->
 	return;
 }
 
-WPBS::console_log( $block ?? false );
 
 $wrapper_attrs = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
@@ -26,8 +25,6 @@ echo '<div ' . $wrapper_attrs . '>';
 // Media rendering
 // ------------------------
 $media = $block->context['wpbs/media'] ?? null;
-
-WPBS::console_log( $media );
 
 if ( is_array( $media ) && ! empty( $media ) ) {
 

@@ -180,12 +180,15 @@ class WPBS_Loop {
 		$html  = '';
 		$index = 0;
 
+
+		WPBS::console_log( $query );
+
 		/*
  * ===============================================================
  * 0. MEDIA GALLERY LOOP MODE (gallery object passed)
  * ===============================================================
  */
-		WPBS::console_log( $query );
+
 		if ( ! empty( $query['gallery_id'] ) ) {
 
 			$gallery_id = intval( $query['gallery_id'] );
@@ -510,8 +513,10 @@ class WPBS_Loop {
 
 		$clean = [];
 
-		// Allowed safe keys for our loop system
-		$allowed = [
+		// ------------------------------------
+		// Allowed loop keys (WP_Query related)
+		// ------------------------------------
+		$allowed_loop = [
 			'post_type',
 			'posts_per_page',
 			'paged',
@@ -526,7 +531,24 @@ class WPBS_Loop {
 			'loopTerms',
 		];
 
-		// Strip obviously dangerous keys
+		// ------------------------------------
+		// Allowed gallery keys (NOT WP_Query)
+		// These are passed to the block renderer only
+		// ------------------------------------
+		$allowed_gallery = [
+			'gallery_id',
+			'page_size',
+			'lightbox',
+			'eager',
+			'video_first',
+			'resolution',
+		];
+
+		$allowed = array_merge( $allowed_loop, $allowed_gallery );
+
+		// ------------------------------------
+		// Forbidden unsafe patterns
+		// ------------------------------------
 		$forbidden_patterns = [
 			'/request/i',
 			'/sql/i',
@@ -535,27 +557,30 @@ class WPBS_Loop {
 			'/meta_value/i',
 			'/cache/i',
 			'/suppress_filters/i',
-			'/tax_query/i', // never trust FE tax_query
+			'/tax_query/i',
 		];
 
 		foreach ( $q as $key => $value ) {
+			// Reject unsafe keys
 			foreach ( $forbidden_patterns as $pattern ) {
 				if ( preg_match( $pattern, $key ) ) {
-					continue 2; // skip this key entirely
+					continue 2;
 				}
 			}
 
-			// Only allow keys we explicitly support
+			// Reject keys not in our unified whitelist
 			if ( ! in_array( $key, $allowed, true ) ) {
 				continue;
 			}
 
-			// General cleaning
+			// ------------------------------------------------
+			// LOOP QUERY SANITIZATION
+			// ------------------------------------------------
 			switch ( $key ) {
+
 				case 'post_type':
 					$pt = sanitize_key( $value );
 
-					// Current = main query cloning
 					if ( $pt === 'current' ) {
 						$clean['post_type']      = 'current';
 						$clean['posts_per_page'] = (int) get_option( 'posts_per_page', 10 );
@@ -566,7 +591,6 @@ class WPBS_Loop {
 					break;
 
 				case 'posts_per_page':
-					// Only used for non-current queries
 					if ( ( $clean['post_type'] ?? null ) !== 'current' ) {
 						$clean['posts_per_page'] = max( - 1, (int) $value );
 					}
@@ -607,6 +631,31 @@ class WPBS_Loop {
 
 				case 'loopTerms':
 					$clean['loopTerms'] = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+					break;
+
+
+				// ------------------------------------------------
+				// GALLERY QUERY SANITIZATION
+				// ------------------------------------------------
+				case 'gallery_id':
+					$clean['gallery_id'] = max( 0, (int) $value );
+					break;
+
+				case 'page_size':
+					$clean['page_size'] = max( 1, (int) $value );
+					break;
+
+				case 'lightbox':
+				case 'eager':
+				case 'video_first':
+					$clean[ $key ] = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+					break;
+
+				case 'resolution':
+					// whitelist resolutions you support
+					$allowed_res         = [ 'small', 'medium', 'large', 'full' ];
+					$res                 = sanitize_key( $value );
+					$clean['resolution'] = in_array( $res, $allowed_res, true ) ? $res : 'large';
 					break;
 			}
 		}

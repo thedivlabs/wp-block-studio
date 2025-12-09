@@ -21,7 +21,7 @@ $resolution = $settings['resolution'] ?? 'medium';
 $title_pos  = $settings['title-position'] ?? 'top';
 $poster_id  = isset( $settings['poster'] ) ? intval( $settings['poster'] ) : null;
 
-$lightbox = ! empty( $settings['lightbox'] );
+$lightbox = true;
 $overlay  = $settings['overlay'] ?? true;
 $eager    = ! empty( $settings['eager'] );
 
@@ -73,7 +73,7 @@ if ( $poster_id ) {
 // Classes (mirrors getClassNames() in JS)
 // --------------------------------------------------
 $classes = implode( ' ', array_filter( [
-        'wpbs-video-element',
+        'wpbs-video-element --disabled',
         'wpbs-video',
         'flex',
         'items-center',

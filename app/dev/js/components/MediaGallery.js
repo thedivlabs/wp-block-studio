@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from "@wordpress/element";
+import {useCallback, useState, useEffect} from "@wordpress/element";
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -8,14 +8,18 @@ import {
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 import {RESOLUTION_OPTIONS} from "Includes/config";
-import {normalizeMedia, normalizeVideo} from "Includes/helper";
 import {isEqual} from "lodash";
 
+export const GALLERY_ATTRIBUTES = {
+    "wpbs-gallery": {type: "object", default: {}},
+    "wpbs-query": {type: "object", default: {}},
+};
 
-export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
-    const [localSettings, setLocalSettings] = useState({...settings});
+export function MediaGalleryControls({attributes, setAttributes}) {
+    const gallerySettings = attributes?.["wpbs-gallery"] || {};
+    const [localSettings, setLocalSettings] = useState({...gallerySettings});
 
-    // Load all galleries
+    // Load gallery CPT items
     const galleries = useSelect(
         (select) =>
             select("core").getEntityRecords("postType", "media-gallery", {
@@ -25,28 +29,27 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
     );
 
     const updateSettings = useCallback(
-        (newValue) => {
-            const merged = {...settings, ...newValue};
+        (patch) => {
+            const next = {...localSettings, ...patch};
 
-            if (isEqual(merged, settings)) return;
+            if (isEqual(next, localSettings)) return;
 
-            setLocalSettings(merged);
+            setLocalSettings(next);
 
-            callback(merged);
-
+            // Save to both wpbs-gallery and wpbs-query
             setAttributes({
-                "wpbs-query": merged
+                "wpbs-gallery": next,
+                "wpbs-query": next,
             });
         },
-        [settings, setAttributes, setLocalSettings]
+        [localSettings, setAttributes]
     );
-
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 label="Select Gallery"
-                value={localSettings?.gallery_id ?? ""}
+                value={localSettings.gallery_id ?? ""}
                 options={[
                     {label: "Select a gallery", value: ""},
                     {label: "Current", value: "current"},
@@ -55,7 +58,7 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
                         value: String(post.id),
                     })),
                 ]}
-                onChange={(value) => updateSettings({gallery_id: value})}
+                onChange={(v) => updateSettings({gallery_id: v})}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />
@@ -65,43 +68,52 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
                     label="Page Size"
                     min={1}
                     isShiftStepEnabled={false}
-                    value={localSettings?.page_size}
-                    onChange={(value) => updateSettings({page_size: value})}
+                    value={localSettings.page_size}
+                    onChange={(v) => updateSettings({page_size: v})}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+
                 <TextControl
                     label="Button Label"
-                    value={localSettings?.button_label}
-                    onChange={(value) => updateSettings({button_label: value})}
+                    value={localSettings.button_label}
+                    onChange={(v) => updateSettings({button_label: v})}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+
                 <SelectControl
                     label="Resolution"
-                    value={localSettings?.resolution}
+                    value={localSettings.resolution}
                     options={RESOLUTION_OPTIONS}
-                    onChange={(value) => updateSettings({resolution: value})}
+                    onChange={(v) => updateSettings({resolution: v})}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
             </Grid>
 
-            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: "10px"}}>
+            <Grid
+                columns={2}
+                columnGap={15}
+                rowGap={20}
+                style={{marginTop: "10px"}}
+            >
                 <ToggleControl
                     label="Lightbox"
-                    checked={!!localSettings?.lightbox}
-                    onChange={(value) => updateSettings({lightbox: value})}
+                    checked={!!localSettings.lightbox}
+                    onChange={(v) => updateSettings({lightbox: v})}
                 />
+
                 <ToggleControl
                     label="Video First"
-                    checked={!!localSettings?.video_first}
-                    onChange={(value) => updateSettings({video_first: value})}
+                    checked={!!localSettings.video_first}
+                    onChange={(v) => updateSettings({video_first: v})}
                 />
+
                 <ToggleControl
                     label="Eager"
-                    checked={!!localSettings?.eager}
-                    onChange={(value) => updateSettings({eager: value})}
+                    checked={!!localSettings.eager}
+                    onChange={(v) => updateSettings({eager: v})}
                 />
             </Grid>
         </Grid>

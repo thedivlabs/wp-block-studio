@@ -1,14 +1,17 @@
 <?php
 declare( strict_types=1 );
 
+WPBS::console_log( $block ?? false );
+
 // Original loop/context logic from layout-grid-container
 $slider_settings = $block->context['wpbs/slider'] ?? [];
 $query_settings  = $block->context['wpbs/query'] ?? [];
 $is_loop         = ! empty( $block->context['wpbs/isLoop'] );
+$is_gallery      = ! empty( $block->context['wpbs/isGallery'] );
 $is_current      = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
 // If not a loop, output the normal content and exit
-if ( ! $is_loop ) {
+if ( ! $is_loop && ! $is_gallery ) {
 	echo $content ?? null;
 
 	return;
@@ -16,11 +19,11 @@ if ( ! $is_loop ) {
 
 // Merge block query settings with defaults
 $default_query = [
-	'post_type'      => 'post',
-	'taxonomy'       => '',
-	'term'           => '',
-	'orderby'        => 'date',
-	'order'          => 'DESC',
+	'post_type' => 'post',
+	'taxonomy'  => '',
+	'term'      => '',
+	'orderby'   => 'date',
+	'order'     => 'DESC',
 ];
 $merged_query  = array_merge( $default_query, $query_settings );
 
@@ -34,18 +37,27 @@ $loop_data = $loop_instance->render_from_php(
 	max( 1, get_query_var( 'paged', 1 ) )
 );
 
-// Instead of extracting the original grid wrapper tags, use swiper-wrapper
-echo '<div class="swiper-wrapper ' . esc_attr( $block->className ?? '' ) . '">';
+// Build wrapper attributes using the core block wrapper helper.
+$wrapper_attrs = get_block_wrapper_attributes( [
+	'class' => trim( implode( ' ', array_filter( [
+		'swiper-wrapper',
+	] ) ) ),
+] );
 
-// Output the looped content (child blocks)
+// Open wrapper
+echo '<div ' . $wrapper_attrs . '>';
+
+// Output looped HTML from the WPBS loop engine
 echo $loop_data['html'] ?? '';
 
+// Close wrapper
 echo '</div>';
 
-// Output the loop scripts exactly as the original code
+// Output scripts exactly as the original behavior
 $loop_instance->output_loop_script(
 	$block->parsed_block['innerBlocks'][0] ?? [],
 	$loop_data,
 	$merged_query,
 	max( 1, get_query_var( 'paged', 1 ) )
 );
+

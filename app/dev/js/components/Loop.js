@@ -4,38 +4,36 @@ import {
     SelectControl,
     __experimentalGrid as Grid,
     __experimentalToolsPanel as ToolsPanel,
-    ToggleControl
+    ToggleControl,
 } from "@wordpress/components";
-import {useCallback, useState} from "@wordpress/element";
+import {useCallback, useEffect, useState} from "@wordpress/element";
 import {loopFieldsMap} from "Includes/config";
 import {Field} from "Components/Field";
 import {PostSelectField} from "Components/PostSelectField";
 import {isEqual} from "lodash";
 
+export const LOOP_ATTRIBUTES = {
+    "wpbs-loop": {type: "object", default: {}},
+    "wpbs-query": {type: "object", default: {}},
+};
 
-export const LoopBasicSettings = ({value = {}, onChange}) => {
-
-    const update = (patch, reset = false) => {
-        if (reset) {
-            onChange({});
-            return;
-        }
-        onChange({...value, ...patch});
-    };
-
+// -------------------------------------------------------
+// LoopAdvancedSettings — ToolsPanel
+// -------------------------------------------------------
+export const LoopAdvancedSettings = ({settings = {}, update}) => {
     return (
         <ToolsPanel
             label="Advanced Settings"
             className="wpbs-loop-tools is-style-unstyled"
             resetAll={() => update({}, true)}
-            style={{marginTop: '15px'}}
+            style={{marginTop: "15px"}}
         >
             {loopFieldsMap.map((field) => (
                 <Field
                     key={field.slug}
                     field={field}
-                    settings={value}
-                    callback={(obj) => update(obj)}
+                    settings={settings}
+                    callback={update}
                     isToolsPanel={true}
                 />
             ))}
@@ -43,105 +41,125 @@ export const LoopBasicSettings = ({value = {}, onChange}) => {
     );
 };
 
+// -------------------------------------------------------
 // Loop component
-export const Loop = ({ value = {}, onChange, setAttributes }) => {
-    const { post_type, taxonomy, term, exclude, include, loopTerms } = value;
+// -------------------------------------------------------
+export const Loop = ({attributes = {}, setAttributes}) => {
+    const settings = attributes?.["wpbs-loop"] || {};
+    const [localSettings, setLocalSettings] = useState({...settings});
 
-    // Selectors
+    const {post_type, taxonomy, term, exclude, include, loopTerms} = localSettings;
+
+    // ------------------------
+    // WordPress selectors
+    // ------------------------
     const postTypes = useSelect((select) => {
-        const types = select(coreStore).getPostTypes({ per_page: -1 });
-        if (!types) return null;
+        const types = select(coreStore).getPostTypes({per_page: -1});
+        if (!types) return [];
         return Object.values(types).filter((type) => type?.viewable && type.slug !== "attachment");
     }, []);
 
     const taxonomies = useSelect((select) => {
         const items = select(coreStore).getTaxonomies();
-        if (!items) return null;
+        if (!items) return [];
         return items.filter((t) => t.visibility?.public);
     }, []);
 
     const terms = useSelect(
         (select) => {
             if (!taxonomy) return [];
-            const args = { per_page: -1, hide_empty: false };
+            const args = {per_page: -1, hide_empty: false};
             const records = select(coreStore).getEntityRecords("taxonomy", taxonomy, args);
             return records || [];
         },
         [taxonomy]
     );
 
+    // ------------------------
     // Unified update handler
+    // ------------------------
     const update = useCallback(
-        (patch) => {
-            const nextValue = { ...value, ...patch };
+        (patch = {}, reset = false) => {
+            const next = reset ? {} : {...localSettings, ...patch};
+            if (isEqual(localSettings, next)) return;
 
-            // Only update if the new value actually differs
-            if (!isEqual(value, nextValue)) {
-                onChange(nextValue); // update the loop object in wpbs-slider
-                setAttributes({ 'wpbs-query': nextValue }); // directly update wpbs-query
-            }
+            setLocalSettings(next);
+
+            setAttributes({
+                "wpbs-loop": next,
+                "wpbs-query": next,
+            });
         },
-        [value, onChange, setAttributes]
+        [localSettings, setAttributes]
     );
 
+    // ------------------------
+    // Render
+    // ------------------------
     return (
         <Grid columns={1} rowGap={16}>
             <SelectControl
                 label="Post Type"
                 value={post_type || ""}
                 options={[
-                    { value: "", label: "Select a post type" },
-                    { value: "current", label: "Archive" },
-                    { label: "— Registered Post Types", value: "", disabled: true },
-                    ...(postTypes || []).map((pt) => ({ value: pt.slug, label: pt.name })),
+                    {value: "", label: "Select a post type"},
+                    {value: "current", label: "Archive"},
+                    {label: "— Registered Post Types", value: "", disabled: true},
+                    ...(postTypes || []).map((pt) => ({value: pt.slug, label: pt.name})),
                 ]}
-                onChange={(newValue) => update({ post_type: newValue, taxonomy: "", term: "" })}
+                onChange={(newValue) => update({post_type: newValue, taxonomy: "", term: ""})}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
             />
 
             <SelectControl
                 label="Taxonomy"
                 value={taxonomy || ""}
                 options={[
-                    { value: "", label: "Select a taxonomy" },
-                    ...(taxonomies || []).map((tax) => ({ value: tax.slug, label: tax.name })),
+                    {value: "", label: "Select a taxonomy"},
+                    ...(taxonomies || []).map((tax) => ({value: tax.slug, label: tax.name})),
                 ]}
-                onChange={(newValue) => update({ taxonomy: newValue, term: "" })}
+                onChange={(newValue) => update({taxonomy: newValue, term: ""})}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
             />
 
             <SelectControl
                 label="Term"
                 value={term || ""}
                 options={[
-                    { value: "", label: "Select a term" },
-                    { value: "current", label: "Archive" },
-                    { label: "— Registered Terms", value: "", disabled: true },
-                    ...(terms || []).map((t) => ({ value: t.id, label: t.name })),
+                    {value: "", label: "Select a term"},
+                    {value: "current", label: "Archive"},
+                    {label: "— Registered Terms", value: "", disabled: true},
+                    ...(terms || []).map((t) => ({value: t.id, label: t.name})),
                 ]}
-                onChange={(newValue) => update({ term: newValue })}
+                onChange={(newValue) => update({term: newValue})}
                 disabled={!taxonomy}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
             />
 
             <PostSelectField
                 value={include}
-                onChange={(newValue) => update({ include: newValue })}
+                onChange={(newValue) => update({include: newValue})}
                 label="Select Posts"
-                querySettings={value}
+                querySettings={localSettings}
             />
 
             <PostSelectField
                 value={exclude}
-                onChange={(newValue) => update({ exclude: newValue })}
+                onChange={(newValue) => update({exclude: newValue})}
                 label="Exclude Posts"
-                querySettings={value}
+                querySettings={localSettings}
             />
 
             <ToggleControl
                 checked={!!loopTerms}
-                onChange={(newValue) => update({ loopTerms: !!newValue })}
+                onChange={(newValue) => update({loopTerms: !!newValue})}
                 label="Loop Terms"
             />
 
-            <LoopBasicSettings value={value} onChange={update} />
+            <LoopAdvancedSettings settings={localSettings} update={update}/>
         </Grid>
     );
 };

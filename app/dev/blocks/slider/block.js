@@ -10,8 +10,8 @@ import {isEqual} from "lodash";
 import {cleanObject} from "Includes/helper";
 import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody} from "@wordpress/components";
-import {Loop} from "Components/Loop";
-import {MediaGalleryControls} from "Components/MediaGallery";
+import {Loop, LOOP_ATTRIBUTES} from "Components/Loop";
+import {GALLERY_ATTRIBUTES, MediaGalleryControls} from "Components/MediaGallery";
 
 const selector = "wpbs-slider";
 
@@ -200,6 +200,8 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
+        ...GALLERY_ATTRIBUTES,
+        ...LOOP_ATTRIBUTES,
         "wpbs-slider": {type: "object", default: {props: {}, breakpoints: {}}},
     },
 

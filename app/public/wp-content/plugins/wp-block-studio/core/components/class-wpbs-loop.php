@@ -181,6 +181,76 @@ class WPBS_Loop {
 		$index = 0;
 
 		/*
+ * ===============================================================
+ * 0. MEDIA GALLERY LOOP MODE (gallery object passed)
+ * ===============================================================
+ */
+		if ( ! empty( $query['gallery_id'] ) ) {
+
+			$gallery_id = intval( $query['gallery_id'] );
+
+			// Load gallery post
+			$gallery_post = get_post( $gallery_id );
+
+			if ( ! $gallery_post || $gallery_post->post_type !== 'media-gallery' ) {
+				return [
+					'html'  => '',
+					'total' => 0,
+					'pages' => 1,
+					'page'  => $page,
+					'error' => 'Invalid gallery ID.',
+				];
+			}
+
+			// Get gallery items (assume stored as post meta 'media_items', array of attachment IDs)
+			$items = get_post_meta( $gallery_id, 'media_items', true );
+
+			if ( empty( $items ) || ! is_array( $items ) ) {
+				return [
+					'html'  => '',
+					'total' => 0,
+					'pages' => 1,
+					'page'  => $page,
+				];
+			}
+
+			// Handle pagination
+			$per_page    = intval( $query['page_size'] ?? count( $items ) );
+			$offset      = ( $page - 1 ) * $per_page;
+			$paged_items = array_slice( $items, $offset, $per_page );
+
+			$html  = '';
+			$index = 0;
+
+			foreach ( $paged_items as $attachment_id ) {
+				$post_id = intval( $attachment_id );
+
+				// Pass the original gallery query object directly
+				$html .= $this->render_card_from_ast(
+					$template_block,
+					$query, // <-- pass the gallery query object directly
+					$post_id,
+					$index,
+					null
+				);
+
+				$index ++;
+			}
+
+
+			$total_pages = $per_page > 0 ? ceil( count( $items ) / $per_page ) : 1;
+
+			return [
+				'html'   => $html,
+				'total'  => count( $items ),
+				'pages'  => $total_pages,
+				'page'   => $page,
+				'$query' => $query,
+			];
+		}
+
+
+		/*
 		 * ===============================================================
 		 * 1. TAXONOMY LOOP MODE (loopTerms = true)
 		 * ===============================================================

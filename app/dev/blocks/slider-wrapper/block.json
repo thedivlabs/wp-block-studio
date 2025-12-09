@@ -14,6 +14,7 @@
     "wpbs/slide"
   ],
   "usesContext": [
+    "wpbs/isGallery",
     "wpbs/isLoop",
     "wpbs/query",
     "wpbs/slider"

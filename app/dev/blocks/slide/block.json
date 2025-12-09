@@ -36,6 +36,7 @@
     }
   },
   "usesContext": [
+    "wpbs/index",
     "wpbs/query",
     "wpbs/media",
     "wpbs/isGallery",

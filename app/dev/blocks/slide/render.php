@@ -10,10 +10,11 @@ $settings   = $block->context['wpbs/query'] ?? [];
 $media_item = $block->context['wpbs/media'] ?? null;
 
 $wrapper_attrs = get_block_wrapper_attributes( [
-	'class' => implode( ' ', array_filter( [
+	'class'      => implode( ' ', array_filter( [
 		'wpbs-slide swiper-slide',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
+	'data-index' => $block->context['wpbs/index'] ?? null
 ] );
 
 echo '<div ' . $wrapper_attrs . '>';

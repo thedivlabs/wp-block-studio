@@ -179,7 +179,7 @@ export function buildImageSet(url) {
 
 export function normalizeMedia(input) {
     // 1. empty / invalid
-    if (!input || input === "" || typeof input !== "object") {
+    if (!input || input === "") {
         return {
             id: null,
             source: null,
@@ -190,6 +190,33 @@ export function normalizeMedia(input) {
             isPlaceholder: false
         };
     }
+
+// 1b. integer ID input (just the ID, no metadata)
+    if (typeof input === "number") {
+        return {
+            id: input,
+            source: null,
+            type: null,
+            width: null,
+            height: null,
+            sizes: null,
+            isPlaceholder: false
+        };
+    }
+
+// from here on, we expect an object
+    if (typeof input !== "object") {
+        return {
+            id: null,
+            source: null,
+            type: null,
+            width: null,
+            height: null,
+            sizes: null,
+            isPlaceholder: false
+        };
+    }
+
 
     // 2. placeholder (PreviewThumbnail)
     if (input.isPlaceholder === true || input.source === "#") {

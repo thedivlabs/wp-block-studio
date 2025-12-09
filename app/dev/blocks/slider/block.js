@@ -236,9 +236,9 @@ registerBlockType(metadata.name, {
             [settings, setAttributes]
         );
 
-        useEffect(()=>{
-            console.log(attributes?.['wpbs-query']);
-        },[settings]);
+        useEffect(() => {
+            console.log(attributes);
+        }, [settings]);
 
         // Track block style flags
         useEffect(() => {

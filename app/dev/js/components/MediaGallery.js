@@ -24,61 +24,21 @@ export function MediaGalleryControls({settings = {}, setAttributes, callback}) {
         []
     );
 
-    // Load selected gallery
-    const selectedGallery = useSelect(
-        (select) => {
-            if (!localSettings.gallery_id || localSettings.gallery_id === "current") return null;
-            return select("core").getEntityRecord(
-                "postType",
-                "media-gallery",
-                parseInt(localSettings.gallery_id, 10)
-            );
-        },
-        [localSettings.gallery_id]
-    );
-
-    useEffect(() => {
-        // console.log(selectedGallery);
-    }, [settings]);
-
-    // Build normalized media array
-    const buildMediaArray = useCallback(() => {
-        if (!selectedGallery) return [];
-
-        const wpbsData = selectedGallery?.acf?.wpbs || {};
-
-        const images = (wpbsData.images || []).map(normalizeMedia);
-        const videos = (wpbsData.video || []).map((item) => {
-                return normalizeVideo(item || {});
-            }
-        );
-
-        return localSettings.video_first ? [...videos, ...images] : [...images, ...videos];
-    }, [selectedGallery, localSettings.video_first]);
-
-    // Update local settings and media array
     const updateSettings = useCallback(
         (newValue) => {
-            const merged = {...localSettings, ...newValue};
+            const merged = {...settings, ...newValue};
 
-            // Only update if there is a difference
-            if (isEqual(merged, localSettings)) return;
+            if (isEqual(merged, settings)) return;
 
             setLocalSettings(merged);
 
-            const mediaArray = buildMediaArray();
-
-            // Push updated settings back to parent
             callback(merged);
 
-            // Update query in block attributes
             setAttributes({
-                "wpbs-query": {
-                    gallery: mediaArray
-                }
+                "wpbs-query": merged
             });
         },
-        [buildMediaArray, callback, setAttributes, localSettings]
+        [settings, setAttributes, setLocalSettings]
     );
 
 

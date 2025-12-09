@@ -14,16 +14,15 @@ $wrapper_attrs = get_block_wrapper_attributes( [
 
 echo '<div ' . $wrapper_attrs . '>';
 
-
 // ------------------------
 // Media rendering
 // ------------------------
 $media = $block->context['wpbs/media'] ?? null;
 
-if ( $media ) {
+if ( is_array( $media ) && ! empty( $media ) ) {
 
 	// Video block
-	if ( ! empty( $media['type'] ) && $media['type'] === 'video' ) {
+	if ( ( $media['type'] ?? '' ) === 'video' ) {
 
 		$video_block = [
 			'blockName'   => 'wpbs/video',
@@ -34,13 +33,14 @@ if ( $media ) {
 		$instance = new WP_Block( $video_block );
 		echo $instance->render();
 
-	} // Image
+	} // Image block
 	elseif ( ! empty( $media['id'] ) ) {
 
 		$size = $media['resolution'] ?? 'large';
 		$attr = [];
 
-		if ( ! empty( $block->context['wpbs-slide']['props']['contain'] ) ) {
+		$contain = $block->context['wpbs-slide']['props']['contain'] ?? false;
+		if ( $contain ) {
 			$attr['style'] = 'object-fit: contain;';
 		}
 
@@ -49,22 +49,26 @@ if ( $media ) {
 }
 
 // ------------------------
-// Replace placeholders for links
+// Content with placeholders
 // ------------------------
 $content = $content ?? '';
 
-if ( ! empty( $block->context['wpbs/termId'] ) ) {
-	$term_link = get_term_link( $block->context['wpbs/termId'] );
+// Term link replacement
+$term_id = $block->context['wpbs/termId'] ?? null;
+if ( $term_id ) {
+	$term_link = get_term_link( intval( $term_id ) );
 	if ( ! is_wp_error( $term_link ) ) {
 		$content = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $content );
 	}
-
 }
 
-if ( ! empty( $block->context['wpbs/postId'] ) ) {
-	$content = str_replace( '%%__POST_LINK_URL__%%', get_permalink( intval( $block->context['wpbs/postId'] ) ), $content );
+// Post link replacement
+$post_id = $block->context['wpbs/postId'] ?? null;
+if ( $post_id ) {
+	$content = str_replace( '%%__POST_LINK_URL__%%', get_permalink( intval( $post_id ) ), $content );
 }
 
-echo $content;
+// Echo content safely
+echo wp_kses_post( $content );
 
 echo '</div>';

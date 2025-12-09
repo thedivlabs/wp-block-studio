@@ -55,7 +55,10 @@ $content = $content ?? '';
 
 if ( ! empty( $block->context['wpbs/termId'] ) ) {
 	$term_link = get_term_link( $block->context['wpbs/termId'] );
-	$content   = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $content );
+	if ( ! is_wp_error( $term_link ) ) {
+		$content = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $content );
+	}
+
 }
 
 if ( ! empty( $block->context['wpbs/postId'] ) ) {

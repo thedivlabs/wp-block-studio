@@ -111,11 +111,22 @@ class WPBS_Media_Gallery {
 		// -----------------------------------------------------
 		$html = '
 		<div class="wpbs-lightbox" data-start="' . esc_attr( $index ) . '">
-			<div class="swiper wpbs-lightbox-swiper">
+			<div class="wpbs-slider swiper wpbs-lightbox-swiper">
 				<div class="swiper-wrapper">
 					' . $slides_html . '
 				</div>
-				<div class="wpbs-lightbox-nav">NAVIGATION</div>
+				<div class="wpbs-lightbox-nav">
+					<button class="wpbs-lightbox-nav__button wpbs-slider-button--prev wpbs-lightbox-nav__button--prev swiper-button-prev" aria-label="Previous">
+						<span class="screen-reader-text">Previous slide</span>
+						<span class="wpbs-icon material-symbols-outlined">arrow_back</span>
+					</button>
+					<div class="wpbs-lightbox-nav__pagination swiper-pagination"></div>
+					<button class="wpbs-lightbox-nav__button wpbs-slider-button--next wpbs-lightbox-nav__button--next swiper-button-next" aria-label="Next">
+						<span class="screen-reader-text">Next slide</span>
+						<span class="wpbs-icon material-symbols-outlined">arrow_forward</span>
+					</button>
+				</div>
+
 			</div>
 		</div>';
 

@@ -159,9 +159,7 @@
   margin: 0;
 }
 
-.wpbs-slider .wpbs-slider-navigation
-.wpbs-slider-pagination.swiper-pagination-bullets
-> .swiper-pagination-bullet.swiper-pagination-bullet-active {
+.wpbs-slider .wpbs-slider-navigation .wpbs-slider-pagination.swiper-pagination-bullets > .swiper-pagination-bullet.swiper-pagination-bullet-active {
   opacity: 1;
 }
 

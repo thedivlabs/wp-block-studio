@@ -59,6 +59,7 @@ export default class Slider {
         merged.navigation = merge({}, merged.navigation, args.navigation, {
             nextEl: element.querySelector('.wpbs-slider-button--next'),
             prevEl: element.querySelector('.wpbs-slider-button--prev'),
+            addIcons: false,
         });
 
         // PAGINATION FIX: Pagination object is already fully compliant in args.
@@ -161,7 +162,7 @@ export default class Slider {
         const isSlave = element.classList.contains('--slave');
 
         if (element.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide').length <= 1) return;
-        
+
         const initFn = () => {
             const swiperInstance = new Swiper(element, mergedArgs);
             element.swiper = swiperInstance;

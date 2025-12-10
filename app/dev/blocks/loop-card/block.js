@@ -87,7 +87,8 @@ registerBlockType(metadata.name, {
         const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
-        const {isLoop = false, 'wpbs-loop-card': settings} = attributes;
+        const {isLoop = false, isGallery, 'wpbs-loop-card': settings} = attributes;
+
 
         return (
             <BlockWrapper
@@ -95,8 +96,9 @@ registerBlockType(metadata.name, {
                 className={classNames}
             >
                 <InnerBlocks.Content/>
-                {settings?.link && (<a {...getAnchorProps(settings.link)} className={'wpbs-loop-card__link'}><span
-                    className={'screen-reader-text'}>{settings?.link?.title ?? 'Learn more'}</span> </a>)}
+                {settings?.link && !isGallery && (
+                    <a {...getAnchorProps(settings.link)} className={'wpbs-loop-card__link'}><span
+                        className={'screen-reader-text'}>{settings?.link?.title ?? 'Learn more'}</span> </a>)}
             </BlockWrapper>
         );
     }, {

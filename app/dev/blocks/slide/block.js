@@ -301,7 +301,7 @@ registerBlockType(metadata.name, {
                 {renderSlideContent(settings, attributes, false)}
                 <InnerBlocks.Content/>
 
-                {hasLink && (
+                {hasLink && !isGallery && (
                     <a {...getAnchorProps(link)} className={'wpbs-slide__link'}>
                         <span className="screen-reader-text">{link.title || ""}</span>
                     </a>

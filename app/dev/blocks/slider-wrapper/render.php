@@ -1,60 +1,74 @@
 <?php
 declare( strict_types=1 );
 
-WPBS::console_log( $block ?? false );
+// Safety
+$content = $content ?? '';
 
-// Original loop/context logic from layout-grid-container
+/**
+ * 1. Read block mode from context
+ */
 $slider_settings = $block->context['wpbs/slider'] ?? [];
 $query_settings  = $block->context['wpbs/query'] ?? [];
-$is_loop         = ! empty( $block->context['wpbs/isLoop'] );
-$is_gallery      = ! empty( $block->context['wpbs/isGallery'] );
-$is_current      = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
+$is_loop    = ! empty( $block->context['wpbs/isLoop'] );
+$is_gallery = ! empty( $block->context['wpbs/isGallery'] );
 
-// If not a loop, output the normal content and exit
+/**
+ * 2. If NOT gallery and NOT loop → return raw content
+ */
 if ( ! $is_loop && ! $is_gallery ) {
-	echo $content ?? null;
+	echo $content;
 
 	return;
 }
 
-// Merge block query settings with defaults
+/**
+ * 3. Build query + loop engine
+ */
 $default_query = [];
 $merged_query  = array_merge( $default_query, $query_settings );
 
-// Initialize the loop
 $loop_instance = WPBS_Loop::init();
 
-// Render the first inner block AST
+$inner_block = $block->parsed_block['innerBlocks'][0] ?? [];
+
+// Generate loop HTML + data
 $loop_data = $loop_instance->render_from_php(
-	$block->parsed_block['innerBlocks'][0] ?? [],
+	$inner_block,
 	$merged_query,
 	max( 1, get_query_var( 'paged', 1 ) )
 );
 
+/**
+ * 4. Extract the loop HTML
+ */
+$dynamic_html = $loop_data['html'] ?? '';
 
-// Build wrapper attributes using the core block wrapper helper.
-$wrapper_attrs = get_block_wrapper_attributes( array_filter( [
-	'class'         => trim( implode( ' ', array_filter( [
-		'swiper-wrapper',
-	] ) ) ),
-	'data-lightbox' => $is_gallery ? json_encode( $loop_data['lightbox'] ?? [] ) : null,
-] ) );
+/**
+ * 5. Replace the marker inside the saved content
+ */
+$marker = '%%__BLOCK_CONTENT__%%';
 
-// Open wrapper
-echo '<div ' . $wrapper_attrs . '>';
+// If marker missing, fail gracefully (prevents blank blocks in edge cases)
+if ( strpos( $content, $marker ) === false ) {
+	echo $content;
 
-// Output looped HTML from the WPBS loop engine
-echo $loop_data['html'] ?? '';
+	return;
+}
 
-// Close wrapper
-echo '</div>';
+$final_output = str_replace( $marker, $dynamic_html, $content );
 
-// Output scripts exactly as the original behavior
+/**
+ * 6. Echo the rendered content with dynamic loop inserted
+ */
+echo $final_output;
+
+/**
+ * 7. Loop pagination + script output
+ */
 $loop_instance->output_loop_script(
-	$block->parsed_block['innerBlocks'][0] ?? [],
+	$inner_block,
 	$loop_data,
 	$merged_query,
 	max( 1, get_query_var( 'paged', 1 ) )
 );
-

@@ -848,5 +848,50 @@ class WPBS {
 	}
 
 
+	public static function extract_tag_wrappers( string $html, array $extra_props = [] ): array {
+
+		// Match opening tag: <div ....>
+		if ( ! preg_match( '/<([a-zA-Z0-9:-]+)\b([^>]*)>/', $html, $open_match ) ) {
+			// No tag found → fallback
+			return [
+				'opening' => '<div>',
+				'closing' => '</div>',
+			];
+		}
+
+		$tag_name   = $open_match[1];
+		$attributes = trim( $open_match[2] ?? '' );
+
+		// Rebuild opening tag
+		$opening = "<{$tag_name}";
+
+		if ( $attributes !== '' ) {
+			$opening .= " {$attributes}";
+		}
+
+		// Append extra props without merging
+		foreach ( $extra_props as $key => $value ) {
+			if ( $value === null || $value === '' ) {
+				continue;
+			}
+			$opening .= ' ' . $key . '="' . esc_attr( $value ) . '"';
+		}
+
+		$opening .= '>';
+
+		// Match closing tag: </div>
+		if ( ! preg_match( '/<\/' . preg_quote( $tag_name, '/' ) . '\s*>/', $html, $close_match ) ) {
+			$closing = "</{$tag_name}>";
+		} else {
+			$closing = $close_match[0];
+		}
+
+		return [
+			'opening' => $opening,
+			'closing' => $closing,
+		];
+	}
+
+
 }
 

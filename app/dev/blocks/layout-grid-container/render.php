@@ -7,7 +7,8 @@ declare( strict_types=1 );
  * Loop + Gallery determine their own query settings.
  * Grid no longer stores or normalizes "query" inside wpbs-grid.
  */
-WPBS::console_log( $block ?? false );
+
+
 // Extract context
 $is_loop        = ! empty( $block->context['wpbs/isLoop'] );
 $is_gallery     = ! empty( $block->context['wpbs/isGallery'] );

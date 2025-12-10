@@ -1,78 +1,81 @@
 <?php
 
-$context    = $block->context ?? [];
-$settings   = $context['wpbs/query'] ?? [];
-$media_item = $context['wpbs/media'] ?? null;
+WPBS::console_log( $block );
 
-// Detect loop/gallery/lightbox mode
-$is_dynamic = $media_item !== null || wp_is_json_request();
+WPBS::console_log( [ $content ] );
 
-// Wrapper attributes
-$wrapper = get_block_wrapper_attributes( [
-	'class'      => implode( ' ', array_filter( [
-		'wpbs-slide swiper-slide',
-		$attributes['uniqueId'] ?? ''
-	] ) ),
-	'data-index' => $context['wpbs/index'] ?? null,
-] );
 
-echo "<div {$wrapper}>";
+$settings   = $block->context['wpbs/query'] ?? [];
+$media_item = $block->context['wpbs/media'] ?? null;
 
-// -----------------------------------------
-// Media renderer
-// -----------------------------------------
-$media = new WPBS_Media( $media_item, $settings );
-echo $media->render();
+$is_gallery  = ! empty( $attributes['isGallery'] );
+$is_loop     = ! empty( $attributes['isLoop'] );
+$is_lightbox = wp_is_json_request();
 
-// -----------------------------------------
-// Dynamic mode (loop/lightbox/gallery)
-// -----------------------------------------
-if ( $is_dynamic ) {
+$content = $content ?? '';
 
-	// Render inner blocks normally (loop inserts them)
-	foreach ( $block->parsed_block['innerBlocks'] as $inner_block ) {
-		echo render_block( $inner_block );
+if ( $is_loop ) {
+
+	if ( ! empty( $block->context['wpbs/termId'] ) ) {
+		$term_link = get_term_link( (int) $block->context['wpbs/termId'] );
+		if ( ! is_wp_error( $term_link ) ) {
+			$content = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $content );
+		}
 	}
 
-	echo "</div>";
+	if ( ! empty( $block->context['wpbs/postId'] ) ) {
+		$post_link = get_permalink( (int) $block->context['wpbs/postId'] );
+		$content   = str_replace( '%%__POST_LINK_URL__%%', esc_url( $post_link ), $content );
+	}
+}
+
+$wrapper_props = get_block_wrapper_attributes( array_filter( [
+	'class'      => join( ' ', array_filter( [
+		'wpbs-slide swiper-slide',
+		$block->attributes['uniqueId'] ?? null,
+		'w-full flex',
+	] ) ),
+	'data-index' => $block->context['wpbs/index'] ?? null
+] ) );
+
+
+echo '<div ' . $wrapper_props . '>';
+
+$wrapper_tags = WPBS::extract_tag_wrappers( $content ?? '' );
+
+$closing = $wrapper_tags['closing'];
+WPBS::console_log( $wrapper_tags );
+
+/**
+ * ALWAYS PRINT MEDIA FIRST
+ */
+if ( $is_gallery || $is_lightbox ) {
+	$media = new WPBS_Media( $media_item, $settings );
+	//echo $media->render();
+}
+
+/**
+ * LIGHTBOX MODE → close early
+ */
+if ( $is_lightbox ) {
+	echo $closing;
 
 	return;
 }
 
-// -----------------------------------------
-// Normal mode: use saved markup closing tag
-// -----------------------------------------
-
-// Render inner blocks
-foreach ( $block->parsed_block['innerBlocks'] as $inner_block ) {
-	echo render_block( $inner_block );
-}
-
-// Replace placeholders in saved closing tag
-$closing = $block->parsed_block['innerHTML'] ?? '';
-
-if ( $closing ) {
-
-	// Post link replacement
-	if ( ! empty( $context['wpbs/postId'] ) ) {
-		$closing = str_replace(
-			'%%__POST_LINK_URL__%%',
-			esc_url( get_permalink( (int) $context['wpbs/postId'] ) ),
-			$closing
-		);
-	}
-
-	// Term link replacement
-	if ( ! empty( $context['wpbs/termId'] ) ) {
-		$term_link = get_term_link( (int) $context['wpbs/termId'] );
-		if ( ! is_wp_error( $term_link ) ) {
-			$closing = str_replace(
-				'%%__TERM_LINK_URL__%%',
-				esc_url( $term_link ),
-				$closing
-			);
-		}
-	}
-
+/**
+ * GALLERY MODE → media only
+ */
+if ( $is_gallery ) {
 	echo $closing;
+
+	return;
 }
+
+/**
+ * NORMAL FRONT-END BLOCK OUTPUT
+ */
+echo $content ?? '';
+
+// Close wrapper
+echo $closing;

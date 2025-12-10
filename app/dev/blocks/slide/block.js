@@ -286,19 +286,31 @@ registerBlockType(metadata.name, {
         const classNames = getClassNames(attributes);
         const link = attributes["wpbs-slide"]?.props?.link;
         const hasLink = link?.url || link?.linkPost;
+        const isImage = isImageStyle(attributes);
+
+        const isDynamic = isGallery || isLoop;
 
         return (
             <BlockWrapper props={props} className={classNames}>
-                {renderSlideContent(settings, attributes, false)}
+                {!isDynamic && <InnerBlocks.Content/>}
 
-                {!isGallery && <InnerBlocks.Content/>}
+                {isImage && !isDynamic && renderSlideContent(settings, attributes, false)}
+
+                {isDynamic && "%%__BLOCK_CONTENT__%%"}
 
                 {hasLink && !isGallery && (
-                    <a {...getAnchorProps(link)} className={'wpbs-slide__link'}>
-                        <span className="screen-reader-text">{link.title || ""}</span>
+                    <a {...getAnchorProps(link)} className="wpbs-slide__link">
+                    <span className="screen-reader-text">
+                        {link.title || ""}
+                    </span>
                     </a>
                 )}
             </BlockWrapper>
         );
-    }, {hasChildren: true, hasBackground: true})
+    }, {
+        hasChildren: true,
+        hasBackground: true
+    })
+
+
 });

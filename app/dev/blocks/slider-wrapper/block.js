@@ -2,6 +2,7 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
+import {InnerBlocks} from "@wordpress/block-editor";
 
 const selector = "wpbs-slider-wrapper";
 
@@ -52,11 +53,16 @@ registerBlockType(metadata.name, {
         const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
+        const {isGallery, isLoop} = attributes;
+
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
-            />
+            >
+                {!isGallery && !isLoop && <InnerBlocks.Content/>}
+                {isGallery || isLoop && '%%__BLOCK_CONTENT__%%'}
+            </BlockWrapper>
         );
     }, {
         hasChildren: true,

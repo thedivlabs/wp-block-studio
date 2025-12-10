@@ -39,7 +39,15 @@ $loop_data = $loop_instance->render_from_php(
 
 // Build wrapper class list
 $wrapper_classes = [
-	'grid-wrapper',
+	'wpbs-layout-grid-container',
+	$attributes['uniqueId'] ?? '',
+	"grid-container",
+	"w-full",
+	"flex",
+	"flex-wrap",
+	"relative",
+	"z-20",
+	"block"
 ];
 
 /**

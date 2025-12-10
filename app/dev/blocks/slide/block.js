@@ -226,10 +226,18 @@ registerBlockType(metadata.name, {
             }, [settings, setCss, setPreload]);
 
             useEffect(() => {
-                if (!!isImage) {
-                    replaceInnerBlocks(clientId, [])
+                const insideLoop = !!context?.["wpbs/isLoop"];
+                const insideGallery = !!context?.["wpbs/isGallery"];
+
+                // Do NOT wipe inner blocks while inside loop/gallery mode
+                if (insideLoop || insideGallery) return;
+
+                // Only wipe inner blocks for "image" style in normal mode
+                if (isImage) {
+                    replaceInnerBlocks(clientId, []);
                 }
-            }, [isImage]);
+            }, [isImage, context?.["wpbs/isLoop"], context?.["wpbs/isGallery"]]);
+
 
             useEffect(() => {
                 // Context booleans
@@ -277,22 +285,22 @@ registerBlockType(metadata.name, {
         {hasChildren: true, hasBackground: true}
     ),
 
-    save: withStyleSave(({attributes, BlockWrapper}) => {
-
+    save: withStyleSave((props) => {
+        const {attributes, BlockWrapper} = props;
         const {isGallery, isLoop} = attributes;
 
-        if (isGallery || isLoop) return null;
+        //if (isGallery || isLoop) return null;
 
         const settings = normalizeSettings(attributes["wpbs-slide"]);
         const classNames = getClassNames(attributes);
         const link = attributes["wpbs-slide"]?.props?.link;
-        const hasLink = link?.url;
+        const hasLink = link?.url || link?.linkPost;
 
         return (
-            <BlockWrapper props={{attributes}} className={classNames}>
+            <BlockWrapper props={props} className={classNames}>
                 {renderSlideContent(settings, attributes, false)}
+                <InnerBlocks.Content/>
 
-                {/* Title link only */}
                 {hasLink && (
                     <a {...getAnchorProps(link)} className={'wpbs-slide__link'}>
                         <span className="screen-reader-text">{link.title || ""}</span>

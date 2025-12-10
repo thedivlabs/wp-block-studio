@@ -481,6 +481,7 @@ class WPBS_Loop {
 
 		$instance = new WP_Block( $block, $context );
 
+		$instance->context['postId'] = $post_id;
 		$instance->context['termId'] = $term_id;
 		$instance->context['media']  = $media;
 

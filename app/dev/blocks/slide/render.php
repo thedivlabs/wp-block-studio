@@ -20,32 +20,48 @@ $wrapper_attrs = get_block_wrapper_attributes( [
 echo '<div ' . $wrapper_attrs . '>';
 
 // -----------------------------------------
-// Build media renderer
+// Media renderer
 // -----------------------------------------
 
 $media = new WPBS_Media( $media_item, $settings );
-
-// Render (image or video automatically)
 echo $media->render();
 
 
 // -----------------------------------------
-// CONTENT REPLACEMENTS
+// Render InnerBlocks
 // -----------------------------------------
 
-$content = $content ?? '';
+foreach ( $block->parsed_block['innerBlocks'] as $inner_block ) {
+	echo render_block( $inner_block );
+}
 
-$term_id = $block->context['wpbs/termId'] ?? null;
-if ( $term_id ) {
-	$term_link = get_term_link( (int) $term_id );
-	if ( ! is_wp_error( $term_link ) ) {
-		$content = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $content );
+
+// -----------------------------------------
+// Replace placeholders in the *closing* markup
+// -----------------------------------------
+
+$inner_content = $block->parsed_block['innerContent'] ?? [];
+
+if ( ! empty( $inner_content ) ) {
+
+	$last_key = array_key_last( $inner_content );
+	$closing  = $inner_content[ $last_key ] ?? '';
+
+	// Replace term link
+	if ( ! empty( $block->context['wpbs/termId'] ) ) {
+		$term_link = get_term_link( (int) $block->context['wpbs/termId'] );
+		if ( ! is_wp_error( $term_link ) ) {
+			$closing = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $closing );
+		}
 	}
+
+	// Replace post link
+	if ( ! empty( $block->context['wpbs/postId'] ) ) {
+		$permalink = get_permalink( (int) $block->context['wpbs/postId'] );
+		$closing   = str_replace( '%%__POST_LINK_URL__%%', esc_url( $permalink ), $closing );
+	}
+
+	// Output the replaced closing wrapper
+	echo $closing;
 }
 
-$post_id = $block->context['wpbs/postId'] ?? null;
-if ( $post_id ) {
-	$content = str_replace( '%%__POST_LINK_URL__%%', get_permalink( (int) $post_id ), $content );
-}
-
-echo '</div>';

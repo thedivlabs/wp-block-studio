@@ -1,6 +1,8 @@
 <?php
 declare( strict_types=1 );
 
+WPBS::console_log( $block ?? false );
+
 // Original loop/context logic from layout-grid-container
 $slider_settings = $block->context['wpbs/slider'] ?? [];
 $query_settings  = $block->context['wpbs/query'] ?? [];

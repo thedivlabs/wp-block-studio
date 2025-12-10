@@ -86,6 +86,21 @@ registerBlockType(metadata.name, {
         const classNames = getClassNames(attributes, gridSettings, isLoop, isGallery, isMasonry);
 
         useEffect(() => {
+            const next = {
+                isLoop,
+                isGallery
+            };
+
+            if (
+                next.isLoop !== attributes.isLoop ||
+                next.isGallery !== attributes.isGallery
+            ) {
+                setAttributes(next);
+            }
+        }, [isLoop, isGallery]);
+
+        
+        useEffect(() => {
             setCss(getCssProps(gridSettings));
         }, [gridSettings, setCss]);
 

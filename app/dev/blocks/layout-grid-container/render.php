@@ -1,60 +1,68 @@
 <?php
 declare( strict_types=1 );
 
+/**
+ * GRID CONTAINER — UPDATED TO MATCH SLIDER WRAPPER LOGIC
+ *
+ * Loop + Gallery determine their own query settings.
+ * Grid no longer stores or normalizes "query" inside wpbs-grid.
+ */
 WPBS::console_log( $block ?? false );
-
+// Extract context
 $is_loop        = ! empty( $block->context['wpbs/isLoop'] );
+$is_gallery     = ! empty( $block->context['wpbs/isGallery'] );
 $query_settings = $block->context['wpbs/query'] ?? [];
-$is_current     = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;
 
-
-if ( ! $is_loop ) {
+// If not loop and not gallery → output HTML as-is.
+if ( ! $is_loop && ! $is_gallery ) {
 	echo $content ?? null;
 
 	return;
 }
 
 /**
- * Merge block query attributes with defaults
+ * Merge query settings (Loop or Gallery component provides them)
  */
-$default_query = [
-	'post_type'      => 'post',
-	'taxonomy'       => '',
-	'term'           => '',
-	'posts_per_page' => 12,
-	'orderby'        => 'date',
-	'order'          => 'DESC',
-];
-
-$merged_query = array_merge( $default_query, $query_settings );
+$default_query = [];
+$merged_query  = array_merge( $default_query, $query_settings );
 
 /**
- * Initialize loop instance and render cards
+ * Initialize WPBS Loop Engine
  */
 $loop_instance = WPBS_Loop::init();
 
 $loop_data = $loop_instance->render_from_php(
-	$block->parsed_block['innerBlocks'][0] ?? [],                       // full block AST
-	$merged_query,                 // merged query
-	max( 1, get_query_var( 'paged', 1 ) ) // current page
+	$block->parsed_block['innerBlocks'][0] ?? [],
+	$merged_query,
+	max( 1, get_query_var( 'paged', 1 ) )
 );
 
+// Build wrapper class list
+$wrapper_classes = [
+	'grid-wrapper',
+];
+
 /**
- * Output the grid wrapper and loop cards
+ * Build wrapper attributes
  */
-$open_tag  = substr( $content ?? '', 0, strpos( $content, '>' ) + 1 );
-$close_tag = preg_match( '/<\/([a-z0-9\-]+)>$/i', $content, $matches ) ? $matches[0] : '';
+$wrapper_attrs = get_block_wrapper_attributes( array_filter( [
+	'class'         => trim( implode( ' ', $wrapper_classes ) ),
+	'data-lightbox' => $is_gallery ? json_encode( $loop_data['lightbox'] ?? [] ) : null,
+] ) );
 
-echo $open_tag;
+// Output wrapper
+echo '<div ' . $wrapper_attrs . '>';
+
+// Cards HTML
 echo $loop_data['html'] ?? '';
-echo $close_tag;
 
+// Close wrapper
+echo '</div>';
+
+// Output loop scripts
 $loop_instance->output_loop_script(
 	$block->parsed_block['innerBlocks'][0] ?? [],
 	$loop_data,
 	$merged_query,
 	max( 1, get_query_var( 'paged', 1 ) )
 );
-
-
-

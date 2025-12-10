@@ -80,6 +80,21 @@ registerBlockType(metadata.name, {
         const isLoop = (attributes?.className ?? "").includes("is-style-loop");
         const isGallery = (attributes?.className ?? "").includes("is-style-gallery");
 
+        useEffect(() => {
+            const next = {
+                isLoop,
+                isGallery
+            };
+
+            if (
+                next.isLoop !== attributes.isLoop ||
+                next.isGallery !== attributes.isGallery
+            ) {
+                setAttributes(next);
+            }
+        }, [isLoop, isGallery]);
+
+
         const totalSlides = useMemo(() => {
             const wrapperBlock = wp.data
                 .select("core/block-editor")

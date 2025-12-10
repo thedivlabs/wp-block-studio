@@ -67,25 +67,6 @@ export default function Link({defaultValue = {}, callback, isLoop = false}) {
                                         className="is-style-unstyled"
                                     >
 
-                                        {isLoop && (
-                                            <Grid
-                                                columns={2}
-                                                columnGap={15}
-                                                rowGap={20}
-                                                style={{marginTop: '15px'}}
-                                            >
-                                                <ToggleControl
-                                                    label="Link post"
-                                                    checked={!!link.linkPost}
-                                                    onChange={(v) => update({linkPost: v})}
-                                                />
-                                                <ToggleControl
-                                                    label="Link term"
-                                                    checked={!!link.linkTerm}
-                                                    onChange={(v) => update({linkTerm: v})}
-                                                />
-                                            </Grid>
-                                        )}
 
                                         <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '15px'}}>
                                             <ToggleControl
@@ -93,6 +74,18 @@ export default function Link({defaultValue = {}, callback, isLoop = false}) {
                                                 checked={!!link.linkNewTab}
                                                 onChange={(v) => update({linkNewTab: v})}
                                             />
+                                            <ToggleControl
+                                                label="Link post"
+                                                checked={!!link.linkPost}
+                                                onChange={(v) => update({linkPost: v})}
+                                            />
+                                            {isLoop && (
+                                                <ToggleControl
+                                                    label="Link term"
+                                                    checked={!!link.linkTerm}
+                                                    onChange={(v) => update({linkTerm: v})}
+                                                />
+                                            )}
                                         </Grid>
 
                                         <Grid

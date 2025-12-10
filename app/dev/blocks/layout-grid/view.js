@@ -40,36 +40,57 @@ store("wpbs/layout-grid", {
             const {ref: el} = getElement();
             const context = getContext();
 
+            // -------------------------------------------------------------
+            // 1. LOOP MODE (only when the script tag exists)
+            // -------------------------------------------------------------
             const script = el.querySelector('script[data-wpbs-loop-template]');
-            if (!script) return console.error("Missing loop template JSON");
 
-            const data = JSON.parse(script.textContent);
-            const template = data.template;
-            const pagination = data.pagination;
+            if (script) {
+                let data = null;
 
-            const hasMore = pagination.page < pagination.totalPages;
+                try {
+                    data = JSON.parse(script.textContent);
+                } catch (e) {
+                    console.error("WPBS Loop: invalid JSON in loop template", e);
+                }
 
-            // Save instance state
-            el._wpbs = {
-                container: el.querySelector(".grid-container") ?? el,
-                template,
-                page: pagination.page,
-                totalPages: pagination.totalPages,
-                hasMore,
-                query: pagination.query,
-            };
+                if (data) {
+                    const {template, pagination} = data;
 
-            // Remove script tag after parsing
-            script.remove();
+                    const hasMore = pagination.page < pagination.totalPages;
 
-            if (hasMore) el.classList.add("active");
+                    // Store loop state on element
+                    el._wpbs = {
+                        container: el.querySelector(".grid-container") ?? el,
+                        template,
+                        page: pagination.page,
+                        totalPages: pagination.totalPages,
+                        hasMore,
+                        query: pagination.query,
+                    };
 
+                    if (hasMore) {
+                        el.classList.add("active");
+                    }
+                }
+
+                // Clean up
+                script.remove();
+            }
+
+            // -------------------------------------------------------------
+            // 2. ALWAYS RUN GRID DIVIDERS (loop or not)
+            // -------------------------------------------------------------
             const {uniqueId, divider, breakpoints, props} = context;
-            gridDividers?.(
-                el,
-                JSON.parse(JSON.stringify({uniqueId, divider, props, breakpoints})),
-                uniqueId
-            );
+
+            if (typeof gridDividers === "function") {
+                // Clone so interactivity store doesn’t mutate context
+                const options = JSON.parse(
+                    JSON.stringify({uniqueId, divider, props, breakpoints})
+                );
+
+                gridDividers(el, options, uniqueId);
+            }
         },
 
         /* -----------------------------------------------------------

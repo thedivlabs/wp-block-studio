@@ -11,8 +11,11 @@
   "styles": [
     {
       "name": "loop",
-      "label": "Loop",
-      "isDefault": false
+      "label": "Loop"
+    },
+    {
+      "name": "gallery",
+      "label": "Gallery"
     }
   ],
   "attributes": {
@@ -22,17 +25,22 @@
     "isLoop": {
       "type": "boolean"
     },
-    "query": {
-      "type": "object"
+    "isGallery": {
+      "type": "boolean"
+    },
+    "wpbs-query": {
+      "type": "object",
+      "show_in_rest": true
     },
     "wpbs-grid": {
       "type": "object"
     }
   },
   "providesContext": {
+    "wpbs/query": "wpbs-query",
     "wpbs/grid": "wpbs-grid",
     "wpbs/isLoop": "isLoop",
-    "wpbs/query": "query"
+    "wpbs/isGallery": "isGallery"
   },
   "supports": {
     "innerBlocks": true,

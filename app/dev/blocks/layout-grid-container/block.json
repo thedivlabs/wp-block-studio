@@ -17,7 +17,9 @@
   "usesContext": [
     "wpbs/termId",
     "wpbs/isLoop",
-    "wpbs/query"
+    "wpbs/query",
+    "wpbs/isGallery",
+    "wpbs/grid"
   ],
   "supports": {
     "interactivity": true,

@@ -1,6 +1,8 @@
 <?php
 declare( strict_types=1 );
 
+WPBS::console_log( $block ?? false );
+
 $is_loop        = ! empty( $block->context['wpbs/isLoop'] );
 $query_settings = $block->context['wpbs/query'] ?? [];
 $is_current     = ( $query_settings['post_type'] ?? false ) === 'current' && $is_loop;

@@ -18,7 +18,8 @@ import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {isEqual} from "lodash";
 
 import {cleanObject} from "Includes/helper";
-import {Loop} from "Components/Loop";
+import {LOOP_ATTRIBUTES, Loop} from "Components/Loop";
+import {GALLERY_ATTRIBUTES, MediaGalleryControls} from "Components/MediaGallery";
 
 import {
     STYLE_ATTRIBUTES,
@@ -64,19 +65,16 @@ const normalizeGridSettings = (raw) => {
 /* --------------------------------------------------------------
  * Class names
  * -------------------------------------------------------------- */
-const getClassNames = (attributes = {}, settings = {}) => {
+const getClassNames = (attributes = {}, settings = {}, isGallery, isMasonry, isLoop) => {
     const base = settings.props || {};
     const bpMap = settings.breakpoints || {};
-
-    const isMasonry =
-        base.masonry ||
-        Object.values(bpMap).some((entry) => entry?.masonry);
 
     return [
         selector,
         attributes.uniqueId ?? "",
         "w-full flex relative",
-        !!attributes?.isLoop ? '--loop' : null,
+        isLoop ? '--loop' : null,
+        isGallery ? '--gallery' : null,
         isMasonry ? "--masonry" : null,
     ]
         .filter(Boolean)
@@ -180,6 +178,8 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
+        ...GALLERY_ATTRIBUTES,
+        ...LOOP_ATTRIBUTES,
     },
 
     /* ----------------------------------------------------------
@@ -199,34 +199,11 @@ registerBlockType(metadata.name, {
             [rawGrid]
         );
 
-        const classNames = getClassNames(attributes, gridSettings);
+        const isLoop = (attributes?.className ?? "").includes("is-style-loop");
+        const isGallery = (attributes?.className ?? "").includes("is-style-gallery");
+        const isMasonry = (attributes?.className ?? "").includes("is-style-masonry");
 
-        const isLoop = attributes?.className?.includes("is-style-loop");
-
-        useEffect(() => {
-            // Only run if loop mode is relevant
-            if (!isLoop && attributes.isLoop === undefined) {
-                return;
-            }
-
-            const updates = {};
-
-            // Sync the isLoop flag
-            if (attributes.isLoop !== isLoop) {
-                updates.isLoop = isLoop;
-            }
-
-            // Persist query settings ONLY when loop mode is active
-            if (isLoop && !isEqual(attributes.query, gridSettings.query)) {
-                updates.query = gridSettings.query || {};
-            }
-
-            if (Object.keys(updates).length > 0) {
-                setAttributes(updates);
-            }
-
-        }, [isLoop, gridSettings.query]);
-
+        const classNames = getClassNames(attributes, gridSettings, isLoop, isGallery, isMasonry);
 
         /* --------------------------------------------
          * Sync CSS + Preload
@@ -275,8 +252,9 @@ registerBlockType(metadata.name, {
                     rowGap={16}
                 >
                     <Loop
-                        value={gridSettings.query || {}}
-                        onChange={updateQuerySettings}
+                        attributes={attributes}
+                        setAttributes={setAttributes}
+                        enabled={isLoop}
                     />
                 </Grid>
             ),
@@ -302,6 +280,17 @@ registerBlockType(metadata.name, {
             [gridSettings, updateGridSettings, props]
         );
 
+        const tabGallery = useMemo(
+            () => (
+                <MediaGalleryControls
+                    attributes={attributes}
+                    setAttributes={setAttributes}
+                    enabled={isGallery}
+                />
+            ),
+            [gridSettings, updateGridSettings, props]
+        );
+
         /* --------------------------------------------
          * Inspector Controls
          * -------------------------------------------- */
@@ -315,10 +304,11 @@ registerBlockType(metadata.name, {
                 <div className="wpbs-block-settings">
                     <TabPanel
                         className="wpbs-editor-tabs wpbs-block-settings__panel"
-                        initialTabName="options"
+                        initialTabName="divider"
                         tabs={[
-                            ...(isLoop ? [{name: "loop", title: "Loop"}] : []),
                             {name: "divider", title: "Divider"},
+                            ...(isLoop ? [{name: "loop", title: "Loop"}] : []),
+                            ...(isGallery ? [{name: "gallery", title: "Gallery"}] : []),
                         ]}
                     >
                         {(tab) => {
@@ -327,6 +317,8 @@ registerBlockType(metadata.name, {
                                     return isLoop ? tabLoop : null;
                                 case "divider":
                                     return tabDivider;
+                                case "gallery":
+                                    return tabGallery;
                             }
                         }}
                     </TabPanel>
@@ -372,26 +364,32 @@ registerBlockType(metadata.name, {
             attributes["wpbs-grid"] || {}
         );
 
-        // card block needs to be aware of this variable
-        const isLoop = attributes?.className?.includes("is-style-loop");
+        const isLoop = (attributes?.className ?? "").includes("is-style-loop");
+        const isGallery = (attributes?.className ?? "").includes("is-style-gallery");
+        const isMasonry = (attributes?.className ?? "").includes("is-style-masonry");
 
-        const classNames = getClassNames(attributes, gridSettings);
+        const classNames = getClassNames(attributes, gridSettings, isGallery, isMasonry, isLoop);
+
+        const blockExtraProps = {
+            divider: gridSettings.divider || {},
+            breakpoints: gridSettings.breakpoints || {},
+            uniqueId: attributes.uniqueId || null,
+            props: gridSettings.props || {}
+        };
+
+        if (isLoop) {
+            blockExtraProps.query = gridSettings.query || {};
+        }
 
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
-                {...(isLoop && {
+                {...{
                     "data-wp-interactive": "wpbs/layout-grid",
                     "data-wp-init": "actions.init",
-                    "data-wp-context": JSON.stringify({
-                        props: gridSettings.props || {},
-                        query: gridSettings.query || {},
-                        divider: gridSettings.divider || {},
-                        breakpoints: gridSettings.breakpoints || {},
-                        uniqueId: attributes.uniqueId || null,
-                    }),
-                })}
+                    "data-wp-context": JSON.stringify(blockExtraProps),
+                }}
             >
                 <InnerBlocks.Content/>
 

@@ -141,7 +141,7 @@ function getClassNames(attributes = {}) {
 // ------------------------
 function renderSlideContent(settings, attributes, isEditor = false) {
     // Only render image if style is image
-    if (!isImageStyle(attributes)) return null;
+    if (!isImageStyle(attributes) || !!attributes?.isGallery || !!attributes?.isLoop) return null;
 
     const finalSettings = {props: {...settings.props}, breakpoints: {...settings.breakpoints}};
     return <ResponsivePicture settings={finalSettings} editor={!!isEditor}/>;
@@ -226,17 +226,10 @@ registerBlockType(metadata.name, {
             }, [settings, setCss, setPreload]);
 
             useEffect(() => {
-                const insideLoop = !!context?.["wpbs/isLoop"];
-                const insideGallery = !!context?.["wpbs/isGallery"];
-
-                // Do NOT wipe inner blocks while inside loop/gallery mode
-                if (insideLoop || insideGallery) return;
-
-                // Only wipe inner blocks for "image" style in normal mode
-                if (isImage) {
-                    replaceInnerBlocks(clientId, []);
+                if (!!isImage) {
+                    replaceInnerBlocks(clientId, [])
                 }
-            }, [isImage, context?.["wpbs/isLoop"], context?.["wpbs/isGallery"]]);
+            }, [isImage]);
 
 
             useEffect(() => {
@@ -289,8 +282,6 @@ registerBlockType(metadata.name, {
         const {attributes, BlockWrapper} = props;
         const {isGallery, isLoop} = attributes;
 
-        //if (isGallery || isLoop) return null;
-
         const settings = normalizeSettings(attributes["wpbs-slide"]);
         const classNames = getClassNames(attributes);
         const link = attributes["wpbs-slide"]?.props?.link;
@@ -299,7 +290,8 @@ registerBlockType(metadata.name, {
         return (
             <BlockWrapper props={props} className={classNames}>
                 {renderSlideContent(settings, attributes, false)}
-                <InnerBlocks.Content/>
+
+                {!isGallery && <InnerBlocks.Content/>}
 
                 {hasLink && !isGallery && (
                     <a {...getAnchorProps(link)} className={'wpbs-slide__link'}>

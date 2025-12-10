@@ -95,7 +95,8 @@ registerBlockType(metadata.name, {
                 props={props}
                 className={classNames}
             >
-                <InnerBlocks.Content/>
+                {!isGallery && <InnerBlocks.Content/>}
+                
                 {settings?.link && !isGallery && (
                     <a {...getAnchorProps(settings.link)} className={'wpbs-loop-card__link'}><span
                         className={'screen-reader-text'}>{settings?.link?.title ?? 'Learn more'}</span> </a>)}

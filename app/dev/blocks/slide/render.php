@@ -1,67 +1,78 @@
 <?php
 
-if ( empty( $block->context ) ) {
-	echo wp_kses_post( $content ?? '' );
+$context    = $block->context ?? [];
+$settings   = $context['wpbs/query'] ?? [];
+$media_item = $context['wpbs/media'] ?? null;
 
-	return;
-}
+// Detect loop/gallery/lightbox mode
+$is_dynamic = $media_item !== null || wp_is_json_request();
 
-$settings   = $block->context['wpbs/query'] ?? [];
-$media_item = $block->context['wpbs/media'] ?? null;
-
-$wrapper_attrs = get_block_wrapper_attributes( [
+// Wrapper attributes
+$wrapper = get_block_wrapper_attributes( [
 	'class'      => implode( ' ', array_filter( [
 		'wpbs-slide swiper-slide',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'data-index' => $block->context['wpbs/index'] ?? null
+	'data-index' => $context['wpbs/index'] ?? null,
 ] );
 
-echo '<div ' . $wrapper_attrs . '>';
+echo "<div {$wrapper}>";
 
 // -----------------------------------------
 // Media renderer
 // -----------------------------------------
-
 $media = new WPBS_Media( $media_item, $settings );
 echo $media->render();
 
+// -----------------------------------------
+// Dynamic mode (loop/lightbox/gallery)
+// -----------------------------------------
+if ( $is_dynamic ) {
+
+	// Render inner blocks normally (loop inserts them)
+	foreach ( $block->parsed_block['innerBlocks'] as $inner_block ) {
+		echo render_block( $inner_block );
+	}
+
+	echo "</div>";
+
+	return;
+}
 
 // -----------------------------------------
-// Render InnerBlocks
+// Normal mode: use saved markup closing tag
 // -----------------------------------------
 
+// Render inner blocks
 foreach ( $block->parsed_block['innerBlocks'] as $inner_block ) {
 	echo render_block( $inner_block );
 }
 
+// Replace placeholders in saved closing tag
+$closing = $block->parsed_block['innerHTML'] ?? '';
 
-// -----------------------------------------
-// Replace placeholders in the *closing* markup
-// -----------------------------------------
+if ( $closing ) {
 
-$inner_content = $block->parsed_block['innerContent'] ?? [];
+	// Post link replacement
+	if ( ! empty( $context['wpbs/postId'] ) ) {
+		$closing = str_replace(
+			'%%__POST_LINK_URL__%%',
+			esc_url( get_permalink( (int) $context['wpbs/postId'] ) ),
+			$closing
+		);
+	}
 
-if ( ! empty( $inner_content ) ) {
-
-	$last_key = array_key_last( $inner_content );
-	$closing  = $inner_content[ $last_key ] ?? '';
-
-	// Replace term link
-	if ( ! empty( $block->context['wpbs/termId'] ) ) {
-		$term_link = get_term_link( (int) $block->context['wpbs/termId'] );
+	// Term link replacement
+	if ( ! empty( $context['wpbs/termId'] ) ) {
+		$term_link = get_term_link( (int) $context['wpbs/termId'] );
 		if ( ! is_wp_error( $term_link ) ) {
-			$closing = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $closing );
+			$closing = str_replace(
+				'%%__TERM_LINK_URL__%%',
+				esc_url( $term_link ),
+				$closing
+			);
 		}
 	}
 
-	// Replace post link
-	if ( ! empty( $block->context['wpbs/postId'] ) ) {
-		$permalink = get_permalink( (int) $block->context['wpbs/postId'] );
-		$closing   = str_replace( '%%__POST_LINK_URL__%%', esc_url( $permalink ), $closing );
-	}
-
-	// Output the replaced closing wrapper
 	echo $closing;
 }
-

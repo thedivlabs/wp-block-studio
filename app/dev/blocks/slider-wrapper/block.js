@@ -35,7 +35,7 @@ registerBlockType(metadata.name, {
             const {attributes, styleData, BlockWrapper, setCss, setPreload, setAttributes, context} = props;
             const classNames = getClassNames(attributes, styleData);
 
-            const {isGallery, isLoop} = attributes;
+            const {isGallery, isLoop} = context;
 
             useEffect(() => {
                 const next = {

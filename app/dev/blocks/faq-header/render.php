@@ -10,17 +10,19 @@ if ( empty( $question ) ) {
 }
 
 $block_props = get_block_wrapper_attributes( [
-        'class' => 'wpbs-faq-header'
+        'class' => 'wpbs-faq-header w-full flex items-center justify-between'
 ] );
 
 $icon = $settings['icon'];
 
+WPBS::console_log( $icon );
 
 ?>
 
 <div <?= $block_props ?>>
     <span class="wpbs-faq-header__text"><?= $question ?></span>
-    <button class="wpbs-faq-header__button">
+    <button class="wpbs-faq-header__button"
+            style="height: <?= ( ! empty( $icon['size'] ) ? $icon['size'] . 'px' : 'auto' ) ?>">
         <?php
         echo '<span class="material-symbols-outlined" style="' .
              implode( ';', array_map(

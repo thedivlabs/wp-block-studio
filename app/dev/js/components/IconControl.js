@@ -124,6 +124,8 @@ export const IconControl = ({
             normalized.size
         );
 
+        normalized.styles = getIconCssProps(normalized);
+
         return normalized;
     };
 
@@ -161,7 +163,7 @@ export const IconControl = ({
                         : icons.filter((i) => i.key !== fieldId);
 
                 props.setAttributes({"wpbs-icons": nextIcons});
-                
+
                 updateEditorIcons(nextIcons);
 
                 return next;

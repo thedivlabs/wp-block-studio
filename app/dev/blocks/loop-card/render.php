@@ -1,72 +1,46 @@
 <?php
+declare( strict_types=1 );
+
+// Safety
+$content = $content ?? '';
+
 /**
- * Loop Card Block — Clean, Slide-Consistent Renderer
+ * 1. Read context
  */
+$is_loop        = ! empty( $block->context['wpbs/isLoop'] );
+$is_gallery     = ! empty( $block->context['wpbs/isGallery'] );
+$query_settings = $block->context['wpbs/query'] ?? [];
+$template_block = $block->parsed_block['innerBlocks'][0] ?? [];
 
-if ( empty( $block->context ) ) {
-    echo wp_kses_post( $content ?? '' );
+/**
+ * 2. If NOT gallery and NOT loop → output raw content
+ */
+if ( ! $is_loop && ! $is_gallery ) {
+	echo $content;
 
-    return;
+	return;
 }
 
-$settings   = $block->context['wpbs/query'] ?? [];
-$media_item = $block->context['wpbs/media'] ?? null;
+/**
+ * 3. Build loop HTML
+ */
+$loop_data = WPBS_Loop::build(
+	$template_block,
+	$query_settings,
+	max( 1, get_query_var( 'paged', 1 ) )
+);
 
-$wrapper_attrs = get_block_wrapper_attributes( [
-        'class'      => implode( ' ', array_filter( [
-                'wpbs-loop-card',
-                'grid-card',
-                'w-full',
-                'block',
-                'relative',
-                $attributes['uniqueId'] ?? '',
-        ] ) ),
-        'data-index' => $block->context['wpbs/index'] ?? null
-] );
+$dynamic_html = $loop_data['html'] ?? '';
 
-echo '<div ' . $wrapper_attrs . '>';
+/**
+ * 4. Wrapper attributes
+ */
+$attrs = get_block_wrapper_attributes( array_filter( [
+	'class'         => 'wpbs-loop-card w-full block relative',
+	'data-lightbox' => $is_gallery ? json_encode( $loop_data['lightbox'] ?? [] ) : null,
+] ) );
 
-// -----------------------------------------
-// Media renderer (matches Slide logic)
-// -----------------------------------------
-
-$media = new WPBS_Media( $media_item, $settings );
-echo $media->render();
-
-
-// -----------------------------------------
-// Render InnerBlocks
-// -----------------------------------------
-
-foreach ( $block->parsed_block['innerBlocks'] as $inner_block ) {
-    echo render_block( $inner_block );
-}
-
-
-// -----------------------------------------
-// Replace placeholders in closing wrapper
-// -----------------------------------------
-
-$inner_content = $block->parsed_block['innerContent'] ?? [];
-
-if ( ! empty( $inner_content ) ) {
-
-    $last_key = array_key_last( $inner_content );
-    $closing  = $inner_content[ $last_key ] ?? '';
-
-    // Term replacement
-    if ( ! empty( $block->context['wpbs/termId'] ) ) {
-        $term_link = get_term_link( (int) $block->context['wpbs/termId'] );
-        if ( ! is_wp_error( $term_link ) ) {
-            $closing = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $closing );
-        }
-    }
-
-    // Post replacement
-    if ( ! empty( $block->context['wpbs/postId'] ) ) {
-        $permalink = get_permalink( (int) $block->context['wpbs/postId'] );
-        $closing   = str_replace( '%%__POST_LINK_URL__%%', esc_url( $permalink ), $closing );
-    }
-
-    echo $closing;
-}
+/**
+ * 5. Output wrapper
+ */
+echo "<div {$attrs}>{$dynamic_html}</div>";

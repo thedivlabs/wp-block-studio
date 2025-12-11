@@ -43,7 +43,10 @@ $dynamic_json = $loop_data['script'] ?? '';
  */
 
 $attrs = get_block_wrapper_attributes( array_filter( [
-	'class'         => 'wpbs-slider-wrapper swiper-wrapper',
+	'class'         => join( ' ', array_filter( [
+		'wpbs-slider-wrapper swiper-wrapper',
+		$attributes['uniqueId'] ?? null
+	] ) ),
 	'data-lightbox' => $is_gallery ? json_encode( $loop_data['lightbox'] ) : null,
 ] ) );
 

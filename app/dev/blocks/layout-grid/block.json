@@ -50,7 +50,7 @@
     "color": {
       "background": true,
       "text": true,
-      "link": false,
+      "link": true,
       "gradients": true
     },
     "__experimentalBorder": {

@@ -1,77 +1,50 @@
 <?php
 declare( strict_types=1 );
 
+// Safety
+$content = $content ?? '';
+
 /**
- * GRID CONTAINER — UPDATED TO MATCH SLIDER WRAPPER LOGIC
- *
- * Loop + Gallery determine their own query settings.
- * Grid no longer stores or normalizes "query" inside wpbs-grid.
+ * 1. Read context
  */
-
-
-// Extract context
 $is_loop        = ! empty( $block->context['wpbs/isLoop'] );
 $is_gallery     = ! empty( $block->context['wpbs/isGallery'] );
 $query_settings = $block->context['wpbs/query'] ?? [];
+$template_block = $block->parsed_block['innerBlocks'][0] ?? [];
 
-// If not loop and not gallery → output HTML as-is.
+/**
+ * 2. If NOT gallery and NOT loop → return raw content
+ */
 if ( ! $is_loop && ! $is_gallery ) {
-	echo $content ?? null;
+	echo $content;
 
 	return;
 }
 
 /**
- * Merge query settings (Loop or Gallery component provides them)
+ * 3. Build loop content (same as slider)
  */
-$default_query = [];
-$merged_query  = array_merge( $default_query, $query_settings );
-
-/**
- * Initialize WPBS Loop Engine
- */
-$loop_instance = WPBS_Loop::init();
-
-$loop_data = $loop_instance->render_from_php(
-	$block->parsed_block['innerBlocks'][0] ?? [],
-	$merged_query,
+$loop_data = WPBS_Loop::build(
+	$template_block,
+	$query_settings,
 	max( 1, get_query_var( 'paged', 1 ) )
 );
 
-// Build wrapper class list
-$wrapper_classes = [
-	'wpbs-layout-grid-container',
-	$attributes['uniqueId'] ?? '',
-	"grid-container",
-	"w-full",
-	"flex",
-	"flex-wrap",
-	"relative",
-	"z-20",
-	"block"
-];
+$dynamic_html = $loop_data['html'] ?? '';
 
 /**
- * Build wrapper attributes
+ * 4. Build wrapper attributes (parallel to slider wrapper)
  */
-$wrapper_attrs = get_block_wrapper_attributes( array_filter( [
-	'class'         => trim( implode( ' ', $wrapper_classes ) ),
+
+$attrs = get_block_wrapper_attributes( array_filter( [
+	'class'         => join( ' ', array_filter( [
+		'wpbs-layout-grid-container grid-container w-full flex flex-wrap relative z-20 block',
+		$attributes['uniqueId'] ?? null
+	] ) ),
 	'data-lightbox' => $is_gallery ? json_encode( $loop_data['lightbox'] ?? [] ) : null,
 ] ) );
 
-// Output wrapper
-echo '<div ' . $wrapper_attrs . '>';
-
-// Cards HTML
-echo $loop_data['html'] ?? '';
-
-// Close wrapper
-echo '</div>';
-
-// Output loop scripts
-$loop_instance->output_loop_script(
-	$block->parsed_block['innerBlocks'][0] ?? [],
-	$loop_data,
-	$merged_query,
-	max( 1, get_query_var( 'paged', 1 ) )
-);
+/**
+ * 5. Output wrapper with dynamic content inside
+ */
+echo "<div {$attrs}>{$dynamic_html}</div>";

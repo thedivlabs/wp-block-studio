@@ -51,11 +51,11 @@
 
   .wpbs-video__button {
     transform: translate(-50%, -50%);
-    color: var(--icon-color, inherit);
+    color: var(--icon-color, rgba(255, 255, 255, .8));
     pointer-events: none;
 
     &:before {
-      color: var(--icon-color, inherit);
+      color: var(--icon-color, rgba(255, 255, 255, .8));
     }
   }
 }

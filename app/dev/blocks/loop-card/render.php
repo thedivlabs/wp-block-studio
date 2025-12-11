@@ -9,11 +9,17 @@ $media_item = $block->context['wpbs/media'] ?? null;
 $index      = $block->context['wpbs/index'] ?? null;
 
 
-$is_gallery = ! empty( $attributes['wpbs/isGallery'] );
-$is_loop    = ! empty( $attributes['wpbs/isLoop'] );
+$is_gallery = ! empty( $attributes['isGallery'] );
+$is_loop    = ! empty( $attributes['isLoop'] );
 
 $is_lightbox = wp_is_json_request();
 
+
+if ( ! $is_loop && ! $is_gallery ) {
+	echo $content;
+
+	return;
+}
 
 if ( $is_loop ) {
 
@@ -33,22 +39,11 @@ if ( $is_loop ) {
 
 $wrapper_props = get_block_wrapper_attributes( array_filter( [
 	'class' => join( ' ', array_filter( [
-		'wpbs-loop-card',
+		'wpbs-loop-card grid-card',
 		$attributes['uniqueId'] ?? null,
 		'w-full block relative',
 	] ) ),
 ] ) );
-
-WPBS::console_log( $is_gallery );
-WPBS::console_log( $block->context );
-/**
- * 2. Not loop → output normally
- */
-if ( ! $is_loop && ! $is_gallery ) {
-	echo $content;
-
-	return;
-}
 
 
 $closing = '</div>';
@@ -60,7 +55,6 @@ echo '<div ' . $wrapper_props . '>';
  * ALWAYS PRINT MEDIA FIRST
  */
 if ( $is_gallery || $is_lightbox ) {
-
 	$media = new WPBS_Media( $media_item, $settings, $index );
 	echo $media->render();
 }
@@ -83,6 +77,10 @@ if ( $is_gallery ) {
 	return;
 }
 
+/**
+ * NORMAL FRONT-END BLOCK OUTPUT
+ */
+echo $content ?? '';
 
 // Close wrapper
 echo $closing;

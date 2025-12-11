@@ -18,6 +18,9 @@
     },
     "isLoop": {
       "type": "boolean"
+    },
+    "isGallery": {
+      "type": "boolean"
     }
   },
   "usesContext": [

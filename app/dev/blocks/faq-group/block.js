@@ -70,6 +70,9 @@ registerBlockType(metadata.name, {
 
             const {"wpbs-faq-group": settings = {}} = attributes;
 
+            const isAccordion = (attributes?.className ?? '').includes('is-style-accordion') ? 'is-style-accordion' : false;
+            const styleClass = isAccordion || null;
+
             const classNames = getClassNames(attributes, styleData);
 
 
@@ -101,25 +104,27 @@ registerBlockType(metadata.name, {
             ];
 
             useEffect(() => {
-                console.log(settings);
-
                 setCss(getCssProps(settings));
             }, [settings]);
 
             const updateSettings = useCallback(
                 (nextValue) => {
+                    const next = {
+                        ...settings,
+                        ...nextValue,
+                        styleClass, // always overwrite with live state
+                    };
 
-                    const next = {...settings, ...nextValue};
-
-                    if (!isEqual(attributes?.['wpbs-faq-group'], next)) {
+                    if (!isEqual(settings, next)) {
                         setAttributes({
                             "wpbs-faq-group": next,
                             "faqGroup": next.group ?? ""
                         });
                     }
                 },
-                [settings, setAttributes]
+                [settings, styleClass, setAttributes]
             );
+
 
             return (
                 <>

@@ -24,6 +24,12 @@
     "wpbs/faqItem": "faqItem",
     "wpbs/group": "group"
   },
+  "styles": [
+    {
+      "name": "accordion",
+      "label": "Accordion"
+    }
+  ],
   "supports": {
     "interactivity": true,
     "innerBlocks": false,

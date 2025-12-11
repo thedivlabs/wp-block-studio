@@ -11,6 +11,12 @@
       "type": "string"
     }
   },
+  "styles": [
+    {
+      "name": "accordion",
+      "label": "Accordion"
+    }
+  ],
   "supports": {
     "interactivity": true,
     "innerBlocks": false,

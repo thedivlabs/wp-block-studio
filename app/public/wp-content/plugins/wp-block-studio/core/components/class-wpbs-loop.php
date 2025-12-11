@@ -1,8 +1,8 @@
 <?php
+
 declare( strict_types=1 );
 
 class WPBS_Loop {
-
 	private static WPBS_Loop $instance;
 
 	public static function init(): WPBS_Loop {
@@ -17,92 +17,112 @@ class WPBS_Loop {
 		add_action( 'rest_api_init', [ $this, 'register_endpoint' ] );
 	}
 
-
 	/**
-	 * Output loop template JSON for frontend hydration
+	 * ------------------------------------------------------------------
+	 * Unified build() — single call that:
+	 * - sanitizes template + query
+	 * - renders SSR HTML
+	 * - generates hydration script
+	 * - returns everything in one array
+	 * ------------------------------------------------------------------
 	 */
-	public function output_loop_script( array $template_block, array $loop_data, array $query, int $page = 1 ): void {
-		global $wp_query;
-
-		// If using the main query, use its query_vars directly
-		if ( ( $query['post_type'] ?? null ) === 'current' && $wp_query instanceof WP_Query ) {
-			$query = $wp_query->query_vars;
-		}
-
-		// Remove empty keys
-		$query_clean = WPBS::clean_array( $query );
-
-		// Encode template and pagination JSON
-		$template_json   = wp_json_encode( $template_block ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-		$pagination_data = [
-			'page'       => max( 1, $page ),
-			'totalPages' => $loop_data['pages'] ?? 1,
-			'totalPosts' => $loop_data['total'] ?? 0,
-			'query'      => $query_clean,
-		];
-		$pagination_json = wp_json_encode( $pagination_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-
-		// Output JSON script tag
-		echo '<script type="application/json" data-wpbs-loop-template>';
-		echo json_encode( [
-			'template'   => json_decode( $template_json ),
-			'pagination' => json_decode( $pagination_json ),
-		], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-		echo '</script>';
-	}
-
-	public function render_from_php( array $template, array $query = [], int $page = 1 ): array {
-		// Validate template
+	public static function build( array $template, array $query = [], int $page = 1 ): array {
 		if ( empty( $template['blockName'] ) ) {
 			return [
 				'html'  => '',
 				'total' => 0,
 				'pages' => 1,
 				'page'  => 1,
-				'error' => 'Invalid template passed to render_from_php.',
+				'error' => 'Invalid template passed to build().',
 			];
 		}
 
-		// Sanitize template recursively
-		$template = self::sanitize_block_template( $template );
+		// Sanitize template + query
+		$sanitized_template = self::sanitize_block_template( $template );
+		$clean_query        = self::sanitize_query( $query );
+		$page               = max( 1, $page );
 
-		// Sanitize query
-		$query_clean = $this->sanitize_query( $query );
+		// Render the loop (SSR)
+		$loop_data = self::render_loop( $sanitized_template, $clean_query, $page );
 
-		// Ensure page is at least 1
-		$page = max( 1, $page );
+		// Build hydration script
+		$script = self::generate_script_tag(
+			$sanitized_template,
+			$loop_data,
+			$clean_query,
+			$page
+		);
 
-		// Render
-		return $this->render_loop( $template, $query_clean, $page );
+		// Return one unified array
+		return array_merge(
+			$loop_data,
+			[
+				'template' => $sanitized_template,
+				'query'    => $clean_query,
+				'script'   => $script,
+			]
+		);
 	}
 
+	/**
+	 * ------------------------------------------------------------------
+	 * Generates hydration script but does NOT echo it.
+	 * Returned as a <script> tag string.
+	 * ------------------------------------------------------------------
+	 */
+	private static function generate_script_tag( array $template, array $loop_data, array $query, int $page ): string {
+		$query_clean = WPBS::clean_array( $query );
 
+		$template_json = wp_json_encode(
+			$template,
+			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+		);
+
+		$pagination_json = wp_json_encode(
+			[
+				'page'       => max( 1, $page ),
+				'totalPages' => $loop_data['pages'] ?? 1,
+				'totalPosts' => $loop_data['total'] ?? 0,
+				'query'      => $query_clean,
+			],
+			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+		);
+
+		return '<script type="application/json" data-wpbs-loop-template>' .
+		       json_encode(
+			       [
+				       'template'   => json_decode( $template_json, true ),
+				       'pagination' => json_decode( $pagination_json, true ),
+			       ],
+			       JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+		       )
+		       . '</script>';
+	}
+
+	/**
+	 * ------------------------------------------------------------------
+	 * REST endpoint registration
+	 * ------------------------------------------------------------------
+	 */
 	public function register_endpoint(): void {
-
 		register_rest_route( 'wpbs/v1', '/loop', [
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, 'handle_request' ],
 			'permission_callback' => '__return_true',
 			'args'                => [
-				'template' => [
-					'type'        => 'object',
-					'required'    => true,
-					'description' => 'Block AST for the loop card.',
-				],
-				'query'    => [
-					'type'     => 'object',
-					'required' => true,
-				],
-				'page'     => [
-					'type'    => 'integer',
-					'default' => 1,
-				],
+				'template' => [ 'type' => 'object', 'required' => true ],
+				'query'    => [ 'type' => 'object', 'required' => true ],
+				'page'     => [ 'type' => 'integer', 'default' => 1 ],
 			],
 		] );
 	}
 
+	/**
+	 * ------------------------------------------------------------------
+	 * REST handler — uses same internal logic as build()
+	 * ------------------------------------------------------------------
+	 */
 	public function handle_request( WP_REST_Request $request ): WP_REST_Response {
-
 		$template  = $request->get_param( 'template' );
 		$query_raw = $request->get_param( 'query' );
 		$page      = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
@@ -111,72 +131,145 @@ class WPBS_Loop {
 			return $this->error( 'Invalid template.' );
 		}
 
-		// Sanitize template recursively
-		$template = self::sanitize_block_template( $template );
-
 		if ( ! is_array( $query_raw ) ) {
 			return $this->error( 'Invalid query.' );
 		}
 
-		$query = $this->sanitize_query( $query_raw );
-
-		// run SSR
-		$output = $this->render_loop( $template, $query, $page );
-
-		return rest_ensure_response( $output );
+		return rest_ensure_response(
+			self::build(
+				self::sanitize_block_template( $template ),
+				self::sanitize_query( $query_raw ),
+				$page
+			)
+		);
 	}
 
+	/**
+	 * ------------------------------------------------------------------
+	 * Sanitization for block AST sent from editor → REST → PHP
+	 * ------------------------------------------------------------------
+	 */
+	public static function sanitize_block_template( $block, &$counter = 0, int $max_blocks = 30 ): array {
 
-	public function sanitize_block_template( $block, &$counter = 0, $max_blocks = 30 ): array {
+		// Guard: must be array
+		if ( ! is_array( $block ) ) {
+			return [];
+		}
+
+		// Block limit safety
 		if ( ++ $counter > $max_blocks ) {
 			return [];
 		}
 
+		// Sanitize attrs (deep recursive)
+		$attrs = [];
+		if ( ! empty( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+			$attrs = self::recursive_sanitize( $block['attrs'] );
+		}
+
+		// Sanitize innerBlocks
+		$inner_blocks = [];
+		if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+			foreach ( $block['innerBlocks'] as $inner ) {
+				$inner_blocks[] = self::sanitize_block_template( $inner, $counter, $max_blocks );
+			}
+		}
+
+		// Sanitize innerContent (must preserve nulls)
+		$inner_content = [];
+		if ( isset( $block['innerContent'] ) && is_array( $block['innerContent'] ) ) {
+			foreach ( $block['innerContent'] as $item ) {
+				if ( is_string( $item ) ) {
+					$inner_content[] = wp_kses_post( $item );
+				} else {
+					// Gutenberg uses null placeholders for block boundaries
+					$inner_content[] = null;
+				}
+			}
+		}
+
 		return [
-			'blockName'    => $block['blockName'] ?? '',
-			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
-			'innerBlocks'  => array_map( function ( $b ) use ( &$counter, $max_blocks ) {
-				return self::sanitize_block_template( $b, $counter, $max_blocks );
-			}, $block['innerBlocks'] ?? [] ),
-			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),          // Allow safe HTML
-			'innerContent' => array_map( function ( $item ) {
-				return is_string( $item ) ? wp_kses_post( $item ) : null;          // Allow safe HTML
-			}, $block['innerContent'] ?? [] ),
+			'blockName'    => isset( $block['blockName'] ) ? sanitize_text_field( $block['blockName'] ) : '',
+			'attrs'        => $attrs,
+			'innerBlocks'  => $inner_blocks,
+			'innerHTML'    => isset( $block['innerHTML'] ) ? wp_kses_post( $block['innerHTML'] ) : '',
+			'innerContent' => $inner_content,
 		];
 	}
 
-	public function recursive_sanitize( $input ) {
+	public static function recursive_sanitize( $input ) {
+		return $input;
+		// ---------------------------
+		// 1. ARRAY → recurse
+		// ---------------------------
 		if ( is_array( $input ) ) {
 			$sanitized = [];
-
 			foreach ( $input as $key => $value ) {
-				$sanitized_key               = is_string( $key ) ? sanitize_text_field( $key ) : $key;
-				$sanitized[ $sanitized_key ] = self::recursive_sanitize( $value );
+				$clean_key               = is_string( $key ) ? sanitize_key( $key ) : $key;
+				$sanitized[ $clean_key ] = self::recursive_sanitize( $value );
 			}
 
 			return $sanitized;
-
-		} elseif ( is_string( $input ) ) {
-			return sanitize_text_field( $input );
-
-		} elseif ( is_int( $input ) ) {
-			return intval( $input );
-
-		} elseif ( is_float( $input ) ) {
-			return floatval( $input );
-
-		} elseif ( is_bool( $input ) ) {
-			return (bool) $input;
-
-		} elseif ( is_null( $input ) ) {
-			return null;
-
-		} else {
-			return $input;
 		}
+
+		// ---------------------------
+		// 2. STRING → selective rules
+		// ---------------------------
+		if ( is_string( $input ) ) {
+
+			$trimmed = trim( $input );
+
+			// 📌 Allow Gutenberg CSS variable tokens entirely unchanged
+			// Examples: var:preset|color|pale-pink
+			if ( str_starts_with( $trimmed, 'var:' ) ) {
+				return $trimmed;
+			}
+
+			// 📌 Allow CSS rgba(), rgb(), hsl(), etc.
+			if ( preg_match( '/^(rgb|rgba|hsl|hsla)\(/i', $trimmed ) ) {
+				return $trimmed;
+			}
+
+			// 📌 Allow safe CSS numeric values: 1rem, 24px, 50%, 0, bold, etc.
+			if ( preg_match( '/^[-a-zA-Z0-9.%\s]+$/', $trimmed ) ) {
+				return $trimmed;
+			}
+
+			// 📌 Fallback for normal text content
+			return sanitize_text_field( $trimmed );
+		}
+
+		// ---------------------------
+		// 3. Safe primitives
+		// ---------------------------
+		if ( is_int( $input ) ) {
+			return intval( $input );
+		}
+
+		if ( is_float( $input ) ) {
+			return floatval( $input );
+		}
+
+		if ( is_bool( $input ) ) {
+			return (bool) $input;
+		}
+
+		if ( is_null( $input ) ) {
+			return null;
+		}
+
+		// ---------------------------
+		// 4. Fallback (objects, etc.)
+		// ---------------------------
+		return $input;
 	}
 
-	private function render_loop( array $template_block, array $query, int $page ): array {
+	/**
+	 * ------------------------------------------------------------------
+	 * Main loop rendering logic (unchanged except static context)
+	 * ------------------------------------------------------------------
+	 */
+	private static function render_loop( array $template_block, array $query, int $page ): array {
 
 		$html  = '';
 		$index = 0;
@@ -239,7 +332,7 @@ class WPBS_Loop {
 			$index = 0;
 
 			foreach ( $paged_items as $media ) {
-				$html .= $this->render_card_from_ast(
+				$html .= self::render_card_from_ast(
 					$template_block,
 					$query,
 					null,
@@ -308,7 +401,7 @@ class WPBS_Loop {
 			$index = 0;
 
 			foreach ( $terms as $term ) {
-				$html .= $this->render_card_from_ast(
+				$html .= self::render_card_from_ast(
 					$template_block,
 					$query,
 					null,
@@ -367,7 +460,7 @@ class WPBS_Loop {
 				$wp_query->the_post();
 				$post_id = get_the_ID();
 
-				$html .= $this->render_card_from_ast(
+				$html .= self::render_card_from_ast(
 					$template_block,
 					$query,
 					$post_id,
@@ -395,7 +488,7 @@ class WPBS_Loop {
 		 */
 
 		// Build query args from incoming FE query params
-		$args = $this->build_query_args( $query, $page );
+		$args = self::build_query_args( $query, $page );
 
 		$args['post_status']         = 'publish';
 		$args['ignore_sticky_posts'] = true;
@@ -414,7 +507,7 @@ class WPBS_Loop {
 			$wpq->the_post();
 			$post_id = get_the_ID();
 
-			$html .= $this->render_card_from_ast(
+			$html .= self::render_card_from_ast(
 				$template_block,
 				$query,
 				$post_id,
@@ -436,64 +529,7 @@ class WPBS_Loop {
 		];
 	}
 
-
-	/*───────────────────────────────────────────────────────────────
-		CARD RENDERING FROM AST
-	───────────────────────────────────────────────────────────────*/
-	private function render_card_from_ast(
-		array $template,
-		array $query,
-		?int $post_id,
-		int $index,
-		?int $term_id = null,
-		$media = []
-	): string {
-
-		$block = $template;
-
-		$block['innerBlocks'] = $template['innerBlocks'] ?? [];
-
-		if ( $post_id !== null ) {
-			$block['attrs']['postId'] = $post_id;
-		}
-
-		if ( $term_id !== null ) {
-			$block['attrs']['termId']      = $term_id;
-			$block['attrs']['wpbs/termId'] = $term_id;
-		}
-
-		$block['attrs']['index'] = $index;
-
-		$taxonomy = $query['taxonomy'] ?? null;
-
-		$context = [
-			'postId'   => $post_id,
-			'termId'   => $term_id,
-			'taxonomy' => $taxonomy,
-
-			'wpbs/query'    => $query,
-			'wpbs/media'    => $media,
-			'wpbs/postId'   => $post_id,
-			'wpbs/termId'   => $term_id,
-			'wpbs/taxonomy' => $taxonomy,
-			'wpbs/index'    => $index,
-		];
-
-		$instance = new WP_Block( $block, $context );
-
-		$instance->context['postId'] = $post_id;
-		$instance->context['termId'] = $term_id;
-		$instance->context['media']  = $media;
-
-		return $instance->render();
-	}
-
-
-	/*───────────────────────────────────────────────────────────────
-		SANITIZATION, QUERY BUILDING, ERRORS (UNCHANGED)
-	───────────────────────────────────────────────────────────────*/
-
-	private function sanitize_query( array $q ): array {
+	private static function sanitize_query( array $q ): array {
 		global $wp_query;
 
 		$clean = [];
@@ -648,8 +684,59 @@ class WPBS_Loop {
 		return $clean;
 	}
 
+	private static function render_card_from_ast(
+		array $template,
+		array $query,
+		?int $post_id,
+		int $index,
+		?int $term_id = null,
+		$media = []
+	): string {
 
-	private function build_query_args( array $q, int $page ): array {
+		// Clone so you don't mutate original
+		$block = $template;
+
+		// Mutate attributes
+		if ( $post_id !== null ) {
+			$block['attrs']['postId'] = $post_id;
+		}
+		if ( $term_id !== null ) {
+			$block['attrs']['termId']      = $term_id;
+			$block['attrs']['wpbs/termId'] = $term_id;
+		}
+
+		$block['attrs']['index'] = $index;
+
+		// Provide context to inner blocks
+		$taxonomy = $query['taxonomy'] ?? null;
+
+		$context = [
+			'postId'        => $post_id,
+			'termId'        => $term_id,
+			'taxonomy'      => $taxonomy,
+			'wpbs/query'    => $query,
+			'wpbs/media'    => $media,
+			'wpbs/postId'   => $post_id,
+			'wpbs/termId'   => $term_id,
+			'wpbs/taxonomy' => $taxonomy,
+			'wpbs/index'    => $index,
+		];
+
+		// Inject context (this mimics WP_Block)
+		$block['context'] = $context;
+
+		// ---- CRITICAL FIX FOR render_block() ----
+		// render_block() *requires* these keys, even if empty.
+		$block['innerBlocks']  = $block['innerBlocks'] ?? [];
+		$block['innerHTML']    = $block['innerHTML'] ?? '';
+		$block['innerContent'] = $block['innerContent'] ?? [];
+
+		// Now you can safely run the engine
+		return render_block( $block );
+	}
+
+
+	private static function build_query_args( array $q, int $page ): array {
 		$args = [
 			'post_type'      => $q['post_type'] ?? 'post',
 			'post_status'    => 'publish',
@@ -684,9 +771,7 @@ class WPBS_Loop {
 		return $args;
 	}
 
-
 	private function error( string $msg, int $code = 400 ): WP_REST_Response {
 		return new WP_REST_Response( [ 'error' => $msg ], $code );
 	}
-
 }

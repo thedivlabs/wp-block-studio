@@ -1,9 +1,11 @@
 <?php
 
-WPBS::console_log( $block );
+//WPBS::console_log( $block );
+//WPBS::console_log( [ $content ?? '' ] );
 
-WPBS::console_log( [ $content ] );
+echo $content;
 
+return;
 
 $settings   = $block->context['wpbs/query'] ?? [];
 $media_item = $block->context['wpbs/media'] ?? null;
@@ -44,7 +46,6 @@ echo '<div ' . $wrapper_props . '>';
 $wrapper_tags = WPBS::extract_tag_wrappers( $content ?? '' );
 
 $closing = $wrapper_tags['closing'];
-WPBS::console_log( $wrapper_tags );
 
 /**
  * ALWAYS PRINT MEDIA FIRST

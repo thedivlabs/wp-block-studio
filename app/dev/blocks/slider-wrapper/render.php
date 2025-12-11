@@ -10,8 +10,11 @@ $content = $content ?? '';
 $slider_settings = $block->context['wpbs/slider'] ?? [];
 $query_settings  = $block->context['wpbs/query'] ?? [];
 
-$is_loop    = ! empty( $block->context['wpbs/isLoop'] );
-$is_gallery = ! empty( $block->context['wpbs/isGallery'] );
+$is_loop        = ! empty( $block->context['wpbs/isLoop'] );
+$is_gallery     = ! empty( $block->context['wpbs/isGallery'] );
+$template_block = $block->parsed_block['innerBlocks'][0] ?? [];
+
+WPBS::console_log( $template_block );
 
 /**
  * 2. If NOT gallery and NOT loop → return raw content
@@ -22,22 +25,18 @@ if ( ! $is_loop && ! $is_gallery ) {
 	return;
 }
 
-/**
- * 3. Build query + loop engine
- */
-$default_query = [];
-$merged_query  = array_merge( $default_query, $query_settings );
-
-$loop_instance = WPBS_Loop::init();
-
-$inner_block = $block->parsed_block['innerBlocks'][0] ?? [];
 
 // Generate loop HTML + data
-$loop_data = $loop_instance->render_from_php(
-	$inner_block,
-	$merged_query,
+$loop_data = WPBS_Loop::build(
+	$template_block,
+	$query_settings,
 	max( 1, get_query_var( 'paged', 1 ) )
 );
+
+
+WPBS::console_log( $loop_data );
+
+return;
 
 /**
  * 4. Extract the loop HTML

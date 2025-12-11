@@ -180,6 +180,7 @@ registerBlockType(metadata.name, {
 
         return (
             <BlockWrapper
+                props={props}
                 className={classNames}
                 data-context={JSON.stringify(swiperArgs)}
                 {...controllerProps}

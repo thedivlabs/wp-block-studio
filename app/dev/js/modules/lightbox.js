@@ -40,10 +40,6 @@ export default class Lightbox {
             const raw = wrapper.getAttribute('data-lightbox');
             if (!raw) return;
 
-            console.log(indexed);
-            console.log(wrapper);
-            console.log(raw);
-
             let payload;
             try {
                 payload = JSON.parse(raw);

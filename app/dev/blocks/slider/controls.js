@@ -6,7 +6,7 @@ import {cleanObject} from "Includes/helper";
 
 // Base slider fields
 const BASE_SLIDER_NUMERIC_FIELDS = [
-    {slug: "slidesPerView", type: "number", label: "Slides"},
+    {slug: "slidesPerView", type: "number", label: "Slides", min: 2},
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
     {slug: "spaceBetween", type: "number", label: "Space", min: 0, step: 5, shiftStep: 10},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5, shiftStep: 1},
@@ -57,7 +57,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
 
 // Breakpoint slider fields
 const BREAKPOINT_SLIDER_FIELDS = [
-    {slug: "slidesPerView", type: "number", label: "Slides"},
+    {slug: "slidesPerView", type: "number", label: "Slides", min: 2},
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
     {slug: "spaceBetween", type: "number", label: "Space", min: 0, step: 5, shiftStep: 10},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5, shiftStep: 1},

@@ -11,6 +11,12 @@ $is_lightbox = wp_is_json_request();
 
 $content = $content ?? '';
 
+if ( ! $is_loop && ! $is_gallery ) {
+	echo $content;
+
+	return;
+}
+
 if ( $is_loop ) {
 
 	if ( ! empty( $block->context['wpbs/termId'] ) ) {

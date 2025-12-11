@@ -15,14 +15,25 @@ const generateCSS = (fill, weight, opsz) =>
     `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 32}`;
 
 
-export function getIconCssProps(icon = {}, returnKeys = []) {
-    const {color, gradient, size, weight, style, css} = icon;
+export function getIconCssProps(icon = {}, returnKeys = [], string = false) {
+    // Normalize inputs & defaults at the top
+    const size = Number(icon.size) || 32;
+    const weight = Number(icon.weight) || 300;
+    const style = icon.style ?? "outlined";
+    const color = icon.color || "";
+    const gradient = icon.gradient || "";
 
-    const fill = style === "filled" ? 1 : 0;
-    const fontVariation = css || generateCSS(fill, weight, size);
+    // Solid = 1, Outlined = 0
+    const fill = style === "solid" ? 1 : 0;
 
+    // Always generate a reliable variation string
+    const fontVariation =
+        icon.css ||
+        `'FILL' ${fill}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`;
+
+    // CSS object with guaranteed non-empty values
     const fullStyles = {
-        fontSize: size ? `${Number(size)}px` : "",
+        fontSize: `${size}px`,
         fontVariationSettings: fontVariation,
         fontFamily: '"Material Icons Outlines", sans-serif',
     };
@@ -33,12 +44,31 @@ export function getIconCssProps(icon = {}, returnKeys = []) {
         fullStyles.backgroundClip = "text";
     } else if (color) {
         fullStyles.color = color;
+        fullStyles.background = "transparent";
     }
 
-    // Keep only keys in returnKeys
-    return returnKeys.length ? Object.fromEntries(
-        Object.entries(fullStyles).filter(([key]) => returnKeys.includes(key))
-    ) : fullStyles;
+    // Optional key filtering
+    let result =
+        returnKeys.length > 0
+            ? Object.fromEntries(
+                Object.entries(fullStyles).filter(([key]) =>
+                    returnKeys.includes(key)
+                )
+            )
+            : fullStyles;
+
+    // String mode → kebab-case + inline CSS
+    if (string) {
+        return Object.entries(result)
+            .map(([key, value]) => {
+                const cssKey = key.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+                return `${cssKey}: ${value}`;
+            })
+            .join("; ");
+    }
+
+    // Object mode
+    return result;
 }
 
 
@@ -124,7 +154,7 @@ export const IconControl = ({
             normalized.size
         );
 
-        normalized.styles = getIconCssProps(normalized);
+        normalized.styles = getIconCssProps(normalized, [], true);
 
         return normalized;
     };

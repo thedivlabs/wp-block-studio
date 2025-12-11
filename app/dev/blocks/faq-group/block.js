@@ -19,7 +19,7 @@ import {useCallback, useEffect} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
-import {getIconCssProps} from "Components/IconControl";
+import {getIconCssProps, MaterialIcon} from "Components/IconControl";
 
 const selector = "wpbs-faq-group";
 
@@ -72,7 +72,6 @@ registerBlockType(metadata.name, {
 
             const classNames = getClassNames(attributes, styleData);
 
-            console.log(settings);
 
             // ------------------------------------------
             // Fetch faq-group posts
@@ -102,15 +101,17 @@ registerBlockType(metadata.name, {
             ];
 
             useEffect(() => {
+                console.log(settings);
+
                 setCss(getCssProps(settings));
-            }, [settings, setCss]);
+            }, [settings]);
 
             const updateSettings = useCallback(
                 (nextValue) => {
 
                     const next = {...settings, ...nextValue};
 
-                    if (!isEqual(settings, next)) {
+                    if (!isEqual(attributes?.['wpbs-faq-group'], next)) {
                         setAttributes({
                             "wpbs-faq-group": next,
                             "faqGroup": next.group ?? ""
@@ -170,7 +171,10 @@ registerBlockType(metadata.name, {
                     >
                         <div className={'wpbs-faq-item w-full flex flex-col'}>
                             <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?
+                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
+                                <button className={'wpbs-faq-header__button'}>
+                                    <MaterialIcon {...settings?.icon}/>
+                                </button>
                             </div>
                             <div className={'wpbs-faq-content w-full'}>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
@@ -179,8 +183,11 @@ registerBlockType(metadata.name, {
                             </div>
                         </div>
                         <div className={'wpbs-faq-item'}>
-                            <div className={'wpbs-faq-header'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?
+                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
+                                <button className={'wpbs-faq-header__button'}>
+                                    <MaterialIcon {...settings?.icon}/>
+                                </button>
                             </div>
                             <div className={'wpbs-faq-content'}>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
@@ -189,8 +196,11 @@ registerBlockType(metadata.name, {
                             </div>
                         </div>
                         <div className={'wpbs-faq-item'}>
-                            <div className={'wpbs-faq-header'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?
+                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
+                                <button className={'wpbs-faq-header__button'}>
+                                    <MaterialIcon {...settings?.icon}/>
+                                </button>
                             </div>
                             <div className={'wpbs-faq-content'}>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur

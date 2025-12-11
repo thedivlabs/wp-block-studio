@@ -8,6 +8,7 @@ import Link, {getAnchorProps} from "Components/Link";
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useEffect} from "@wordpress/element";
 import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
+import {isEqual} from "lodash";
 
 const selector = "wpbs-loop-card";
 
@@ -46,15 +47,28 @@ registerBlockType(metadata.name, {
             const {'wpbs/isLoop': isLoop} = context;
 
             useEffect(() => {
+                // Context booleans
+                const isGallery = !!context?.["wpbs/isGallery"];
+                const isLoop = !!context?.["wpbs/isLoop"];
 
-                if (!isLoop && attributes.isLoop === undefined) {
-                    return;
-                }
+                // Only update if different from current attributes
+                const next = {
+                    isGallery,
+                    isLoop,
+                };
 
-                if (attributes.isLoop !== isLoop) {
-                    setAttributes({isLoop: isLoop});
+                const current = {
+                    isGallery: !!attributes?.isGallery,
+                    isLoop: !!attributes?.isLoop,
+                };
+
+                if (!isEqual(current, next)) {
+                    setAttributes(next);
                 }
-            }, [isLoop]);
+            }, [
+                context?.["wpbs/isGallery"],
+                context?.["wpbs/isLoop"],
+            ]);
 
             return (
                 <>
@@ -96,7 +110,7 @@ registerBlockType(metadata.name, {
                 className={classNames}
             >
                 {!isGallery && <InnerBlocks.Content/>}
-                
+
                 {settings?.link && !isGallery && (
                     <a {...getAnchorProps(settings.link)} className={'wpbs-loop-card__link'}><span
                         className={'screen-reader-text'}>{settings?.link?.title ?? 'Learn more'}</span> </a>)}

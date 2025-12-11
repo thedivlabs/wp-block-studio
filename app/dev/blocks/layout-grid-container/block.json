@@ -12,10 +12,14 @@
     },
     "isLoop": {
       "type": "boolean"
+    },
+    "isGallery": {
+      "type": "boolean"
     }
   },
   "usesContext": [
     "wpbs/termId",
+    "wpbs/postId",
     "wpbs/isLoop",
     "wpbs/query",
     "wpbs/isGallery",

@@ -79,11 +79,11 @@ registerBlockType(metadata.name, {
         );
 
         const className = attributes?.className ?? "";
-        const isLoop = className.includes("is-style-loop");
-        const isGallery = className.includes("is-style-gallery");
         const isMasonry = className.includes("is-style-masonry");
 
-        const classNames = getClassNames(attributes, gridSettings, isLoop, isGallery, isMasonry);
+
+        const isLoop = (attributes?.className ?? "").includes("is-style-loop");
+        const isGallery = (attributes?.className ?? "").includes("is-style-gallery");
 
         useEffect(() => {
             const next = {
@@ -99,7 +99,9 @@ registerBlockType(metadata.name, {
             }
         }, [isLoop, isGallery]);
 
-        
+        const classNames = getClassNames(attributes, gridSettings, isLoop, isGallery, isMasonry);
+
+
         useEffect(() => {
             setCss(getCssProps(gridSettings));
         }, [gridSettings, setCss]);

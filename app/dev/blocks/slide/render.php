@@ -35,11 +35,9 @@ $wrapper_props = get_block_wrapper_attributes( array_filter( [
 ] ) );
 
 
+$closing = '</div>';
+
 echo '<div ' . $wrapper_props . '>';
-
-$wrapper_tags = WPBS::extract_tag_wrappers( $content ?? '' );
-
-$closing = $wrapper_tags['closing'];
 
 /**
  * ALWAYS PRINT MEDIA FIRST

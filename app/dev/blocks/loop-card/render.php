@@ -1,19 +1,48 @@
 <?php
 declare( strict_types=1 );
 
-// Safety
 $content = $content ?? '';
 
-/**
- * 1. Read context
- */
-$is_loop        = ! empty( $block->context['wpbs/isLoop'] );
-$is_gallery     = ! empty( $block->context['wpbs/isGallery'] );
-$query_settings = $block->context['wpbs/query'] ?? [];
-$template_block = $block->parsed_block['innerBlocks'][0] ?? [];
 
+$settings   = $block->context['wpbs/query'] ?? [];
+$media_item = $block->context['wpbs/media'] ?? null;
+$index      = $block->context['wpbs/index'] ?? null;
+
+
+$is_gallery = ! empty( $attributes['wpbs/isGallery'] );
+$is_loop    = ! empty( $attributes['wpbs/isLoop'] );
+
+$is_lightbox = wp_is_json_request();
+
+
+if ( $is_loop ) {
+
+	if ( ! empty( $block->context['wpbs/termId'] ) ) {
+		$term_link = get_term_link( (int) $block->context['wpbs/termId'] );
+		if ( ! is_wp_error( $term_link ) ) {
+			$content = str_replace( '%%__TERM_LINK_URL__%%', esc_url( $term_link ), $content );
+		}
+	}
+
+	if ( ! empty( $block->context['wpbs/postId'] ) ) {
+		$post_link = get_permalink( (int) $block->context['wpbs/postId'] );
+		$content   = str_replace( '%%__POST_LINK_URL__%%', esc_url( $post_link ), $content );
+	}
+}
+
+
+$wrapper_props = get_block_wrapper_attributes( array_filter( [
+	'class' => join( ' ', array_filter( [
+		'wpbs-loop-card',
+		$attributes['uniqueId'] ?? null,
+		'w-full block relative',
+	] ) ),
+] ) );
+
+WPBS::console_log( $is_gallery );
+WPBS::console_log( $block->context );
 /**
- * 2. If NOT gallery and NOT loop → output raw content
+ * 2. Not loop → output normally
  */
 if ( ! $is_loop && ! $is_gallery ) {
 	echo $content;
@@ -21,26 +50,39 @@ if ( ! $is_loop && ! $is_gallery ) {
 	return;
 }
 
-/**
- * 3. Build loop HTML
- */
-$loop_data = WPBS_Loop::build(
-	$template_block,
-	$query_settings,
-	max( 1, get_query_var( 'paged', 1 ) )
-);
 
-$dynamic_html = $loop_data['html'] ?? '';
+$closing = '</div>';
+
+
+echo '<div ' . $wrapper_props . '>';
 
 /**
- * 4. Wrapper attributes
+ * ALWAYS PRINT MEDIA FIRST
  */
-$attrs = get_block_wrapper_attributes( array_filter( [
-	'class'         => 'wpbs-loop-card w-full block relative',
-	'data-lightbox' => $is_gallery ? json_encode( $loop_data['lightbox'] ?? [] ) : null,
-] ) );
+if ( $is_gallery || $is_lightbox ) {
+
+	$media = new WPBS_Media( $media_item, $settings, $index );
+	echo $media->render();
+}
 
 /**
- * 5. Output wrapper
+ * LIGHTBOX MODE → close early
  */
-echo "<div {$attrs}>{$dynamic_html}</div>";
+if ( $is_lightbox ) {
+	echo $closing;
+
+	return;
+}
+
+/**
+ * GALLERY MODE → media only
+ */
+if ( $is_gallery ) {
+	echo $closing;
+
+	return;
+}
+
+
+// Close wrapper
+echo $closing;

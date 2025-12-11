@@ -82,7 +82,7 @@ registerBlockType(metadata.name, {
      * EDIT
      * ---------------------------------------------------------- */
     edit: withStyle((props) => {
-        const {attributes, BlockWrapper, styleData, setCss} = props;
+        const {attributes, BlockWrapper, styleData, setCss, context, setAttributes} = props;
 
         const classNames = getClassNames(attributes, styleData);
 
@@ -90,6 +90,23 @@ registerBlockType(metadata.name, {
             JSON.stringify(attributes?.style?.spacing?.blockGap),
             attributes?.["wpbs-style"],
         ]);
+
+        const {'wpbs/isGallery': isGallery, 'wpbs/isLoop': isLoop} = context;
+
+
+        useEffect(() => {
+            const next = {
+                isLoop,
+                isGallery
+            };
+
+            if (
+                next.isLoop !== attributes.isLoop ||
+                next.isGallery !== attributes.isGallery
+            ) {
+                setAttributes(next);
+            }
+        }, [isLoop, isGallery]);
 
         useEffect(() => {
             setCss(gapCss);

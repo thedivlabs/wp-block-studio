@@ -96,7 +96,7 @@ final class WPBS_Icons {
 	}
 
 	private function get_default_safelist(): array {
-		$raw  = 'help,home,arrow_forward,arrow_back,play_circle';
+		$raw  = 'add,help,home,arrow_forward,arrow_back,play_circle';
 		$list = array_filter( array_map( 'trim', explode( ',', $raw ) ) );
 		sort( $list, SORT_STRING );
 
@@ -110,7 +110,7 @@ final class WPBS_Icons {
 		}
 
 		sort( $names, SORT_STRING );
-		
+
 		return sprintf(
 			'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200..500,0..1,0&icon_names=%s&display=swap',
 			implode( ',', $names )

@@ -57,7 +57,7 @@ const BASE_SLIDER_TOGGLE_FIELDS = [
 
 // Breakpoint slider fields
 const BREAKPOINT_SLIDER_FIELDS = [
-    {slug: "slidesPerView", type: "number", label: "Slides", min: 2},
+    {slug: "slidesPerView", type: "number", label: "Slides", min: 1},
     {slug: "slidesPerGroup", type: "number", label: "Group", min: 0},
     {slug: "spaceBetween", type: "number", label: "Space", min: 0, step: 5, shiftStep: 10},
     {slug: "autoplay", type: "number", label: "Autoplay", min: 0, step: 0.5, shiftStep: 1},
@@ -214,14 +214,18 @@ export function SliderInspector({attributes, setAttributes}) {
             const merged = {
                 ...current,
                 ...nextValue,
-                props: {
-                    ...(current.props || {}),
-                    ...(nextValue?.props || {}),
-                },
-                breakpoints: {
-                    ...(current.breakpoints || {}),
-                    ...(nextValue?.breakpoints || {}),
-                },
+
+                // Props: replace if provided
+                props:
+                    nextValue?.props !== undefined
+                        ? {...(nextValue.props || {})}
+                        : {...(current.props || {})},
+
+                // Breakpoints: REPLACE, do not merge
+                breakpoints:
+                    nextValue?.breakpoints !== undefined
+                        ? {...(nextValue.breakpoints || {})}
+                        : {...(current.breakpoints || {})},
             };
 
             setAttributes({
@@ -230,6 +234,7 @@ export function SliderInspector({attributes, setAttributes}) {
         },
         [attributes, setAttributes]
     );
+
 
     const renderFields = useCallback(
         (entry, updateEntry, isBreakpoint) => {

@@ -671,8 +671,8 @@ function onStyleChange({css = {}, preload = [], props, styleRef, bpMin = false})
         return;
     }
 
-    if(!!bpMin){
-        cleanedCss.__bpMin = true;
+    if (!!bpMin) {
+        //cleanedCss.__bpMin = true;
     }
 
     const {dispatch} = wp.data;

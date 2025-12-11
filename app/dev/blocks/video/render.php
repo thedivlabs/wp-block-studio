@@ -33,7 +33,7 @@ $icon = $settings['button-icon']['name'] ?? 'play_circle';
 // Extract YouTube ID
 // --------------------------------------------------
 $video_id = null;
-WPBS::console_log( $block );
+
 if ( $link ) {
     $parsed = wp_parse_url( $link );
 
@@ -105,17 +105,21 @@ $wrapper_attrs = get_block_wrapper_attributes( [
 ?>
 <div <?php echo $wrapper_attrs; ?>>
 
-    <?php if ( $title ): ?>
-        <div class="wpbs-video__title absolute z-20 left-0 w-full <?php echo $title_pos === 'bottom' ? 'bottom-0' : 'top-0'; ?>">
-            <span><?php echo esc_html( $title ); ?></span>
-        </div>
-    <?php endif; ?>
+    <?php if ( $lightbox ) { ?>
 
-    <?php if ( $desc ): ?>
-        <div class="wpbs-video__description absolute z-20 left-0 w-full bottom-0">
-            <span><?php echo esc_html( $desc ); ?></span>
-        </div>
-    <?php endif; ?>
+        <?php if ( $title ): ?>
+            <div class="wpbs-video__title absolute z-20 left-0 w-full <?php echo $title_pos === 'bottom' ? 'bottom-0' : 'top-0'; ?>">
+                <span><?php echo esc_html( $title ); ?></span>
+            </div>
+        <?php endif; ?>
+
+        <?php if ( $desc ): ?>
+            <div class="wpbs-video__description absolute z-20 left-0 w-full bottom-0">
+                <span><?php echo esc_html( $desc ); ?></span>
+            </div>
+        <?php endif; ?>
+
+    <?php } ?>
 
     <div class="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
         <span class="screen-reader-text">Play video</span>

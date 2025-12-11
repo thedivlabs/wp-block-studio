@@ -11,7 +11,7 @@ $is_lightbox = wp_is_json_request();
 
 $content = $content ?? '';
 
-if ( ! $is_loop && ! $is_gallery ) {
+if ( ! $is_loop && ! $is_gallery && ! $is_lightbox ) {
 	echo $content;
 
 	return;

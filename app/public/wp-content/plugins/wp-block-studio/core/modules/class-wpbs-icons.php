@@ -89,6 +89,7 @@ final class WPBS_Icons {
 
 		$names = array_filter( array_map( 'trim', explode( ',', str_replace( ' ', '', $raw ) ) ) );
 		sort( $names, SORT_STRING );
+
 		set_transient( 'wpbs_global_icon_names', $names, DAY_IN_SECONDS );
 
 		return $names;
@@ -99,6 +100,7 @@ final class WPBS_Icons {
 		$list = array_filter( array_map( 'trim', explode( ',', $raw ) ) );
 		sort( $list, SORT_STRING );
 
+
 		return $list;
 	}
 
@@ -107,6 +109,8 @@ final class WPBS_Icons {
 			return null;
 		}
 
+		sort( $names, SORT_STRING );
+		
 		return sprintf(
 			'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200..500,0..1,0&icon_names=%s&display=swap',
 			implode( ',', $names )

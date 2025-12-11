@@ -15,7 +15,7 @@ $is_loop    = ! empty( $attributes['isLoop'] );
 $is_lightbox = wp_is_json_request();
 
 
-if ( ! $is_loop && ! $is_gallery ) {
+if ( ! $is_gallery ) {
 	echo $content;
 
 	return;
@@ -48,6 +48,11 @@ $wrapper_props = get_block_wrapper_attributes( array_filter( [
 
 $closing = '</div>';
 
+if ( ! $is_gallery && ! $is_lightbox ) {
+	echo $content;
+
+	return;
+}
 
 echo '<div ' . $wrapper_props . '>';
 
@@ -59,28 +64,6 @@ if ( $is_gallery || $is_lightbox ) {
 	echo $media->render();
 }
 
-/**
- * LIGHTBOX MODE → close early
- */
-if ( $is_lightbox ) {
-	echo $closing;
-
-	return;
-}
-
-/**
- * GALLERY MODE → media only
- */
-if ( $is_gallery ) {
-	echo $closing;
-
-	return;
-}
-
-/**
- * NORMAL FRONT-END BLOCK OUTPUT
- */
-echo $content ?? '';
 
 // Close wrapper
 echo $closing;

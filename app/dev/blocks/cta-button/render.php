@@ -1,45 +1,47 @@
 <?php
 
-
 if ( empty( $block ) || empty( $content ) ) {
 	return false;
 }
 
-// Anonymous class stays local to THIS file only.
+$settings = $attributes['wpbs-cta'] ?? [];
+
+/**
+ * Anonymous CTA helper
+ */
 $CTA = new class {
 
 	public function url( array $settings, WP_Block $block ): string {
 
-		// Loop OFF → normal URL.
+		// Normal mode (not loop)
 		if ( empty( $settings['loop'] ) ) {
 			return $settings['link']['url'] ?? '#';
 		}
 
-		// Loop ON → pull loop item from context.
-		$item = $block->context['wpbs/loopItem'] ?? null;
-		if ( ! $item ) {
-			return $settings['link']['url'] ?? '#';
+		// Loop mode — check postId first
+		$post_id = $block->context['postId'] ?? null;
+		if ( $post_id ) {
+			$permalink = get_permalink( (int) $post_id );
+
+			return $permalink ?: '#';
 		}
 
 		// Term loop
-		if ( $item instanceof WP_Term ) {
-			$url = get_term_link( $item );
+		$term_id = $block->context['termId'] ?? null;
+		if ( $term_id ) {
+			$url = get_term_link( (int) $term_id );
 
 			return is_wp_error( $url ) ? '#' : $url;
 		}
 
-		// Post loop
-		if ( $item instanceof WP_Post ) {
-			return get_permalink( $item );
-		}
-
-		// Unknown — fallback
+		// Fallback
 		return $settings['link']['url'] ?? '#';
 	}
 };
 
-$final_url = $CTA->url( $attributes['wpbs-cta'] ?? [], $block );
+$final_url = $CTA->url( $settings, $block );
 
+// Inject
 $content = str_replace( '%%URL%%', esc_url( $final_url ), $content );
 
 echo $content;

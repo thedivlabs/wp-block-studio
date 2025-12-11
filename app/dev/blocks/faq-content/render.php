@@ -1,5 +1,6 @@
 <?php
 
+$settings = $block->context['wpbs/group'] ?? [];
 $faq_item = $block->context['wpbs/faqItem'] ?? [];
 
 $answer = $faq_item['answer'] ?? '';
@@ -9,7 +10,10 @@ if ( empty( $answer ) ) {
 }
 
 $block_props = get_block_wrapper_attributes( [
-        'class' => 'wpbs-faq-content'
+        'class' => join( ' ', array_filter( [
+                'wpbs-faq-content',
+                $settings['styleClass'] ?? null
+        ] ) )
 ] );
 
 ?>

@@ -7,7 +7,10 @@ if ( empty( $faq_item['question'] ) || empty( $faq_item['answer'] ) ) {
 }
 
 $block_props = get_block_wrapper_attributes( [
-        'class' => 'wpbs-faq-item w-full flex flex-col'
+        'class' => join( ' ', array_filter( [
+                'wpbs-faq-item w-full flex flex-col',
+                $settings['styleClass'] ?? null
+        ] ) )
 ] );
 
 

@@ -18,4 +18,20 @@
     }
 
   }
+
+
+  .wpbs-faq-header {
+    .wpbs-faq-header__button {
+      height: 1lh;
+      width: auto;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+
+  }
+
 }

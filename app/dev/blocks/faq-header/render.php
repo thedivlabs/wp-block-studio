@@ -10,10 +10,13 @@ if ( empty( $question ) ) {
 }
 
 $block_props = get_block_wrapper_attributes( [
-        'class' => 'wpbs-faq-header w-full flex items-center justify-between'
+        'class' => join( ' ', array_filter( [
+                'wpbs-faq-header w-full flex items-center justify-between',
+                $settings['styleClass'] ?? null
+        ] ) )
 ] );
 
-$icon = $settings['icon'];
+$icon = $settings['icon'] ?? [ 'name' => 'add', 'styles' => '' ];
 
 ?>
 

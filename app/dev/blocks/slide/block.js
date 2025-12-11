@@ -296,7 +296,7 @@ registerBlockType(metadata.name, {
 
                 {isImage && !isDynamic && renderSlideContent(settings, attributes, false)}
 
-                {isDynamic && "%%__BLOCK_CONTENT__%%"}
+                {isDynamic && "%%__SLIDE_CONTENT__%%"}
 
                 {hasLink && !isGallery && (
                     <a {...getAnchorProps(link)} className="wpbs-slide__link">

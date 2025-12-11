@@ -3,6 +3,7 @@ import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {InnerBlocks} from "@wordpress/block-editor";
+import {useEffect} from "@wordpress/element";
 
 const selector = "wpbs-slider-wrapper";
 
@@ -31,8 +32,24 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, styleData, BlockWrapper, setCss, setPreload} = props;
+            const {attributes, styleData, BlockWrapper, setCss, setPreload, setAttributes, context} = props;
             const classNames = getClassNames(attributes, styleData);
+
+            const {isGallery, isLoop} = attributes;
+
+            useEffect(() => {
+                const next = {
+                    isLoop,
+                    isGallery
+                };
+
+                if (
+                    next.isLoop !== attributes.isLoop ||
+                    next.isGallery !== attributes.isGallery
+                ) {
+                    setAttributes(next);
+                }
+            }, [isLoop, isGallery]);
 
             return (
                 <>

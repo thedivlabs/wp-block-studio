@@ -198,69 +198,79 @@ class WPBS_Loop {
 	}
 
 	public static function recursive_sanitize( $input ) {
-		return $input;
-		// ---------------------------
-		// 1. ARRAY → recurse
-		// ---------------------------
+
+		// -------------------------------------
+		// 1. ARRAY → sanitize keys + recurse
+		// -------------------------------------
 		if ( is_array( $input ) ) {
 			$sanitized = [];
+
 			foreach ( $input as $key => $value ) {
-				$clean_key               = is_string( $key ) ? sanitize_key( $key ) : $key;
+
+				// Preserve casing, allow only safe key characters
+				// Allowed: A-Z a-z 0-9 _ - /
+				if ( is_string( $key ) ) {
+					$clean_key = preg_replace( '/[^A-Za-z0-9_\-\/]/', '', $key );
+				} else {
+					$clean_key = $key;
+				}
+
 				$sanitized[ $clean_key ] = self::recursive_sanitize( $value );
 			}
 
 			return $sanitized;
 		}
 
-		// ---------------------------
-		// 2. STRING → selective rules
-		// ---------------------------
+		// -------------------------------------
+		// 2. STRING → specialized whitelist
+		// -------------------------------------
 		if ( is_string( $input ) ) {
 
 			$trimmed = trim( $input );
 
-			// 📌 Allow Gutenberg CSS variable tokens entirely unchanged
-			// Examples: var:preset|color|pale-pink
+			// Allow Gutenberg CSS variable tokens exactly as-is.
+			// Example: var:preset|color|pale-pink
 			if ( str_starts_with( $trimmed, 'var:' ) ) {
 				return $trimmed;
 			}
 
-			// 📌 Allow CSS rgba(), rgb(), hsl(), etc.
+			// Allow rgb(), rgba(), hsl(), hsla() color syntax
 			if ( preg_match( '/^(rgb|rgba|hsl|hsla)\(/i', $trimmed ) ) {
 				return $trimmed;
 			}
 
-			// 📌 Allow safe CSS numeric values: 1rem, 24px, 50%, 0, bold, etc.
-			if ( preg_match( '/^[-a-zA-Z0-9.%\s]+$/', $trimmed ) ) {
+			// Allow safe CSS numeric values and keywords.
+			// Examples: 24px, 2rem, 50%, auto, bold, center
+			if ( preg_match( '/^[A-Za-z0-9 ._%\-]+$/', $trimmed ) ) {
 				return $trimmed;
 			}
 
-			// 📌 Fallback for normal text content
+			// Final fallback: clean normal text
 			return sanitize_text_field( $trimmed );
 		}
 
-		// ---------------------------
+		// -------------------------------------
 		// 3. Safe primitives
-		// ---------------------------
+		// -------------------------------------
 		if ( is_int( $input ) ) {
-			return intval( $input );
+			return $input;
 		}
 
 		if ( is_float( $input ) ) {
-			return floatval( $input );
+			return $input;
 		}
 
 		if ( is_bool( $input ) ) {
-			return (bool) $input;
+			return $input;
 		}
 
 		if ( is_null( $input ) ) {
 			return null;
 		}
 
-		// ---------------------------
-		// 4. Fallback (objects, etc.)
-		// ---------------------------
+		// -------------------------------------
+		// 4. Fallback (objects, unexpected types)
+		// -------------------------------------
 		return $input;
 	}
 
@@ -693,13 +703,14 @@ class WPBS_Loop {
 		$media = []
 	): string {
 
-		// Clone so you don't mutate original
 		$block = $template;
 
-		// Mutate attributes
+		$block['innerBlocks'] = $template['innerBlocks'] ?? [];
+
 		if ( $post_id !== null ) {
 			$block['attrs']['postId'] = $post_id;
 		}
+
 		if ( $term_id !== null ) {
 			$block['attrs']['termId']      = $term_id;
 			$block['attrs']['wpbs/termId'] = $term_id;
@@ -707,13 +718,13 @@ class WPBS_Loop {
 
 		$block['attrs']['index'] = $index;
 
-		// Provide context to inner blocks
 		$taxonomy = $query['taxonomy'] ?? null;
 
 		$context = [
-			'postId'        => $post_id,
-			'termId'        => $term_id,
-			'taxonomy'      => $taxonomy,
+			'postId'   => $post_id,
+			'termId'   => $term_id,
+			'taxonomy' => $taxonomy,
+
 			'wpbs/query'    => $query,
 			'wpbs/media'    => $media,
 			'wpbs/postId'   => $post_id,
@@ -722,17 +733,13 @@ class WPBS_Loop {
 			'wpbs/index'    => $index,
 		];
 
-		// Inject context (this mimics WP_Block)
-		$block['context'] = $context;
+		$instance = new WP_Block( $block, $context );
 
-		// ---- CRITICAL FIX FOR render_block() ----
-		// render_block() *requires* these keys, even if empty.
-		$block['innerBlocks']  = $block['innerBlocks'] ?? [];
-		$block['innerHTML']    = $block['innerHTML'] ?? '';
-		$block['innerContent'] = $block['innerContent'] ?? [];
+		$instance->context['postId'] = $post_id;
+		$instance->context['termId'] = $term_id;
+		$instance->context['media']  = $media;
 
-		// Now you can safely run the engine
-		return render_block( $block );
+		return $instance->render();
 	}
 
 

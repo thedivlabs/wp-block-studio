@@ -35,8 +35,8 @@ $loop_data = WPBS_Loop::build(
 
 
 WPBS::console_log( $loop_data );
+WPBS::console_log( [ $content ] );
 
-return;
 
 /**
  * 4. Extract the loop HTML
@@ -48,26 +48,9 @@ $dynamic_html = $loop_data['html'] ?? '';
  */
 $marker = '%%__BLOCK_CONTENT__%%';
 
-// If marker missing, fail gracefully (prevents blank blocks in edge cases)
-if ( strpos( $content, $marker ) === false ) {
-	echo $content;
-
-	return;
-}
-
 $final_output = str_replace( $marker, $dynamic_html, $content );
 
 /**
  * 6. Echo the rendered content with dynamic loop inserted
  */
 echo $final_output;
-
-/**
- * 7. Loop pagination + script output
- */
-$loop_instance->output_loop_script(
-	$inner_block,
-	$loop_data,
-	$merged_query,
-	max( 1, get_query_var( 'paged', 1 ) )
-);

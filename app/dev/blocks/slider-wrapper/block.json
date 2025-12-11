@@ -22,6 +22,12 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "isLoop": {
+      "type": "boolean"
+    },
+    "isGallery": {
+      "type": "boolean"
     }
   },
   "supports": {

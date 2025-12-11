@@ -104,7 +104,6 @@ registerBlockType(metadata.name, {
         }, [clientId]);
 
         useEffect(() => {
-            console.log('setCss');
             setCss(getCssProps(settings, totalSlides));
         }, [JSON.stringify(settings), totalSlides, setCss]);
 

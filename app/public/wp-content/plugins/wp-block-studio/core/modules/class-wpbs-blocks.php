@@ -283,7 +283,7 @@ class WPBS_Blocks {
 			$result = '';
 
 			foreach ( $props as $k => $v ) {
-				if ( $v === null || $v === '' || str_starts_with( $k, '__' ) ) {
+				if ( $v === null || $v === '' || str_starts_with( $k, '__' ) || is_array( $v ) ) {
 					continue;
 				}
 				$needsImportant = $important && array_reduce(

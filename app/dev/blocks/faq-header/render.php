@@ -2,7 +2,7 @@
 
 $settings = $block->context['wpbs/group'] ?? [];
 $faq_item = $block->context['wpbs/faqItem'] ?? [];
-WPBS::console_log( $settings );
+
 $question = $faq_item['question'] ?? '';
 
 if ( empty( $question ) ) {

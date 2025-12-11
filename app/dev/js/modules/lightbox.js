@@ -29,7 +29,7 @@ export default class Lightbox {
             }
 
             // Find ANY element marked with data-index
-            const indexed = event.target.closest('[data-index]');
+            const indexed = event.target.closest('.--lightbox[data-index]');
             if (!indexed) return;
 
             // That element must live inside a lightbox wrapper
@@ -39,6 +39,10 @@ export default class Lightbox {
             // Parse JSON payload
             const raw = wrapper.getAttribute('data-lightbox');
             if (!raw) return;
+
+            console.log(indexed);
+            console.log(wrapper);
+            console.log(raw);
 
             let payload;
             try {
@@ -95,7 +99,7 @@ export default class Lightbox {
                 WPBS.modals.show_modal(false, {
                     template: lightbox_element,
                     callback: (modal) => {
-                        
+
                         WPBS.slider.observe(
                             modal.querySelector('.swiper'),
                             this.swiper_args(args.index ?? 0)

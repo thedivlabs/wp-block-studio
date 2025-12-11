@@ -46,7 +46,7 @@ class WPBS_Loop {
 		$loop_data = self::render_loop( $sanitized_template, $clean_query, $page );
 
 		// Build hydration script
-		$script = self::generate_script_tag(
+		$script = self::generate_json_data(
 			$sanitized_template,
 			$loop_data,
 			$clean_query,
@@ -70,7 +70,7 @@ class WPBS_Loop {
 	 * Returned as a <script> tag string.
 	 * ------------------------------------------------------------------
 	 */
-	private static function generate_script_tag( array $template, array $loop_data, array $query, int $page ): string {
+	private static function generate_json_data( array $template, array $loop_data, array $query, int $page ): string {
 		$query_clean = WPBS::clean_array( $query );
 
 		$template_json = wp_json_encode(
@@ -88,15 +88,13 @@ class WPBS_Loop {
 			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
 		);
 
-		return '<script type="application/json" data-wpbs-loop-template>' .
-		       json_encode(
-			       [
-				       'template'   => json_decode( $template_json, true ),
-				       'pagination' => json_decode( $pagination_json, true ),
-			       ],
-			       JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-		       )
-		       . '</script>';
+		return json_encode(
+			[
+				'template'   => json_decode( $template_json, true ),
+				'pagination' => json_decode( $pagination_json, true ),
+			],
+			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+		);
 	}
 
 	/**

@@ -1,14 +1,9 @@
 <?php
 
-//WPBS::console_log( $block );
-//WPBS::console_log( [ $content ?? '' ] );
-
-echo $content;
-
-return;
 
 $settings   = $block->context['wpbs/query'] ?? [];
 $media_item = $block->context['wpbs/media'] ?? null;
+$index      = $block->context['wpbs/index'] ?? null;
 
 $is_gallery  = ! empty( $attributes['isGallery'] );
 $is_loop     = ! empty( $attributes['isLoop'] );
@@ -32,12 +27,11 @@ if ( $is_loop ) {
 }
 
 $wrapper_props = get_block_wrapper_attributes( array_filter( [
-	'class'      => join( ' ', array_filter( [
+	'class' => join( ' ', array_filter( [
 		'wpbs-slide swiper-slide',
 		$block->attributes['uniqueId'] ?? null,
 		'w-full flex',
 	] ) ),
-	'data-index' => $block->context['wpbs/index'] ?? null
 ] ) );
 
 
@@ -51,8 +45,8 @@ $closing = $wrapper_tags['closing'];
  * ALWAYS PRINT MEDIA FIRST
  */
 if ( $is_gallery || $is_lightbox ) {
-	$media = new WPBS_Media( $media_item, $settings );
-	//echo $media->render();
+	$media = new WPBS_Media( $media_item, $settings, $index );
+	echo $media->render();
 }
 
 /**

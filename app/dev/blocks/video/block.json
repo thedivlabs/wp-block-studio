@@ -17,6 +17,9 @@
       }
     }
   },
+  "usesContext": [
+    "wpbs/index"
+  ],
   "supports": {
     "layout": false,
     "interactivity": true,

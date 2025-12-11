@@ -50,11 +50,11 @@ export function MediaGalleryControls({attributes, setAttributes, enabled}) {
     useEffect(() => {
         if (!isEnabled) return;
 
-        if (!isEqual(attributes["wpbs-query"], localSettings)) {
-            setAttributes({"wpbs-query": localSettings});
+        if (!isEqual(attributes["wpbs-query"], attributes?.["wpbs-gallery"])) {
+            setAttributes({"wpbs-query": attributes?.["wpbs-gallery"]});
         }
 
-    }, [isEnabled, localSettings, attributes["wpbs-query"]]);
+    }, [isEnabled, attributes?.["wpbs-gallery"], attributes["wpbs-query"]]);
 
 
     return (

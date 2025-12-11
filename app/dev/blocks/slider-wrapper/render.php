@@ -14,8 +14,6 @@ $is_loop        = ! empty( $block->context['wpbs/isLoop'] );
 $is_gallery     = ! empty( $block->context['wpbs/isGallery'] );
 $template_block = $block->parsed_block['innerBlocks'][0] ?? [];
 
-WPBS::console_log( $template_block );
-
 /**
  * 2. If NOT gallery and NOT loop → return raw content
  */
@@ -25,32 +23,28 @@ if ( ! $is_loop && ! $is_gallery ) {
 	return;
 }
 
-
-// Generate loop HTML + data
+/**
+ * 3. Build loop content
+ */
 $loop_data = WPBS_Loop::build(
 	$template_block,
 	$query_settings,
 	max( 1, get_query_var( 'paged', 1 ) )
 );
 
-
-WPBS::console_log( $loop_data );
-WPBS::console_log( [ $content ] );
-
-
-/**
- * 4. Extract the loop HTML
- */
 $dynamic_html = $loop_data['html'] ?? '';
+$dynamic_json = $loop_data['script'] ?? '';
 
 /**
- * 5. Replace the marker inside the saved content
+ * 4. Render wrapper div with block wrapper attributes.
+ *
+ * We do NOT use $block->inner_html anymore.
+ * We directly print our own wrapper and inject dynamic content inside.
  */
-$marker = '%%__BLOCK_CONTENT__%%';
 
-$final_output = str_replace( $marker, $dynamic_html, $content );
+$attrs = get_block_wrapper_attributes( array_filter( [
+	'class'         => 'wpbs-slider-wrapper swiper-wrapper',
+	'data-lightbox' => $is_gallery ? json_encode( $loop_data['lightbox'] ) : null,
+] ) );
 
-/**
- * 6. Echo the rendered content with dynamic loop inserted
- */
-echo $final_output;
+echo "<div {$attrs}>{$dynamic_html}</div>";

@@ -20,6 +20,7 @@ $desc       = $settings['description'] ?? '';
 $resolution = $settings['resolution'] ?? 'medium';
 $title_pos  = $settings['title-position'] ?? 'top';
 $poster_id  = isset( $settings['poster'] ) ? intval( $settings['poster'] ) : null;
+$index      = $block->context['wpbs/index'] ?? null;
 
 $lightbox = $settings['lightbox'] ?? true;
 $overlay  = $settings['overlay'] ?? true;
@@ -28,12 +29,11 @@ $eager    = ! empty( $settings['eager'] );
 
 $icon = $settings['button-icon']['name'] ?? 'play_circle';
 
-
 // --------------------------------------------------
 // Extract YouTube ID
 // --------------------------------------------------
 $video_id = null;
-
+WPBS::console_log( $block );
 if ( $link ) {
     $parsed = wp_parse_url( $link );
 
@@ -95,6 +95,7 @@ $wrapper_attrs = get_block_wrapper_attributes( [
         'data-platform' => 'youtube',
         'data-vid'      => $video_id ?: '',
         'data-title'    => $title ?: '',
+        'data-index'    => $index ?: '',
 ] );
 
 

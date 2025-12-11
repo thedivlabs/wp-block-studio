@@ -151,6 +151,9 @@ class WPBS_Media {
 	/** @var int|null  Attachment ID for images */
 	protected ?int $id = null;
 
+	/** @var int|null  Attachment ID for images */
+	protected ?int $index = null;
+
 	/** @var array|null  Video metadata array */
 	protected ?array $video = null;
 
@@ -161,9 +164,10 @@ class WPBS_Media {
 	 * @param int|array|null $item
 	 * @param array $args
 	 */
-	public function __construct( int|array|null $item, array $args = [] ) {
-		$this->raw  = $item;
-		$this->args = $args;
+	public function __construct( int|array|null $item, array $args = [], $index = null ) {
+		$this->raw   = $item;
+		$this->args  = $args;
+		$this->index = $index;
 
 		// ---------------------------
 		// CASE 1: Video array
@@ -211,17 +215,23 @@ class WPBS_Media {
 		// Merge ACF video props + settings
 		$merged = array_merge( $this->video, $args, [ 'disabled' => ! $is_rest, 'lightbox' => ! $is_rest ] );
 
+		$is_lightbox = ! empty( $args['lightbox'] );
+
 		$block = [
 			'blockName'   => 'wpbs/video-element',
 			'attrs'       => [
 				'wpbs-video' => $merged,
-				'className'  => 'w-full h-full'
+				'className'  => implode( ' ', array_filter( [
+					'w-full h-full',
+				] ) ),
 			],
 			'innerBlocks' => [],
 		];
 
 
-		$instance = new WP_Block( $block );
+		$instance = new WP_Block( $block, [
+			'wpbs/index' => $this->index ?? null,
+		] );
 
 		return $instance->render();
 	}
@@ -229,12 +239,15 @@ class WPBS_Media {
 	protected function render_image( array $args ): string {
 		$resolution = $args['resolution'] ?? 'large';
 
+		$is_lightbox = ! empty( $args['lightbox'] );
+
 		$attr = [
-			'class' => implode( ' ', array_filter( [
+			'class'      => implode( ' ', array_filter( [
 				'w-full h-full',
 				! empty( $args['contain'] ) ? 'object-contain' : 'object-cover',
-				! empty( $args['lightbox'] ) ? '--lightbox' : 'object-cover',
-			] ) )
+				$is_lightbox ? '--lightbox' : 'object-cover',
+			] ) ),
+			'data-index' => $this->index ?? null,
 		];
 
 		return wp_get_attachment_image( $this->id, $resolution, false, $attr );

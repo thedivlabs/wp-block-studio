@@ -53,7 +53,7 @@ function normalizeSettings(raw) {
 // Determine if style is image
 // ------------------------
 function isImageStyle(attributes = {}) {
-    return (attributes?.className ?? "").includes("is-style-image");
+    return (attributes?.className ?? "").includes("is-style-media");
 }
 
 // ------------------------
@@ -133,7 +133,14 @@ function SlideInspector({attributes, updateSettings}) {
 // Get classes
 // ------------------------
 function getClassNames(attributes = {}) {
-    return ["wpbs-slide swiper-slide", attributes.uniqueId, "w-full", "flex"].filter(Boolean).join(" ");
+
+    
+    return [
+        "wpbs-slide swiper-slide",
+        attributes.uniqueId,
+        "w-full flex",
+
+    ].filter(Boolean).join(" ");
 }
 
 // ------------------------

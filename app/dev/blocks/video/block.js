@@ -184,12 +184,22 @@ registerBlockType(metadata.name, {
         const updateSettings = useCallback(
             (patchObj) => {
                 const next = {...settings, ...patchObj};
+
+                // compute video id from link
+                const vid = getVideoId(next.link);
+                if (vid !== next.vid) next.vid = vid;
+
+                // normalize as before
                 const normalized = normalizeVideo(next);
-                const merged = {...next, ...normalized}; // preserve extra props
-                if (!isEqual(settings, merged)) setAttributes({"wpbs-video": merged});
+                const merged = {...next, ...normalized};
+
+                if (!isEqual(settings, merged)) {
+                    setAttributes({"wpbs-video": merged});
+                }
             },
             [settings, setAttributes]
         );
+
 
         useEffect(() => {
             setCss(getCssProps(settings));
@@ -227,7 +237,7 @@ registerBlockType(metadata.name, {
                     props={props}
                     className={classNames}
                     data-platform="youtube"
-                    data-vid={getVideoId(settings.link)}
+                    data-vid={settings.vid}
                     data-title={settings.title || ""}
                 >
                     {renderVideoContent(settings, attributes, true)}
@@ -251,7 +261,7 @@ registerBlockType(metadata.name, {
                 props={props}
                 className={classNames}
                 data-platform="youtube"
-                data-vid={getVideoId(settings.link)}
+                data-vid={settings.vid}
                 data-title={settings.title || ""}
             >
                 {renderVideoContent(settings, attributes, false)}

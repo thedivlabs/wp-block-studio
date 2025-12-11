@@ -70,15 +70,12 @@ registerBlockType(metadata.name, {
         const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
-        const {isGallery, isLoop} = attributes;
-
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
             >
-                {!isGallery && !isLoop && <InnerBlocks.Content/>}
-                {isGallery || isLoop && '%%__BLOCK_CONTENT__%%'}
+                <InnerBlocks.Content/>
             </BlockWrapper>
         );
     }, {

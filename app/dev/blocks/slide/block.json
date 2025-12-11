@@ -11,8 +11,8 @@
   ],
   "styles": [
     {
-      "name": "image",
-      "label": "Image"
+      "name": "media",
+      "label": "Media"
     }
   ],
   "attributes": {

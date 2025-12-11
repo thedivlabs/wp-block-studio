@@ -99,8 +99,9 @@ export const Loop = ({attributes = {}, setAttributes, enabled}) => {
     useEffect(() => {
         if (!isEnabled) return;
 
-        if (!isEqual(attributes["wpbs-query"], localSettings)) {
-            setAttributes({"wpbs-query": localSettings});
+        if (!isEqual(attributes["wpbs-query"], attributes?.["wpbs-loop"])) {
+            console.log(localSettings, attributes["wpbs-query"]);
+            setAttributes({"wpbs-query": attributes?.["wpbs-loop"]});
         }
 
     }, [isEnabled, localSettings, attributes["wpbs-query"]]);

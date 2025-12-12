@@ -1,0 +1,50 @@
+{
+  "apiVersion": 3,
+  "name": "wpbs/masthead",
+  "title": "Masthead",
+  "description": "Display a header masthead element",
+  "selectors": {
+    "root": ".wpbs-masthead"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
+  "render": "file:./render.php",
+  "icon": "editor-kitchensink"
+}
+
+

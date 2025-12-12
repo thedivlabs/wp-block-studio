@@ -48,7 +48,7 @@ function getCssProps(settings) {
 
     const css = {
         props: {
-            "--divider": divider
+            "--divider": Object.values(divider ?? {}).join(' ')
         },
         breakpoints: {},
     };

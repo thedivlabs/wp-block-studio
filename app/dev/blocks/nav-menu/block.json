@@ -13,7 +13,7 @@
   },
   "supports": {
     "interactivity": true,
-    "innerBlocks": true,
+    "innerBlocks": false,
     "color": {
       "background": true,
       "text": true,

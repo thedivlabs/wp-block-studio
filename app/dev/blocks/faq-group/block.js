@@ -211,8 +211,18 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                 />
                                 <Field
-                                    key={'icon'}
-                                    field={{type: 'icon', slug: 'icon', label: 'Icon', full: true}}
+                                    key={'icon-open'}
+                                    field={{type: 'icon-open', slug: 'icon', label: 'Icon Open', full: true}}
+                                    settings={settings}
+                                    callback={updateSettings}
+                                    isToolsPanel={false}
+                                    props={props}
+                                    __next40pxDefaultSize
+                                    __nextHasNoMarginBottom
+                                />
+                                <Field
+                                    key={'icon-closed'}
+                                    field={{type: 'icon-closed', slug: 'icon', label: 'Icon Closed', full: true}}
                                     settings={settings}
                                     callback={updateSettings}
                                     isToolsPanel={false}
@@ -221,9 +231,7 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                 />
 
-                                <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
-                                    <></>
-                                </Grid>
+                            
                             </Grid>
                         </PanelBody>
                     </InspectorControls>

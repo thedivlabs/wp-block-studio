@@ -33,7 +33,7 @@
     user-select: none;
 
     &:after {
-      content: var(--icon, 'add');
+      content: var(--icon-closed, var(--icon-open, 'add'));
       font-size: var(--icon-size, 32px);
       line-height: var(--icon-size, 32px);
       color: var(--icon-color, inherit);
@@ -52,9 +52,14 @@
       text-align: center;
       cursor: pointer;
       z-index: 10;
+      transition: transform .2s ease-in-out;
     }
 
+  }
 
+  &.--open .wpbs-faq-header:after {
+    content: var(--icon-open, var(--icon-closed, 'remove'));
+    transform: translateY(-50%) rotate(180deg);
   }
 
 }

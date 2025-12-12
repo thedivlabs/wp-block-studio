@@ -10,7 +10,6 @@
   &.--divider {
 
     .wpbs-faq-item {
-      position: relative;
 
       &:not(:last-of-type):after {
         content: '';
@@ -30,7 +29,6 @@
 
   .wpbs-faq-header {
     padding-right: calc(var(--icon-size, 32px) + 1rem);
-    user-select: none;
 
     &:after {
       content: var(--icon-closed, var(--icon-open, 'add'));

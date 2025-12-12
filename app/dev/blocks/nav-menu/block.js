@@ -33,6 +33,40 @@ const FIELDS_BREAKPOINTS = [
     {type: "border", slug: "divider", label: "Divider", full: true},
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
     {type: "unit", slug: "icon-space", label: "Space"},
+    {
+        type: "color",
+        slug: "colors",
+        label: "Colors",
+        full: true,
+        colors: [
+            // ─────────────────────────
+            // Top-level (normal / hover)
+            // ─────────────────────────
+            {slug: "color-background", label: "Background"},
+            {slug: "color-background-hover", label: "Background Hover"},
+            {slug: "color-icon", label: "Icon"},
+            {slug: "color-text-decoration", label: "Text Decoration"},
+
+            // ─────────────────────────
+            // Sub-menu (normal / hover)
+            // ─────────────────────────
+            {slug: "color-submenu-background", label: "Sub Menu Background"},
+            {slug: "color-submenu-background-hover", label: "Sub Menu Background Hover"},
+            {slug: "color-submenu-text", label: "Sub Menu Text"},
+            {slug: "color-submenu-text-hover", label: "Sub Menu Text Hover"},
+            {slug: "color-submenu-icon", label: "Sub Menu Icon"},
+
+            // ─────────────────────────
+            // Active state (top + sub)
+            // ─────────────────────────
+            {slug: "color-background-active", label: "Active Background"},
+            {slug: "color-text-active", label: "Active Text"},
+            {slug: "color-text-decoration-active", label: "Active Text Decoration"},
+            {slug: "color-submenu-background-active", label: "Active Sub Menu Background"},
+            {slug: "color-submenu-text-active", label: "Active Sub Menu Text"},
+        ],
+    },
+
 ];
 
 const selector = "wpbs-nav-menu";

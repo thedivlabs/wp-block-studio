@@ -815,7 +815,6 @@ export const backgroundFieldsMap = [
     },
 ];
 
-// LoopFieldsMap.js
 export const loopFieldsMap = [
     {
         type: "number",

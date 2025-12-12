@@ -46,7 +46,6 @@ registerBlockType(metadata.name, {
             const {
                 attributes,
                 setAttributes,
-                styleData,
                 BlockWrapper,
                 setCss,
             } = props;
@@ -70,7 +69,7 @@ registerBlockType(metadata.name, {
                 [settings, setAttributes]
             );
 
-            const classNames = getClassNames(attributes, styleData);
+            const classNames = getClassNames(attributes);
 
             return (
                 <>
@@ -111,7 +110,7 @@ registerBlockType(metadata.name, {
     save: withStyleSave(
         (props) => {
             const {attributes, BlockWrapper} = props;
-            const classNames = getClassNames(attributes, styleData);
+            const classNames = getClassNames(attributes);
 
             return (
                 <BlockWrapper

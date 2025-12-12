@@ -12,19 +12,16 @@ import {
 } from "@wordpress/components";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {useCallback, useEffect} from "@wordpress/element";
+import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {isEmpty, isEqual} from "lodash";
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
 import {BreakpointPanels} from "Components/BreakpointPanels";
 
 /* --------------------------------------------------------------
- * Normalizer — ALL settings must live inside:
- *   settings.props
- *   settings.breakpoints[bp].props
+ * NORMALIZER — identical to GRID block pattern
  * -------------------------------------------------------------- */
 function normalizeIconListSettings(raw = {}) {
-    // Already normalized
     if (raw && (raw.props || raw.breakpoints)) {
         return {
             props: raw.props || {},
@@ -32,7 +29,7 @@ function normalizeIconListSettings(raw = {}) {
         };
     }
 
-    // Legacy / flat shape → move everything into props
+    // legacy shape
     return {
         props: raw || {},
         breakpoints: {},
@@ -42,7 +39,7 @@ function normalizeIconListSettings(raw = {}) {
 const selector = "wpbs-icon-list";
 
 /* --------------------------------------------------------------
- * CSS Builder
+ * CSS VAR BUILDER
  * -------------------------------------------------------------- */
 function cssVarsFromProps(props = {}) {
     const divider = props.divider ?? {};
@@ -58,35 +55,27 @@ function cssVarsFromProps(props = {}) {
     };
 }
 
-
 function getCssProps(settings) {
-    const baseProps = settings?.props || {};
-    const breakpoints = settings?.breakpoints || {};
+    const baseVars = cssVarsFromProps(settings.props);
 
-    const baseVars = cssVarsFromProps(baseProps);
-
-    const css = {
-        props: baseVars,
-        breakpoints: {},
-    };
-
-    Object.entries(breakpoints).forEach(([bpKey, bpEntry]) => {
-        const bpProps = bpEntry?.props || {};
-
-        css.breakpoints[bpKey] = {
+    const breakpoints = {};
+    Object.entries(settings.breakpoints).forEach(([bp, entry]) => {
+        breakpoints[bp] = {
             props: {
-                ...baseVars,                 // fallback to base
-                ...cssVarsFromProps(bpProps) // override with breakpoint values
-            }
+                ...baseVars,
+                ...cssVarsFromProps(entry.props || {}),
+            },
         };
     });
 
-    return cleanObject(css);
+    return {
+        props: baseVars,
+        breakpoints,
+    };
 }
 
-
 /* --------------------------------------------------------------
- * Breakpoint Controls
+ * BREAKPOINT CONTROL PANEL
  * -------------------------------------------------------------- */
 const BreakpointControls = ({entry, update}) => {
     const props = entry?.props || {};
@@ -102,8 +91,8 @@ const BreakpointControls = ({entry, update}) => {
                     update({
                         props: {
                             ...props,
-                            icon: val
-                        }
+                            icon: val,
+                        },
                     })
                 }
                 __next40pxDefaultSize
@@ -118,8 +107,8 @@ const BreakpointControls = ({entry, update}) => {
                     update({
                         props: {
                             ...props,
-                            divider: val
-                        }
+                            divider: val,
+                        },
                     })
                 }
                 __next40pxDefaultSize
@@ -130,42 +119,45 @@ const BreakpointControls = ({entry, update}) => {
                 label="Columns"
                 value={props.columns ?? ""}
                 onChange={(val) => {
-                    if (val === "") {
-                        update({});
-                        return;
-                    }
                     update({
-                        props: {
-                            ...props,
-                            columns: parseInt(val, 10) || 1,
-                        },
+                        props:
+                            val === ""
+                                ? {}
+                                : {
+                                    ...props,
+                                    columns: parseInt(val, 10) || 1,
+                                },
                     });
                 }}
                 min={1}
                 max={6}
                 __next40pxDefaultSize
             />
-
         </Grid>
     );
 };
 
+/* --------------------------------------------------------------
+ * CLASSNAMES
+ * -------------------------------------------------------------- */
 const getClassNames = (attributes) => {
-    const {'wpbs-icon-list': settings} = attributes;
+    const settings = attributes["wpbs-icon-list"];
 
     return [
         selector,
         "w-full",
         "flex flex-col",
         "relative",
-        !isEmpty(cleanObject(settings?.props?.divider ?? {}, true)) ? "--divider" : null,
+        !isEmpty(cleanObject(settings?.props?.divider ?? {}, true))
+            ? "--divider"
+            : null,
     ]
         .filter(Boolean)
         .join(" ");
-}
+};
 
 /* --------------------------------------------------------------
- * Block Registration
+ * BLOCK REGISTRATION
  * -------------------------------------------------------------- */
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -182,37 +174,31 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const {attributes, setAttributes, BlockWrapper, styleData, setCss} = props;
+            const {
+                attributes,
+                BlockWrapper,
+                setAttributes,
+                setCss,
+            } = props;
 
-            const {'wpbs-icon-list': settings} = attributes;
+            const {'wpbs-icon-lis': settings = {}} = attributes ?? {};
 
-
+            /* Apply CSS vars */
             useEffect(() => {
                 setCss(getCssProps(settings));
             }, [settings]);
 
             const classNames = getClassNames(attributes);
 
-            /* ----------------------------------------------
-             * Settings updater — deep merge props + breakpoints
-             * ---------------------------------------------- */
+            /* --------------------------------------------------------------
+             * UPDATE SETTINGS — identical to GRID block approach
+             * -------------------------------------------------------------- */
             const updateSettings = useCallback(
                 (nextValue) => {
-                    const next = normalizeIconListSettings({
-                        ...settings,
-                        ...nextValue,
-                        props: {
-                            ...settings.props,
-                            ...(nextValue.props || {}),
-                        },
-                        breakpoints: {
-                            ...settings.breakpoints,
-                            ...(nextValue.breakpoints || {}),
-                        },
-                    });
+                    const normalized = normalizeIconListSettings(nextValue);
 
-                    if (!isEqual(settings, next)) {
-                        setAttributes({"wpbs-icon-list": next});
+                    if (!isEqual(settings, normalized)) {
+                        setAttributes({"wpbs-icon-list": normalized});
                     }
                 },
                 [settings, setAttributes]
@@ -221,8 +207,10 @@ registerBlockType(metadata.name, {
             return (
                 <>
                     <InspectorControls group="styles">
-                        <PanelBody initialOpen className="wpbs-controls is-style-unstyled">
-
+                        <PanelBody
+                            initialOpen
+                            className="wpbs-controls is-style-unstyled"
+                        >
                             <BreakpointPanels
                                 value={settings}
                                 onChange={updateSettings}
@@ -232,7 +220,6 @@ registerBlockType(metadata.name, {
                                     breakpoints: BreakpointControls,
                                 }}
                             />
-
                         </PanelBody>
                     </InspectorControls>
 
@@ -240,14 +227,16 @@ registerBlockType(metadata.name, {
                 </>
             );
         },
-        {hasChildren: true, tagName: 'ul'}
+        {hasChildren: true, tagName: "ul"}
     ),
 
-    save: withStyleSave((props) => {
-        const {attributes, styleData, BlockWrapper} = props;
+    save: withStyleSave(
+        (props) => {
+            const {attributes, BlockWrapper} = props;
+            const classNames = getClassNames(attributes);
 
-        const classNames = getClassNames(attributes);
-
-        return <BlockWrapper props={props} className={classNames}/>;
-    }, {hasChildren: true, tagName: 'ul'}),
+            return <BlockWrapper props={props} className={classNames}/>;
+        },
+        {hasChildren: true, tagName: "ul"}
+    ),
 });

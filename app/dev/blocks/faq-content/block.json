@@ -25,7 +25,7 @@
   ],
   "supports": {
     "interactivity": true,
-    "innerBlocks": false,
+    "innerBlocks": true,
     "color": {
       "background": true,
       "text": true,

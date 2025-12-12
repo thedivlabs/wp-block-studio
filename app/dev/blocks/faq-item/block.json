@@ -20,6 +20,10 @@
       "type": "object"
     }
   },
+  "allowedBlocks": [
+    "wpbs/faq-header",
+    "wpbs/faq-content"
+  ],
   "providesContext": {
     "wpbs/faqItem": "faqItem",
     "wpbs/group": "group"
@@ -32,7 +36,7 @@
   ],
   "supports": {
     "interactivity": true,
-    "innerBlocks": false,
+    "innerBlocks": true,
     "color": {
       "background": true,
       "text": true,

@@ -62,9 +62,22 @@ registerBlockType(metadata.name, {
                 </>
             );
         },
-        {hasChildren: false}
+        {hasChildren: true}
     ),
 
-    save: () => null,
+    save: withStyleSave(
+        (props) => {
+            const {attributes, styleData, BlockWrapper} = props;
+            const classNames = getClassNames(attributes, styleData);
+
+            return (
+                <BlockWrapper
+                    props={props}
+                    className={classNames}
+                />
+            );
+        },
+        {hasChildren: true}
+    ),
 
 });

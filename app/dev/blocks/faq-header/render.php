@@ -4,6 +4,12 @@
 $settings = $block->context['wpbs/group'] ?? [];
 $faq_item = $block->context['wpbs/faqItem'] ?? [];
 
+if ( empty( $faq_item ) ) {
+    echo $content ?? '';
+
+    return;
+}
+
 $question = $faq_item['question'] ?? '';
 
 if ( empty( $question ) ) {

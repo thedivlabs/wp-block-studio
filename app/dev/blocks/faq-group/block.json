@@ -17,9 +17,12 @@
       "label": "Accordion"
     }
   ],
+  "allowedBlocks": [
+    "wpbs/faq-item"
+  ],
   "supports": {
     "interactivity": true,
-    "innerBlocks": false,
+    "innerBlocks": true,
     "color": {
       "background": true,
       "text": true,

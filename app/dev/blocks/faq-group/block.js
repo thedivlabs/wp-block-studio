@@ -136,6 +136,50 @@ registerBlockType(metadata.name, {
             );
 
 
+            /*
+            *
+            * <div className={'wpbs-faq-item w-full flex flex-col'}>
+                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
+                                <button className={'wpbs-faq-header__button'}>
+                                    <MaterialIcon {...settings?.icon}/>
+                                </button>
+                            </div>
+                            <div className={'wpbs-faq-content w-full'}>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
+                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
+                                numquam perferendis quos, recusandae repudiandae sit tempora.
+                            </div>
+                        </div>
+                        <div className={'wpbs-faq-item'}>
+                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
+                                <button className={'wpbs-faq-header__button'}>
+                                    <MaterialIcon {...settings?.icon}/>
+                                </button>
+                            </div>
+                            <div className={'wpbs-faq-content'}>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
+                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
+                                numquam perferendis quos, recusandae repudiandae sit tempora.
+                            </div>
+                        </div>
+                        <div className={'wpbs-faq-item'}>
+                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
+                                <button className={'wpbs-faq-header__button'}>
+                                    <MaterialIcon {...settings?.icon}/>
+                                </button>
+                            </div>
+                            <div className={'wpbs-faq-content'}>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
+                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
+                                numquam perferendis quos, recusandae repudiandae sit tempora.
+                            </div>
+                        </div>
+                        * */
+
+
             return (
                 <>
                     <InspectorControls group={"styles"}>
@@ -183,51 +227,11 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                    >
-                        <div className={'wpbs-faq-item w-full flex flex-col'}>
-                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
-                                <button className={'wpbs-faq-header__button'}>
-                                    <MaterialIcon {...settings?.icon}/>
-                                </button>
-                            </div>
-                            <div className={'wpbs-faq-content w-full'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
-                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
-                                numquam perferendis quos, recusandae repudiandae sit tempora.
-                            </div>
-                        </div>
-                        <div className={'wpbs-faq-item'}>
-                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
-                                <button className={'wpbs-faq-header__button'}>
-                                    <MaterialIcon {...settings?.icon}/>
-                                </button>
-                            </div>
-                            <div className={'wpbs-faq-content'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
-                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
-                                numquam perferendis quos, recusandae repudiandae sit tempora.
-                            </div>
-                        </div>
-                        <div className={'wpbs-faq-item'}>
-                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
-                                <button className={'wpbs-faq-header__button'}>
-                                    <MaterialIcon {...settings?.icon}/>
-                                </button>
-                            </div>
-                            <div className={'wpbs-faq-content'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
-                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
-                                numquam perferendis quos, recusandae repudiandae sit tempora.
-                            </div>
-                        </div>
-                    </BlockWrapper>
+                    />
                 </>
             );
         },
-        {hasChildren: false}
+        {hasChildren: true}
     ),
 
     save: withStyleSave(
@@ -244,6 +248,6 @@ registerBlockType(metadata.name, {
                 </BlockWrapper>
             );
         },
-        {hasChildren: false}
+        {hasChildren: true}
     ),
 });

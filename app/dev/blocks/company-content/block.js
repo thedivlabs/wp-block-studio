@@ -54,8 +54,14 @@ const FIELDS = [
             {label: "Bottom", value: "bottom"},
         ],
     },
-    {type: "icon", slug: "icon", label: "Icon", full: true},
     {type: "number", slug: "line-clamp", label: "Line Clamp", min: 1},
+    {type: "unit", slug: "label-size", label: "Label Size"},
+    {type: "icon", slug: "icon", label: "Icon", full: true},
+    {
+        type: "color", slug: "colors", label: "Colors", full: true, colors: [
+            {slug: "color-label", label: "Label"},
+        ]
+    },
     {type: "divider", label: "Options", full: true},
     {type: "toggle", slug: "split-address", label: "Split Address"},
 ];
@@ -81,6 +87,8 @@ function cssVarsFromProps(props = {}) {
         "--icon-color": icon?.color ?? null,
         "--icon-size": icon?.size ? `${icon.size}px` : null,
         "--icon-css": icon?.css ?? null,
+        "--label-color": props?.['color-label'] ?? null,
+        "--label-size": props?.['label-size'] ?? null,
     };
 }
 
@@ -102,7 +110,7 @@ const getClassNames = (attributes, settings) => {
 
     return [
         selector,
-        "inline-flex",
+        "inline-flex flex-wrap",
         "relative",
         !isEmpty(effective?.icon) ? "--icon material-icon-before" : null,
         !isEmpty(effective?.["label-position"])

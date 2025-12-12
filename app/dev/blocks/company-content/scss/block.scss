@@ -1,8 +1,32 @@
 .wpbs-company-content {
 
+  .wpbs-company-content__label {
+    font-size: var(--label-size, 1em);
+    line-height: inherit;
+    color: var(--label-color, inherit);
+  }
+
+  &.--label-bottom {
+
+    .wpbs-company-content__label {
+      order: 10;
+      width: 100%;
+    }
+
+  }
+
+  &.--label-top {
+
+    .wpbs-company-content__label {
+      order: -1;
+      width: 100%;
+    }
+
+  }
+
   &.--line-clamp {
-    line-clamp: var(--line-clamp, 6);
-    -webkit-line-clamp: var(--line-clamp, 6);
+    line-clamp: var(--line-clamp, unset);
+    -webkit-line-clamp: var(--line-clamp, unset);
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;

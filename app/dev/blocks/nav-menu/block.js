@@ -128,29 +128,22 @@ const selector = "wpbs-nav-menu";
 const getClassNames = (attributes = {}) => {
     const settings = attributes["wpbs-nav-menu"] ?? {};
 
-    const hasDivider = !!settings.divider;
-    const hasSubmenuDivider = !!settings["submenu-divider"];
-    const hasIcon = !!settings.icon;
-    const hasSubmenuIcon = !!settings["submenu-icon"];
-    const hasColumns = Number(settings.columns) > 1;
-
-    const style = settings.style || "dropdown";
-
     return [
         selector,
-        "w-full",
-        "block",
-        "relative",
+        'flex flex-wrap',
 
-        // style modes
-        style && `is-style-${style}`,
+        // style modes (replaces implicit block styles)
+        settings.style && `is-style-${settings.style}`,
 
-        // feature flags
-        hasDivider && "--has-divider",
-        hasSubmenuDivider && "--has-submenu-divider",
-        hasIcon && "--has-icon",
-        hasSubmenuIcon && "--has-submenu-icon",
-        hasColumns && "--has-columns",
+        // feature flags (ported from old block)
+        settings.divider && "--divider",
+        settings["submenu-divider"] && "--submenu-divider",
+        settings.icon && "--has-icon",
+        settings["submenu-icon"] && "--has-submenu-icon",
+        Number(settings.columns) > 1 && "--has-columns",
+
+        // unique id (old block behavior)
+        attributes?.uniqueId ?? null,
     ]
         .filter(Boolean)
         .join(" ");

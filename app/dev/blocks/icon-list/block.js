@@ -59,7 +59,7 @@ function getCssProps(settings) {
     const baseVars = cssVarsFromProps(settings.props);
 
     const breakpoints = {};
-    Object.entries(settings.breakpoints).forEach(([bp, entry]) => {
+    Object.entries(settings?.breakpoints ?? {}).forEach(([bp, entry]) => {
         breakpoints[bp] = {
             props: {
                 ...baseVars,

@@ -1,5 +1,12 @@
 .wpbs-faq-group {
 
+  &.is-style-accordion {
+
+    .wpbs-faq-content {
+      display: none;
+    }
+  }
+
   &.--divider {
 
     .wpbs-faq-item {

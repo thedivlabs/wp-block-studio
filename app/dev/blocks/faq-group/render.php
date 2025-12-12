@@ -87,11 +87,13 @@ foreach ( $faqs as $faq ) {
 }
 
 $wrapper_props = get_block_wrapper_attributes( [
-        'class' => join( ' ', array_filter( [
+        'class'               => join( ' ', array_filter( [
                 'wpbs-faq-group w-full flex flex-col',
                 $attributes['uniqueId'] ?? null,
                 ! empty( $settings['divider'] ) ? '--divider' : null,
-        ] ) )
+        ] ) ),
+        'data-wp-interactive' => 'wpbs/faq-group',
+        'data-wp-init'        => 'actions.init'
 ] );
 
 

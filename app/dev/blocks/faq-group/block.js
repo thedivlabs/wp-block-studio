@@ -247,6 +247,10 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
+                    {...{
+                        'data-wp-interactive': 'wpbs/faq-group',
+                        'data-wp-init': 'actions.init'
+                    }}
                 />
             );
         },

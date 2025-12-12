@@ -103,15 +103,10 @@ const FIELDS_BASE = [
 
 
 const FIELDS_BREAKPOINTS = [
-    // Divider (border only)
-    {type: "border", slug: "divider", label: "Divider", full: true},
 
     // Layout / structure
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
     {type: "unit", slug: "link-padding", label: "Link Padding"},
-    {type: "select", slug: "text-decoration", label: "Text Decoration"},
-    {type: "border", slug: "link-border", label: "Link Border", full: true},
-    {type: "border", slug: "link-border-active", label: "Active Link Border", full: true},
 
     // Sub-menu layout
     {type: "unit", slug: "submenu-space", label: "Sub-Menu Space"},
@@ -120,8 +115,6 @@ const FIELDS_BREAKPOINTS = [
     {type: "unit", slug: "submenu-gap", label: "Sub-Menu Gap"},
     {type: "unit", slug: "submenu-icon-space", label: "Sub-Menu Icon Space"},
     {type: "unit", slug: "submenu-link-padding", label: "Sub-Menu Link Padding"},
-    {type: "border", slug: "submenu-border", label: "Sub-Menu Border", full: true},
-    {type: "border", slug: "submenu-divider", label: "Sub-Menu Divider", full: true},
 
     COLORS_FIELD
 

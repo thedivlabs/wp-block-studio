@@ -20,7 +20,7 @@ const FIELDS = [
     {type: "icon", slug: "icon", label: "Icon", full: true},
     {type: "border", slug: "divider", label: "Divider", full: true},
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
-    {type: "unit", slug: "space", label: "Space"},
+    {type: "unit", slug: "icon-space", label: "Space"},
 ];
 
 /* --------------------------------------------------------------
@@ -57,6 +57,7 @@ function cssVarsFromProps(props = {}) {
         "--icon-color": icon?.color ?? null,
         "--icon-size": icon?.size ? `${icon.size}px` : "1em",
         "--icon-css": icon?.css ?? null,
+        "--icon-space": props?.['icon-space'] ?? null,
     };
 }
 
@@ -79,23 +80,16 @@ function getCssProps(settings = {props: {}, breakpoints: {}}) {
     });
 }
 
-/* --------------------------------------------------------------
- * BREAKPOINT CONTROLS
- * entry.props = breakpoint-level settings
- * blockProps  = full block props (for IconControl etc)
- * -------------------------------------------------------------- */
+
 const BreakpointControls = ({entry, update, blockProps}) => {
     const bpSettings = entry?.props || {};
 
     return (
-        <Grid columns={2} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20} style={{padding: "12px"}}>
             {FIELDS.map((field) => (
                 <Field
                     key={field.slug}
                     field={field}
-                    // Field expects:
-                    //  - settings: the current "settings" object (here: bpSettings)
-                    //  - props: full block props (for IconControl palettes, etc.)
                     settings={bpSettings}
                     props={blockProps}
                     isToolsPanel={false}

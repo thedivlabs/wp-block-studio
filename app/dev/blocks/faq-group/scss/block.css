@@ -1,3 +1,13 @@
+.wp-admin .wpbs-faq-group {
+
+  &.is-style-accordion {
+
+    .wpbs-faq-content {
+      display: block !important;
+    }
+  }
+}
+
 .wpbs-faq-group {
 
   &.is-style-accordion {

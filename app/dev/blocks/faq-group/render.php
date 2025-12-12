@@ -91,6 +91,7 @@ $wrapper_props = get_block_wrapper_attributes( [
                 'wpbs-faq-group w-full flex flex-col',
                 $attributes['uniqueId'] ?? null,
                 ! empty( $settings['divider'] ) ? '--divider' : null,
+                ! empty( $settings['single'] ) ? '--single' : null,
         ] ) ),
         'data-wp-interactive' => 'wpbs/faq-group',
         'data-wp-init'        => 'actions.init'

@@ -30,13 +30,15 @@ const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-faq-group": settings} = attributes;
 
     const hasDivider = !!(settings?.divider ?? false);
+    const isSingle = !!(settings?.single ?? false);
 
     return [
         selector,
         "w-full",
         "flex flex-col",
         "relative",
-        hasDivider ? '--divider' : null
+        hasDivider ? '--divider' : null,
+        isSingle ? '--single' : null,
     ]
         .filter(Boolean)
         .join(" ");
@@ -231,7 +233,23 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                 />
 
-                            
+                                <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+                                    {[
+                                        {type: 'toggle', slug: 'single', label: 'Single'}
+                                    ].map(field => (
+                                        <Field
+                                            key={field.slug}
+                                            field={field}
+                                            settings={settings}
+                                            callback={updateSettings}
+                                            isToolsPanel={false}
+                                            props={props}
+                                            __next40pxDefaultSize
+                                            __nextHasNoMarginBottom
+                                        />
+                                    ))}
+
+                                </Grid>
                             </Grid>
                         </PanelBody>
                     </InspectorControls>

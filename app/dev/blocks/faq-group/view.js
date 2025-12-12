@@ -21,40 +21,43 @@ const {state} = store('wpbs/faq-group', {
                 return false;
             }
 
-            const isStatic = component.classList.contains('--static');
-            const isSingle = component.classList.contains('is-style-single');
+            const isSingle = component.classList.contains('--single');
 
             headers.forEach(header => {
-                header.addEventListener('click', (e) => {
-
+                header.addEventListener('click', () => {
                     const groupItem = header.closest('.wpbs-faq-item');
                     const content = groupItem.querySelector('.wpbs-faq-content');
 
-                    if (!content || component.classList.contains('animating') || (isSingle && groupItem.classList.contains('active'))) {
-                        return;
+                    if (!content || component.classList.contains('animating')) return;
+
+                    const isOpen = groupItem.classList.contains('active');
+
+                    // ----- SINGLE MODE: close all others before toggling -----
+                    if (isSingle) {
+                        const others = component.querySelectorAll('.wpbs-faq-item.active');
+
+                        others.forEach(item => {
+                            if (item === groupItem) return;
+
+                            const otherContent = item.querySelector('.wpbs-faq-content');
+
+                            item.classList.remove('--open');
+                            WPBS.slideUp(otherContent, 'fast', () => {
+                                item.classList.remove('active');
+                            });
+                        });
                     }
 
-                    if (content.offsetParent !== null) {
+                    // If clicking on the open item in single mode → do nothing
+                    if (isSingle && isOpen) return;
+
+                    // ----- Toggle this item -----
+                    component.classList.add('animating');
+
+                    if (isOpen) {
                         groupItem.classList.remove('--open');
                     } else {
                         groupItem.classList.add('--open');
-                    }
-
-                    component.classList.add('animating');
-
-                    if (isSingle) {
-                        const openItems = component.querySelectorAll('.wpbs-faq-group__item.active');
-
-                        openItems.forEach(item => {
-
-                            const openContent = item.querySelector('.wpbs-faq-group__answer');
-
-                            item.classList.remove('--open');
-
-                            WPBS.slideUp(openContent, 'fast', () => {
-                                item.classList.remove('active');
-                            })
-                        })
                     }
 
                     WPBS.slideToggle(content, 'fast', () => {
@@ -63,12 +66,10 @@ const {state} = store('wpbs/faq-group', {
                         } else {
                             groupItem.classList.remove('active');
                         }
-
                         component.classList.remove('animating');
-                    })
+                    });
+                });
 
-
-                })
             })
 
 

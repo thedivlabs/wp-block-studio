@@ -47,7 +47,6 @@ registerBlockType(metadata.name, {
                 attributes,
                 setAttributes,
                 BlockWrapper,
-                setCss,
             } = props;
 
             const {"wpbs-masthead": settings = {}} = attributes;
@@ -92,11 +91,7 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                    >
-                        <div className="wpbs-masthead__container wpbs-container wpbs-layout-wrapper w-full">
-                            {props.children}
-                        </div>
-                    </BlockWrapper>
+                    />
                 </>
             );
         },
@@ -116,11 +111,7 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                >
-                    <div className="wpbs-masthead__container wpbs-container wpbs-layout-wrapper w-full">
-                        {props.children}
-                    </div>
-                </BlockWrapper>
+                />
             );
         },
         {

@@ -44,7 +44,7 @@ class WPBS_Popup {
 
 		add_action( 'wp_footer', [ $this, 'output_container' ], 10 );
 
-		add_action( 'wp_head', [ $this, 'parse_template' ], 1 );
+		add_action( 'wp', [ $this, 'parse_template' ] );
 
 	}
 

@@ -82,6 +82,9 @@ function parseSpecialProps(props = {}, attributes = {}) {
                 }
 
                 case 'container':
+                    console.log(val);
+                    console.log(containerMap[val]);
+                    console.log(containerMap);
                     result['--container-width'] = containerMap[val] ?? val;
                     break;
 

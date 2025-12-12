@@ -1,5 +1,6 @@
 <?php
 
+
 $settings = $block->context['wpbs/group'] ?? [];
 $faq_item = $block->context['wpbs/faqItem'] ?? [];
 
@@ -30,3 +31,5 @@ $icon = $settings['icon'] ?? [ 'name' => 'add', 'styles' => '' ];
     </button>
 
 </div>
+
+

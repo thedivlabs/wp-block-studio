@@ -1,6 +1,13 @@
 <?php
 declare( strict_types=1 );
 
+( new WP_Block( [
+	'blockName' => 'wpbs/faq-header',
+	'attrs'     => [
+		'classNames' => 'is-style-accordion'
+	],
+] ) )->render();
+
 // Safety
 $content = $content ?? '';
 

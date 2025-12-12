@@ -23,16 +23,20 @@ import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
 import {getIconCssProps, MaterialIcon} from "Components/IconControl";
 
+
 const selector = "wpbs-faq-group";
 
 const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-faq-group": settings} = attributes;
+
+    const hasDivider = !!(settings?.divider ?? false);
 
     return [
         selector,
         "w-full",
         "flex flex-col",
         "relative",
+        hasDivider ? '--divider' : null
     ]
         .filter(Boolean)
         .join(" ");
@@ -108,6 +112,10 @@ registerBlockType(metadata.name, {
             useEffect(() => {
                 setCss(getCssProps(settings));
             }, [settings]);
+
+            useEffect(() => {
+                updateSettings({styleClass});
+            }, [styleClass]);
 
             const updateSettings = useCallback(
                 (nextValue) => {

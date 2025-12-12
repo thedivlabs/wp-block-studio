@@ -6,6 +6,9 @@
   grid-template-columns: repeat(var(--columns, 1), 1fr);
   gap: var(--row-gap, 1em);
   line-height: var(--line-height, 1.5em);
+  appearance: none;
+  padding: 0;
+  margin: 0;
 }
 
 /* Divider logic — apply to every item except last in visual order */

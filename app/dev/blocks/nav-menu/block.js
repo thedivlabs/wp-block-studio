@@ -70,6 +70,7 @@ const FIELDS_BASE = [
     // Layout / structure
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
     {type: "unit", slug: "link-padding", label: "Link Padding"},
+    {type: "unit", slug: "icon-offset", label: "Icon Offset"},
     {
         type: "select",
         slug: "text-decoration",
@@ -130,22 +131,27 @@ const selector = "wpbs-nav-menu";
 
 const getClassNames = (attributes = {}) => {
     const settings = attributes["wpbs-nav-menu"] ?? {};
+    const baseProps = settings?.props ?? settings ?? {};
 
     return [
         selector,
-        'flex flex-wrap',
+        "flex",
+        "flex-wrap",
 
-        // style modes (replaces implicit block styles)
-        settings.style && `is-style-${settings.style}`,
+        // style modes
+        baseProps.style && `is-style-${baseProps.style}`,
 
         // feature flags (ported from old block)
-        settings.divider && "--divider",
-        settings["submenu-divider"] && "--submenu-divider",
-        settings.icon && "--has-icon",
-        settings["submenu-icon"] && "--has-submenu-icon",
-        Number(settings.columns) > 1 && "--has-columns",
+        baseProps.divider && "--divider",
+        baseProps["submenu-divider"] && "--submenu-divider",
+        baseProps.icon && "--has-icon",
+        baseProps["submenu-icon"] && "--has-submenu-icon",
+        Number(baseProps.columns) > 1 && "--has-columns",
 
-        // unique id (old block behavior)
+        // icon below
+        baseProps["icon-below"] && "--icon-below",
+
+        // unique id
         attributes?.uniqueId ?? null,
     ]
         .filter(Boolean)

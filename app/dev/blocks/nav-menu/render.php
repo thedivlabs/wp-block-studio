@@ -14,16 +14,28 @@ if ( empty( $menu_id ) ) {
     return;
 }
 
-$classes = [
+$classes = array_filter( [
         'wpbs-nav-menu',
         'wpbs-has-container',
         'flex',
         'flex-wrap',
-        $attributes['uniqueId'] ?? null,
+
+    // style modes
+        $style ? 'is-style-' . sanitize_html_class( $style ) : null,
+
+    // feature flags
         ! empty( $settings['divider'] ) ? '--divider' : null,
         ! empty( $settings['submenu-divider'] ) ? '--submenu-divider' : null,
-        ! empty( $settings['style'] ) ? 'is-style-' . sanitize_html_class( $settings['style'] ) : null,
-];
+        ! empty( $settings['icon'] ) ? '--has-icon' : null,
+        ! empty( $settings['submenu-icon'] ) ? '--has-submenu-icon' : null,
+        ! empty( $settings['columns'] ) && (int) $settings['columns'] > 1 ? '--has-columns' : null,
+
+    // icon below
+        ! empty( $settings['icon-below'] ) ? '--icon-below' : null,
+
+    // unique id
+        $attributes['uniqueId'] ?? null,
+] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
         'class'               => implode( ' ', array_filter( $classes ) ),

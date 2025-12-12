@@ -11,6 +11,20 @@
       "type": "string"
     }
   },
+  "styles": [
+    {
+      "name": "columns",
+      "label": "Columns"
+    },
+    {
+      "name": "dropdown",
+      "label": "Dropdown"
+    },
+    {
+      "name": "accordion",
+      "label": "Accordion"
+    }
+  ],
   "supports": {
     "interactivity": true,
     "innerBlocks": false,

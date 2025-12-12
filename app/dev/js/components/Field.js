@@ -178,7 +178,7 @@ export const Field = memo(
                             textAlign: "left",
                             fontSize: "14px",
                             lineHeight: "1.3",
-                            color: "#dadada",
+                            color: "#aaa",
                             margin: "10px 0",
                         }}
                     >

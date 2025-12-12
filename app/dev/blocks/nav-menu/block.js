@@ -57,17 +57,6 @@ const FIELDS_BASE = [
         label: "Select Menu",
         full: true,
     },
-    {
-        type: "select",
-        slug: "style",
-        label: "Menu Style",
-        options: [
-            {label: "Dropdown", value: "dropdown"},
-            {label: "Accordion", value: "accordion"},
-            {label: "Inline", value: "inline"},
-        ],
-        full: true,
-    },
 
     // Icons
     {type: "icon", slug: "icon", label: "Icon", full: true},

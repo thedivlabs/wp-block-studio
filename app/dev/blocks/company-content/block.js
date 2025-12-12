@@ -144,7 +144,7 @@ registerBlockType(metadata.name, {
         (props) => {
             const {attributes, BlockWrapper, setAttributes, setCss} = props;
 
-            const rawSettings = attributes["wpbs-company-content"] || {};
+            const {'wpbs-company-content': settings = {}} = attributes;
 
             const companies = useSelect(
                 (select) =>

@@ -37,7 +37,6 @@ registerBlockType(metadata.name, {
         (props) => {
             const {attributes, setAttributes, BlockWrapper, styleData, setCss} = props;
 
-            const raw = attributes["wpbs-icon-list-item"] || {};
 
             const classNames = [
                 selector,
@@ -46,53 +45,9 @@ registerBlockType(metadata.name, {
                 .filter(Boolean)
                 .join(" ");
 
-            useEffect(() => {
-                setCss(getCssProps(settings));
-            }, [settings]);
-
-            /* ----------------------------------------------
-             * Settings updater — deep merge props + breakpoints
-             * ---------------------------------------------- */
-            const updateSettings = useCallback(
-                (nextValue) => {
-                    const next = normalizeIconListSettings({
-                        ...settings,
-                        ...nextValue,
-                        props: {
-                            ...settings.props,
-                            ...(nextValue.props || {}),
-                        },
-                        breakpoints: {
-                            ...settings.breakpoints,
-                            ...(nextValue.breakpoints || {}),
-                        },
-                    });
-
-                    if (!isEqual(settings, next)) {
-                        setAttributes({"wpbs-icon-list-item": next});
-                    }
-                },
-                [settings, setAttributes]
-            );
 
             return (
                 <>
-                    <InspectorControls group="styles">
-                        <PanelBody initialOpen className="wpbs-controls is-style-unstyled">
-
-                            <BreakpointPanels
-                                value={settings}
-                                onChange={updateSettings}
-                                label="Icon List"
-                                render={{
-                                    base: BreakpointControls,
-                                    breakpoints: BreakpointControls,
-                                }}
-                            />
-
-                        </PanelBody>
-                    </InspectorControls>
-
                     <BlockWrapper props={props} className={classNames}/>
                 </>
             );

@@ -6,13 +6,13 @@ import metadata from "./block.json";
 import {InspectorControls} from "@wordpress/block-editor";
 
 import {
-    PanelBody,
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
+    PanelBody,
 } from "@wordpress/components";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {useCallback, useEffect, useMemo} from "@wordpress/element";
+import {useCallback, useEffect} from "@wordpress/element";
 import {isEmpty, isEqual} from "lodash";
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
@@ -150,6 +150,20 @@ const BreakpointControls = ({entry, update}) => {
     );
 };
 
+const getClassNames = (attributes) => {
+    const {'wpbs-icon-list': settings} = attributes;
+
+    return [
+        selector,
+        "w-full",
+        "flex flex-col",
+        "relative",
+        !isEmpty(cleanObject(settings.props.divider, true)) ? "--divider" : null,
+    ]
+        .filter(Boolean)
+        .join(" ");
+}
+
 /* --------------------------------------------------------------
  * Block Registration
  * -------------------------------------------------------------- */
@@ -172,19 +186,12 @@ registerBlockType(metadata.name, {
 
             const {'wpbs-icon-list': settings} = attributes;
 
-            const classNames = [
-                selector,
-                "w-full",
-                "flex flex-col",
-                "relative",
-                !isEmpty(cleanObject(settings.props.divider, true)) ? "--divider" : null,
-            ]
-                .filter(Boolean)
-                .join(" ");
 
             useEffect(() => {
                 setCss(getCssProps(settings));
             }, [settings]);
+
+            const classNames = getClassNames(attributes);
 
             /* ----------------------------------------------
              * Settings updater — deep merge props + breakpoints
@@ -239,14 +246,7 @@ registerBlockType(metadata.name, {
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;
 
-        const classNames = [
-            selector,
-            "w-full",
-            "flex flex-col",
-            "relative",
-        ]
-            .filter(Boolean)
-            .join(" ");
+        const classNames = getClassNames(attributes);
 
         return <BlockWrapper props={props} className={classNames}/>;
     }, {hasChildren: true}),

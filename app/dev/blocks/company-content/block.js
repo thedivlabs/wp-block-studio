@@ -1,61 +1,127 @@
+import "./scss/block.css";
+
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {InspectorControls} from "@wordpress/block-editor";
-import {
-    PanelBody,
-    SelectControl,
-    TextControl,
-    ToggleControl,
-    __experimentalGrid as Grid,
-} from "@wordpress/components";
+import {__experimentalGrid as Grid, PanelBody} from "@wordpress/components";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {useCallback, useEffect, useMemo} from "@wordpress/element";
+import {isEmpty, isEqual} from "lodash";
 
-import {useCallback, useMemo} from "@wordpress/element";
-import {useSelect} from "@wordpress/data";
-import {isEqual} from "lodash";
+import {Field} from "Components/Field";
+import {cleanObject} from "Includes/helper";
+
+/* --------------------------------------------------------------
+ * FIELD MAP (from original block)
+ * -------------------------------------------------------------- */
+const FIELDS = [
+    {type: "select", slug: "company-id", label: "Company", full: true},
+    {
+        type: "select",
+        slug: "type",
+        label: "Type",
+        options: [
+            {label: "Select", value: ""},
+            {label: "Title", value: "title"},
+            {label: "Phone", value: "phone"},
+            {label: "Phone Additional", value: "phone-additional"},
+            {label: "Email", value: "email"},
+            {label: "Email Additional", value: "email-additional"},
+            {label: "Address", value: "address"},
+            {label: "Address Inline", value: "address-inline"},
+            {label: "Social", value: "social"},
+            {label: "Hours", value: "hours"},
+            {label: "Hours Inline", value: "hours-inline"},
+            {label: "Description", value: "description"},
+            {label: "Map Link", value: "map-link"},
+            {label: "Reviews Link", value: "reviews-link"},
+            {label: "New Review Link", value: "new-review-link"},
+        ],
+        full: true,
+    },
+    {type: "text", slug: "label", label: "Label", full: true},
+    {
+        type: "select",
+        slug: "label-position",
+        label: "Label Position",
+        options: [
+            {label: "Select", value: ""},
+            {label: "Top", value: "top"},
+            {label: "Left", value: "left"},
+            {label: "Bottom", value: "bottom"},
+        ],
+    },
+    {type: "icon", slug: "icon", label: "Icon", full: true},
+    {type: "number", slug: "line-clamp", label: "Line Clamp", min: 1},
+    {type: "toggle", slug: "split-address", label: "Split Address"},
+];
 
 const selector = "wpbs-company-content";
 
-const CONTENT_OPTIONS = [
-    {label: "Select", value: ""},
-    {label: "Title", value: "title"},
-    {label: "Phone", value: "phone"},
-    {label: "Phone Additional", value: "phone-additional"},
-    {label: "Email", value: "email"},
-    {label: "Email Additional", value: "email-additional"},
-    {label: "Address", value: "address"},
-    {label: "Address Inline", value: "address-inline"},
-    {label: "Social", value: "social"},
-    {label: "Hours", value: "hours"},
-    {label: "Hours Inline", value: "hours-inline"},
-    {label: "Description", value: "description"},
-    {label: "Map Link", value: "map-link"},
-    {label: "Reviews Link", value: "reviews-link"},
-    {label: "New Review Link", value: "new-review-link"},
-];
+/* --------------------------------------------------------------
+ * NORMALIZER — FLAT, BASE PROPS ONLY
+ * -------------------------------------------------------------- */
+function normalizeCompanyContentSettings(raw = {}) {
+    return raw || {};
+}
 
-const getClassNames = (attributes = {}) => {
-    const {"wpbs-company-content": settings = {}} = attributes;
+/* --------------------------------------------------------------
+ * CSS VAR BUILDER (BASE ONLY)
+ * -------------------------------------------------------------- */
+function cssVarsFromProps(props = {}) {
+    const icon = props.icon ?? {};
+
+    return {
+        "--line-clamp": props["line-clamp"] ?? null,
+        "--icon": icon?.name ? `"${icon.name}"` : null,
+        "--icon-color": icon?.color ?? null,
+        "--icon-size": icon?.size ? `${icon.size}px` : null,
+        "--icon-css": icon?.css ?? null,
+    };
+}
+
+function getCssProps(props = {}) {
+    return cleanObject({
+        props: cssVarsFromProps(props),
+    });
+}
+
+/* --------------------------------------------------------------
+ * CLASSNAMES
+ * -------------------------------------------------------------- */
+const getClassNames = (attributes, settings) => {
+    const effective =
+        settings ||
+        normalizeCompanyContentSettings(
+            attributes["wpbs-company-content"] || {}
+        );
 
     return [
         selector,
-        attributes?.uniqueId,
-        settings?.icon && "--icon",
-        settings?.["label-position"] && `--label-${settings["label-position"]}`,
+        "inline-block",
+        "relative",
+        !isEmpty(effective?.icon) ? "--icon material-icon-before" : null,
+        !isEmpty(effective?.["label-position"])
+            ? `--label-${effective["label-position"]}`
+            : null,
+        attributes?.uniqueId ?? null,
     ]
         .filter(Boolean)
         .join(" ");
 };
 
+/* --------------------------------------------------------------
+ * BLOCK REGISTRATION
+ * -------------------------------------------------------------- */
 registerBlockType(metadata.name, {
     apiVersion: 3,
 
     attributes: {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
+
         "wpbs-company-content": {
             type: "object",
             default: {},
@@ -64,20 +130,25 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const {attributes, setAttributes, BlockWrapper} = props;
-            const {"wpbs-company-content": settings = {}} = attributes;
+            const {attributes, BlockWrapper, setAttributes, setCss} = props;
 
-            const companies = useSelect(
-                (select) =>
-                    select("core").getEntityRecords("postType", "company", {
-                        per_page: -1,
-                    }),
-                []
+            const rawSettings = attributes["wpbs-company-content"] || {};
+
+            const settings = useMemo(
+                () => normalizeCompanyContentSettings(rawSettings),
+                [rawSettings]
             );
 
+            useEffect(() => {
+                setCss(getCssProps(settings));
+            }, [settings, setCss]);
+
             const updateSettings = useCallback(
-                (nextValue) => {
-                    const next = {...settings, ...nextValue};
+                (patch) => {
+                    const next = {
+                        ...settings,
+                        ...patch,
+                    };
 
                     if (!isEqual(settings, next)) {
                         setAttributes({
@@ -88,121 +159,51 @@ registerBlockType(metadata.name, {
                 [settings, setAttributes]
             );
 
-            const label = useMemo(() => {
-                return (
-                    CONTENT_OPTIONS.find(
-                        (opt) => opt.value === settings?.type
-                    )?.label || "Company Content"
-                );
-            }, [settings?.type]);
-
-            const classNames = getClassNames(attributes);
+            const classNames = getClassNames(attributes, settings);
 
             return (
                 <>
                     <InspectorControls group="styles">
-                        <PanelBody title="Settings" initialOpen>
-                            <Grid columns={1} rowGap={20}>
-                                <SelectControl
-                                    label="Company"
-                                    value={settings?.["company-id"] ?? ""}
-                                    options={[
-                                        {label: "Select a company", value: ""},
-                                        ...(companies || []).map((post) => ({
-                                            label: post.title.rendered,
-                                            value: String(post.id),
-                                        })),
-                                    ]}
-                                    onChange={(v) =>
-                                        updateSettings({"company-id": v})
-                                    }
-                                />
-
-                                <SelectControl
-                                    label="Content Type"
-                                    value={settings?.type ?? ""}
-                                    options={CONTENT_OPTIONS}
-                                    onChange={(v) =>
-                                        updateSettings({type: v})
-                                    }
-                                />
-
-                                <TextControl
-                                    label="Label"
-                                    value={settings?.label ?? ""}
-                                    onChange={(v) =>
-                                        updateSettings({label: v})
-                                    }
-                                />
-
-                                <SelectControl
-                                    label="Label Position"
-                                    value={settings?.["label-position"] ?? ""}
-                                    options={[
-                                        {label: "Select", value: ""},
-                                        {label: "Top", value: "top"},
-                                        {label: "Left", value: "left"},
-                                        {label: "Bottom", value: "bottom"},
-                                    ]}
-                                    onChange={(v) =>
-                                        updateSettings({"label-position": v})
-                                    }
-                                />
-
-                                <IconControl
-                                    label="Icon"
-                                    value={settings?.icon}
-                                    onChange={(v) =>
-                                        updateSettings({icon: v})
-                                    }
-                                />
-
-                                <ToggleControl
-                                    label="Split Address"
-                                    checked={!!settings?.["split-address"]}
-                                    onChange={(v) =>
-                                        updateSettings({
-                                            "split-address": v,
-                                        })
-                                    }
-                                />
+                        <PanelBody
+                            initialOpen
+                            className="wpbs-block-controls is-style-unstyled"
+                        >
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+                                {FIELDS.map((field) => (
+                                    <Field
+                                        key={field.slug}
+                                        field={field}
+                                        settings={settings}
+                                        props={props}
+                                        isToolsPanel={false}
+                                        callback={updateSettings}
+                                        __next40pxDefaultSize
+                                        __nextHasNoMarginBottom
+                                    />
+                                ))}
                             </Grid>
                         </PanelBody>
                     </InspectorControls>
 
-                    <BlockWrapper
-                        props={props}
-                        className={classNames}
-                    >
-                        <MaterialIcon {...settings?.icon} className="wpbs-icon"/>
-                        {label}
-                    </BlockWrapper>
+                    <BlockWrapper props={props} className={classNames}/>
                 </>
             );
         },
-        {
-            hasChildren: false,
-            hasBackground: false,
-            tagName: "div",
-        }
+        {hasChildren: false, tagName: "div"}
     ),
 
     save: withStyleSave(
         (props) => {
             const {attributes, BlockWrapper} = props;
-            const classNames = getClassNames(attributes);
 
-            return (
-                <BlockWrapper
-                    props={props}
-                    className={classNames}
-                />
+            const settings = normalizeCompanyContentSettings(
+                attributes["wpbs-company-content"] || {}
             );
+
+            const classNames = getClassNames(attributes, settings);
+
+            return <BlockWrapper props={props} className={classNames}/>;
         },
-        {
-            hasChildren: false,
-            hasBackground: false,
-            tagName: "div",
-        }
+        {hasChildren: false, tagName: "div"}
     ),
 });

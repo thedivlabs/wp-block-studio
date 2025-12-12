@@ -1,41 +1,120 @@
 <?php
 declare( strict_types=1 );
 
-$settings = $attributes['wpbs-company-content'] ?? [];
+$settings = $attributes['wpbs-company-content'] ?? false;
 
-if ( empty( $settings['company-id'] ) || empty( $settings['type'] ) ) {
+if ( empty( $settings ) || ! is_array( $settings ) ) {
 	return;
 }
 
-$post = get_post( (int) $settings['company-id'] );
-if ( ! $post ) {
+$type = $settings['type'] ?? false;
+if ( ! $type ) {
 	return;
 }
 
-$acf = get_field( 'wpbs', $post->ID );
-if ( empty( $acf ) ) {
+/**
+ * Resolve company ID
+ * - "current" => current post ID (works in loops/templates)
+ * - numeric   => explicit company ID
+ */
+$raw_company_id = $settings['company-id'] ?? false;
+
+if ( $raw_company_id === 'current' ) {
+	$company_id = (int) get_the_ID();
+} else {
+	$company_id = (int) $raw_company_id;
+}
+
+if ( ! $company_id ) {
 	return;
 }
 
-$value = $acf[ $settings['type'] ] ?? '';
+$company = new WPBS_Place( $company_id );
 
-if ( empty( $value ) ) {
-	return;
+$wrapper_attributes = get_block_wrapper_attributes( [
+	'class' => implode( ' ', array_filter( [
+		'wpbs-company-content inline-block',
+		$type === 'social' ? 'wpbs-social-links' : null,
+		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
+		! empty( $settings['icon'] ) ? '--icon material-icon-before' : null,
+		! empty( $settings['label-position'] ) ? '--label-' . $settings['label-position'] : null,
+		$attributes['uniqueId'] ?? ''
+	] ) ),
+	...( $attributes['wpbs-props'] ?? [] )
+] );
+
+$is_link = in_array( $type, [ 'reviews-link', 'map-link', 'directions-link' ], true );
+
+$link = ! $is_link ? false : match ( $type ) {
+	'reviews-link' => $company->reviews_page,
+	'map-link' => $company->map_page,
+	'directions-link' => $company->directions_page,
+	default => false
+};
+
+$element_class = '';
+
+if ( $is_link && ! empty( $link ) ) {
+	echo '<a href="' . esc_url( $link ) . '" target="_blank" rel="noopener" ' . $wrapper_attributes . '>';
+} else {
+	echo '<div ' . $wrapper_attributes . '>';
 }
 
-$label = $settings['label'] ?? '';
+switch ( $type ) {
+	case 'title':
+		echo esc_html( get_the_title( $company_id ) );
+		break;
 
-$block_props = get_block_wrapper_attributes();
+	case 'phone':
+		echo $company->get_phone( [
+			'class' => $element_class
+		] );
+		break;
 
-?>
-<div <?= $block_props ?>>
-	<?php if ( $label ) : ?>
-        <span class="wpbs-company-content__label">
-            <?= esc_html( $label ); ?>
-        </span>
-	<?php endif; ?>
+	case 'email':
+		echo $company->get_email( [
+			'class' => $element_class
+		] );
+		break;
 
-    <span class="wpbs-company-content__value">
-        <?= wp_kses_post( $value ); ?>
-    </span>
-</div>
+	case 'address':
+	case 'address-inline':
+		echo $company->get_address( [
+			'class'  => $element_class,
+			'inline' => ( $type === 'address-inline' ),
+			...$settings
+		] );
+		break;
+
+	case 'description':
+		echo $company->summary();
+		break;
+
+	case 'reviews-link':
+	case 'new-review-link':
+	case 'directions-link':
+	case 'map-link':
+		echo ! empty( $settings['label'] ) ? esc_html( (string) $settings['label'] ) : '';
+		break;
+
+	case 'hours':
+	case 'hours-inline':
+		$company->get_hours( [
+			'inline' => ( $type === 'hours-inline' )
+		] );
+		break;
+
+	case 'social':
+		( new WPBS_Social( $company->social ) )->render();
+		break;
+
+	default:
+		echo '';
+		break;
+}
+
+if ( $is_link && ! empty( $link ) ) {
+	echo '</a>';
+} else {
+	echo '</div>';
+}

@@ -82,9 +82,6 @@ registerBlockType(metadata.name, {
 
             const {"wpbs-faq-group": settings = {}} = attributes;
 
-            const isAccordion = (attributes?.className ?? '').includes('is-style-accordion') ? 'is-style-accordion' : false;
-            const styleClass = isAccordion || null;
-
             const classNames = getClassNames(attributes, styleData);
 
 
@@ -119,16 +116,11 @@ registerBlockType(metadata.name, {
                 setCss(getCssProps(settings));
             }, [settings]);
 
-            useEffect(() => {
-                updateSettings({styleClass});
-            }, [styleClass]);
-
             const updateSettings = useCallback(
                 (nextValue) => {
                     const next = {
                         ...settings,
                         ...nextValue,
-                        styleClass, // always overwrite with live state
                     };
 
                     if (!isEqual(settings, next)) {
@@ -138,52 +130,8 @@ registerBlockType(metadata.name, {
                         });
                     }
                 },
-                [settings, styleClass, setAttributes]
+                [settings, setAttributes]
             );
-
-
-            /*
-            *
-            * <div className={'wpbs-faq-item w-full flex flex-col'}>
-                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
-                                <button className={'wpbs-faq-header__button'}>
-                                    <MaterialIcon {...settings?.icon}/>
-                                </button>
-                            </div>
-                            <div className={'wpbs-faq-content w-full'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
-                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
-                                numquam perferendis quos, recusandae repudiandae sit tempora.
-                            </div>
-                        </div>
-                        <div className={'wpbs-faq-item'}>
-                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
-                                <button className={'wpbs-faq-header__button'}>
-                                    <MaterialIcon {...settings?.icon}/>
-                                </button>
-                            </div>
-                            <div className={'wpbs-faq-content'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
-                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
-                                numquam perferendis quos, recusandae repudiandae sit tempora.
-                            </div>
-                        </div>
-                        <div className={'wpbs-faq-item'}>
-                            <div className={'wpbs-faq-header w-full flex items-center justify-between'}>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, repudiandae?</span>
-                                <button className={'wpbs-faq-header__button'}>
-                                    <MaterialIcon {...settings?.icon}/>
-                                </button>
-                            </div>
-                            <div className={'wpbs-faq-content'}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto aspernatur
-                                consequuntur deleniti deserunt dolore doloribus ducimus eos ex fugit in labore molestiae
-                                numquam perferendis quos, recusandae repudiandae sit tempora.
-                            </div>
-                        </div>
-                        * */
 
 
             return (

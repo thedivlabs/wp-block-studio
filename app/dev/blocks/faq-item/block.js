@@ -26,7 +26,7 @@ const getClassNames = (attributes = {}, styleData) => {
         selector,
         "w-full",
         "flex flex-col",
-        "relative",
+        "relative overflow-hidden",
     ]
         .filter(Boolean)
         .join(" ");

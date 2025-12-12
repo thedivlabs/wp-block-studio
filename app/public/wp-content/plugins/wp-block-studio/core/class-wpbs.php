@@ -128,7 +128,7 @@ class WPBS {
 		 * Base (xs)
 		 */
 		if ( ! empty( $header['xs'] ) ) {
-			$css[] = ':root{--header-height:' . esc_attr( $header['xs'] ) . ';}';
+			$css[] = ':root{--wpbs-header-height:' . esc_attr( $header['xs'] ) . ';}';
 		}
 
 		/**

@@ -233,6 +233,7 @@
     height: auto;
     grid-column: span 1;
     max-width: 100%;
+    overflow: hidden;
 
     &.--full {
       grid-column: 1 / -1;

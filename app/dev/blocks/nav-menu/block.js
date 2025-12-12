@@ -15,72 +15,147 @@ import {BreakpointPanels} from "Components/BreakpointPanels";
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
 
+const COLORS_FIELD = {
+    type: "color",
+    slug: "colors",
+    label: "Colors",
+    full: true,
+    colors: [
+        // ─────────────────────────
+        // Top-level (normal / hover)
+        // ─────────────────────────
+        {slug: "color-background", label: "Background"},
+        {slug: "color-background-hover", label: "Background Hover"},
+        {slug: "color-icon", label: "Icon"},
+        {slug: "color-text-decoration", label: "Text Decoration"},
+
+        // ─────────────────────────
+        // Sub-menu (normal / hover)
+        // ─────────────────────────
+        {slug: "color-submenu-background", label: "Sub Menu Background"},
+        {slug: "color-submenu-background-hover", label: "Sub Menu Background Hover"},
+        {slug: "color-submenu-text", label: "Sub Menu Text"},
+        {slug: "color-submenu-text-hover", label: "Sub Menu Text Hover"},
+        {slug: "color-submenu-icon", label: "Sub Menu Icon"},
+
+        // ─────────────────────────
+        // Active state (top + sub)
+        // ─────────────────────────
+        {slug: "color-background-active", label: "Active Background"},
+        {slug: "color-text-active", label: "Active Text"},
+        {slug: "color-text-decoration-active", label: "Active Text Decoration"},
+        {slug: "color-submenu-background-active", label: "Active Sub Menu Background"},
+        {slug: "color-submenu-text-active", label: "Active Sub Menu Text"},
+    ],
+};
+
 const FIELDS_BASE = [
+    // Menu & behavior
     {
         type: "select",
         slug: "menu",
         label: "Select Menu",
         full: true,
     },
+    {
+        type: "select",
+        slug: "style",
+        label: "Menu Style",
+        options: [
+            {label: "Dropdown", value: "dropdown"},
+            {label: "Accordion", value: "accordion"},
+            {label: "Inline", value: "inline"},
+        ],
+        full: true,
+    },
+
+    // Icons
     {type: "icon", slug: "icon", label: "Icon", full: true},
+    {type: "icon", slug: "submenu-icon", label: "Sub-Menu Icon", full: true},
+
+    // Divider (border only)
     {type: "border", slug: "divider", label: "Divider", full: true},
+
+    // Layout / structure
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
-    {type: "unit", slug: "icon-space", label: "Space"},
+    {type: "unit", slug: "link-padding", label: "Link Padding"},
+    {type: "select", slug: "text-decoration", label: "Text Decoration"},
+    {type: "border", slug: "link-border", label: "Link Border", full: true},
+    {type: "border", slug: "link-border-active", label: "Active Link Border", full: true},
+
+    // Sub-menu layout
+    {type: "unit", slug: "submenu-space", label: "Sub-Menu Space"},
+    {type: "unit", slug: "submenu-rounded", label: "Sub-Menu Rounded"},
+    {type: "unit", slug: "submenu-padding", label: "Sub-Menu Padding"},
+    {type: "unit", slug: "submenu-gap", label: "Sub-Menu Gap"},
+    {type: "unit", slug: "submenu-icon-space", label: "Sub-Menu Icon Space"},
+    {type: "unit", slug: "submenu-link-padding", label: "Sub-Menu Link Padding"},
+    {type: "border", slug: "submenu-border", label: "Sub-Menu Border", full: true},
+    {type: "border", slug: "submenu-divider", label: "Sub-Menu Divider", full: true},
+    {type: "toggle", slug: "icon-below", label: "Icon Below"},
+
+    COLORS_FIELD
 ];
 
+
 const FIELDS_BREAKPOINTS = [
-    {type: "icon", slug: "icon", label: "Icon", full: true},
+    // Divider (border only)
     {type: "border", slug: "divider", label: "Divider", full: true},
+
+    // Layout / structure
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
-    {type: "unit", slug: "icon-space", label: "Space"},
-    {
-        type: "color",
-        slug: "colors",
-        label: "Colors",
-        full: true,
-        colors: [
-            // ─────────────────────────
-            // Top-level (normal / hover)
-            // ─────────────────────────
-            {slug: "color-background", label: "Background"},
-            {slug: "color-background-hover", label: "Background Hover"},
-            {slug: "color-icon", label: "Icon"},
-            {slug: "color-text-decoration", label: "Text Decoration"},
+    {type: "unit", slug: "link-padding", label: "Link Padding"},
+    {type: "select", slug: "text-decoration", label: "Text Decoration"},
+    {type: "border", slug: "link-border", label: "Link Border", full: true},
+    {type: "border", slug: "link-border-active", label: "Active Link Border", full: true},
 
-            // ─────────────────────────
-            // Sub-menu (normal / hover)
-            // ─────────────────────────
-            {slug: "color-submenu-background", label: "Sub Menu Background"},
-            {slug: "color-submenu-background-hover", label: "Sub Menu Background Hover"},
-            {slug: "color-submenu-text", label: "Sub Menu Text"},
-            {slug: "color-submenu-text-hover", label: "Sub Menu Text Hover"},
-            {slug: "color-submenu-icon", label: "Sub Menu Icon"},
+    // Sub-menu layout
+    {type: "unit", slug: "submenu-space", label: "Sub-Menu Space"},
+    {type: "unit", slug: "submenu-rounded", label: "Sub-Menu Rounded"},
+    {type: "unit", slug: "submenu-padding", label: "Sub-Menu Padding"},
+    {type: "unit", slug: "submenu-gap", label: "Sub-Menu Gap"},
+    {type: "unit", slug: "submenu-icon-space", label: "Sub-Menu Icon Space"},
+    {type: "unit", slug: "submenu-link-padding", label: "Sub-Menu Link Padding"},
+    {type: "border", slug: "submenu-border", label: "Sub-Menu Border", full: true},
+    {type: "border", slug: "submenu-divider", label: "Sub-Menu Divider", full: true},
 
-            // ─────────────────────────
-            // Active state (top + sub)
-            // ─────────────────────────
-            {slug: "color-background-active", label: "Active Background"},
-            {slug: "color-text-active", label: "Active Text"},
-            {slug: "color-text-decoration-active", label: "Active Text Decoration"},
-            {slug: "color-submenu-background-active", label: "Active Sub Menu Background"},
-            {slug: "color-submenu-text-active", label: "Active Sub Menu Text"},
-        ],
-    },
+    COLORS_FIELD
 
 ];
 
 const selector = "wpbs-nav-menu";
 
 const getClassNames = (attributes = {}) => {
+    const settings = attributes["wpbs-nav-menu"] ?? {};
+
+    const hasDivider = !!settings.divider;
+    const hasSubmenuDivider = !!settings["submenu-divider"];
+    const hasIcon = !!settings.icon;
+    const hasSubmenuIcon = !!settings["submenu-icon"];
+    const hasColumns = Number(settings.columns) > 1;
+
+    const style = settings.style || "dropdown";
+
     return [
         selector,
         "w-full",
         "block",
         "relative",
+
+        // style modes
+        style && `is-style-${style}`,
+
+        // feature flags
+        hasDivider && "--has-divider",
+        hasSubmenuDivider && "--has-submenu-divider",
+        hasIcon && "--has-icon",
+        hasSubmenuIcon && "--has-submenu-icon",
+        hasColumns && "--has-columns",
     ]
         .filter(Boolean)
         .join(" ");
 };
+
 
 function normalizeSettings(raw = {}) {
     if (raw && (raw.props || raw.breakpoints)) {

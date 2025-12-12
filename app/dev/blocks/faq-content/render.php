@@ -25,5 +25,5 @@ $block_props = get_block_wrapper_attributes( [
 ?>
 
 <div <?= $block_props ?>>
-    <?= $answer ?>
+    <?= wp_kses_post( $answer ); ?>
 </div>

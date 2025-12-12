@@ -52,6 +52,7 @@ function getCssProps(settings) {
             "--icon": settings?.icon?.name ? '"' + settings?.icon?.name + '"' : null,
             "--icon-color": settings?.icon?.color,
             "--icon-size": settings?.icon?.size ? `${settings?.icon?.size}px` : '1em',
+            "--icon-css": settings?.icon?.css,
         },
         breakpoints: {},
     };

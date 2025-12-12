@@ -22,15 +22,18 @@
 
   .wpbs-faq-header {
     padding-right: calc(var(--icon-size, 32px) + 1rem);
+    user-select: none;
 
     &:after {
       content: var(--icon, 'add');
       font-size: var(--icon-size, 32px);
       line-height: var(--icon-size, 32px);
       color: var(--icon-color, inherit);
+      font-variation-settings: var(--icon-css);
+      font-family: 'Material Symbols Outlined', sans-serif;
       position: absolute;
       top: 50%;
-      right: 0;
+      right: .5rem;
       transform: translateY(-50%);
       height: 1lh;
       width: auto;

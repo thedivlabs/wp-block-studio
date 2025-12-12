@@ -6,7 +6,7 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody, SelectControl} from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 import {useCallback} from "@wordpress/element";
-import {isEqual} from "lodash/isEqual";
+import {isEqual} from "lodash";
 
 const selector = "nav-menu";
 

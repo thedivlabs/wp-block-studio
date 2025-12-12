@@ -21,7 +21,6 @@ const getClassNames = (attributes = {}) => {
         "w-full",
         "relative",
         "flex",
-        "wpbs-has-container",
         settings?.float && "--float",
         settings?.sticky && "--sticky",
         settings?.hidden && "--hidden"

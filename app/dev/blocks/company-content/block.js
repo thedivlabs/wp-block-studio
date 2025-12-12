@@ -12,6 +12,7 @@ import {isEmpty, isEqual} from "lodash";
 
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
+import {MaterialIcon} from "Components/IconControl";
 
 /* --------------------------------------------------------------
  * FIELD MAP (from original block)
@@ -185,7 +186,10 @@ registerBlockType(metadata.name, {
                         </PanelBody>
                     </InspectorControls>
 
-                    <BlockWrapper props={props} className={classNames}/>
+                    <BlockWrapper props={props} className={classNames}>
+                        <MaterialIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
+                        {settings?.label}
+                    </BlockWrapper>
                 </>
             );
         },
@@ -202,7 +206,11 @@ registerBlockType(metadata.name, {
 
             const classNames = getClassNames(attributes, settings);
 
-            return <BlockWrapper props={props} className={classNames}/>;
+            return <BlockWrapper props={props} className={classNames}>
+                <MaterialIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
+                {settings?.label}
+                {'%%__COMPANY_CONTENT__%%'}
+            </BlockWrapper>;
         },
         {hasChildren: false, tagName: "div"}
     ),

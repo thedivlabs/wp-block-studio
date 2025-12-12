@@ -12,14 +12,4 @@
   }
 
 
-  &.--icon {
-
-    &:before {
-      content: var(--icon, none);
-      font-variation-settings: var(--icon-css);
-      font-size: var(--icon-size, 24px);
-      color: var(--icon-color, inherit);
-    }
-
-  }
 }

@@ -5,17 +5,13 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody, ToggleControl, __experimentalGrid as Grid} from "@wordpress/components";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {ElementTagSettings, ELEMENT_TAG_ATTRIBUTES} from "Components/ElementTag";
-import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout";
 
 import {useCallback, useMemo} from "@wordpress/element";
-import {useSetting} from "@wordpress/block-editor";
-import {useUniqueId} from "Includes/helper";
 import {isEqual} from "lodash";
 
 const selector = "wpbs-masthead";
 
-const getClassNames = (attributes = {}, styleData) => {
+const getClassNames = (attributes = {}) => {
     const {"wpbs-masthead": settings = {}} = attributes;
 
     return [
@@ -96,7 +92,6 @@ registerBlockType(metadata.name, {
                     </InspectorControls>
                     <BlockWrapper
                         props={props}
-                        as={attributes?.tagName}
                         className={classNames}
                     >
                         <div className="wpbs-masthead__container wpbs-container wpbs-layout-wrapper w-full">
@@ -115,17 +110,13 @@ registerBlockType(metadata.name, {
 
     save: withStyleSave(
         (props) => {
-            const {attributes, styleData, BlockWrapper} = props;
+            const {attributes, BlockWrapper} = props;
             const classNames = getClassNames(attributes, styleData);
 
             return (
                 <BlockWrapper
                     props={props}
-                    as={attributes?.tagName}
                     className={classNames}
-                    data-wp-interactive="wpbs/masthead"
-                    data-wp-init="actions.init"
-                    data-wp-context={attributes?.["wpbs-masthead"]}
                 >
                     <div className="wpbs-masthead__container wpbs-container wpbs-layout-wrapper w-full">
                         {props.children}

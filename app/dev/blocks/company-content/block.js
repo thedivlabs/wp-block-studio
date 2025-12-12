@@ -101,7 +101,7 @@ const getClassNames = (attributes, settings) => {
 
     return [
         selector,
-        "inline-block",
+        "inline-flex",
         "relative",
         !isEmpty(effective?.icon) ? "--icon material-icon-before" : null,
         !isEmpty(effective?.["label-position"])

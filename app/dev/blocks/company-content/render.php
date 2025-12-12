@@ -22,20 +22,6 @@ $has_icon  = ! empty( $settings['icon'] );
 $has_label = ! empty( $settings['label'] );
 
 /**
- * Types that must always be wrapped even without icon/label
- * (layout-dependent or multi-node output)
- */
-$force_wrap_types = [
-	'social',
-	'hours',
-	'hours-inline',
-	'address',
-	'address-inline',
-];
-
-$force_wrap = in_array( $type, $force_wrap_types, true );
-
-/**
  * Resolve company ID
  */
 $raw_company_id = $settings['company-id'] ?? false;
@@ -55,7 +41,7 @@ if ( ! $company_id ) {
 $company = new WPBS_Place( $company_id );
 
 /**
- * Link handling
+ * Link handling (block-created links only)
  */
 $is_link = in_array(
 	$type,
@@ -135,15 +121,30 @@ if ( $inner === '' ) {
 }
 
 /**
- * Wrap ONLY the dynamic element
+ * Detect pre-wrapped semantic HTML
+ */
+$inner_is_anchor =
+	str_starts_with( $inner, '<a ' ) ||
+	str_starts_with( $inner, '<a>' );
+
+/**
+ * Decide wrapper
  */
 if ( $is_link && ! empty( $link ) ) {
+	// This block creates the link
 	$replacement =
 		'<a href="' . esc_url( $link ) . '" target="_blank" rel="noopener">' .
 		$inner .
 		'</a>';
-} else {
+} elseif ( $inner_is_anchor || ( ! $has_icon && ! $has_label ) ) {
+	// Already semantic or no layout wrapper needed
 	$replacement = $inner;
+} else {
+	// Layout wrapper only
+	$replacement =
+		'<div>' .
+		$inner .
+		'</div>';
 }
 
 /**

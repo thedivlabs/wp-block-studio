@@ -105,11 +105,11 @@ class WPBS {
 		}, 1, 3 );
 
 
-		add_action( 'wp_head', 'output_header_height', 20 );
+		add_action( 'wp_head', [ $this, 'output_header_height' ], 20 );
 
 
 	}
-	
+
 	public function output_header_height(): void {
 
 		$theme_json = wp_get_global_settings();

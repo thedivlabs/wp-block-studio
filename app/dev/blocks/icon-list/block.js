@@ -181,10 +181,6 @@ registerBlockType(metadata.name, {
                 [settings, setAttributes]
             );
 
-            useEffect(() => {
-                console.log(attributes);
-            }, [settings]);
-
             return (
                 <>
                     <InspectorControls group="styles">

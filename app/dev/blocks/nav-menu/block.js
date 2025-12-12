@@ -194,19 +194,85 @@ function getCssProps(settings = {props: {}, breakpoints: {}}) {
 }
 
 function cssVarsFromProps(props = {}) {
-    const divider = props.divider ?? {};
     const icon = props.icon ?? {};
+    const submenuIcon = props['submenu-icon'] ?? {};
+    const divider = props.divider ?? {};
+    const linkBorder = props['link-border'] ?? {};
+    const submenuBorder = props['submenu-border'] ?? {};
+    const submenuDivider = props['submenu-divider'] ?? {};
 
     return {
+        /* -----------------------------
+         * Layout / structure
+         * ----------------------------- */
         "--columns": props.columns ?? null,
-        "--divider": Object.values(divider).join(" "),
+        "--submenu-space": props['submenu-space'] ?? null,
+        "--submenu-gap": props['submenu-gap'] ?? null,
+        "--submenu-padding": props['submenu-padding'] ?? null,
+        "--submenu-icon-space": props['submenu-icon-space'] ?? null,
+        "--submenu-link-padding": props['submenu-link-padding'] ?? null,
+
+        /* -----------------------------
+         * Icons (main)
+         * ----------------------------- */
         "--icon": icon?.name ? `"${icon.name}"` : null,
-        "--icon-color": icon?.color ?? null,
-        "--icon-size": icon?.size ? `${icon.size}px` : "1em",
+        "--icon-size": icon?.size ? `${icon.size}px` : null,
         "--icon-css": icon?.css ?? null,
-        "--icon-space": props?.['icon-space'] ?? null,
+        "--icon-color": props['color-icon'] ?? icon?.color ?? null,
+        "--icon-offset": props['icon-offset'] ?? null,
+
+        /* -----------------------------
+         * Icons (submenu)
+         * ----------------------------- */
+        "--submenu-icon": submenuIcon?.name ? `"${submenuIcon.name}"` : null,
+        "--submenu-icon-size": submenuIcon?.size ? `${submenuIcon.size}px` : null,
+        "--submenu-icon-css": submenuIcon?.css ?? null,
+        "--color-submenu-icon": props['color-submenu-icon'] ?? null,
+
+        /* -----------------------------
+         * Divider (top-level)
+         * ----------------------------- */
+        "--divider": divider?.width || divider?.style || divider?.color
+            ? `${divider.width ?? ''} ${divider.style ?? ''} ${divider.color ?? ''}`.trim()
+            : null,
+
+        /* -----------------------------
+         * Divider (submenu)
+         * ----------------------------- */
+        "--submenu-divider": submenuDivider?.width || submenuDivider?.style || submenuDivider?.color
+            ? `${submenuDivider.width ?? ''} ${submenuDivider.style ?? ''} ${submenuDivider.color ?? ''}`.trim()
+            : null,
+
+        /* -----------------------------
+         * Link borders
+         * ----------------------------- */
+        "--link-border-width": linkBorder?.width ?? null,
+        "--link-border-style": linkBorder?.style ?? null,
+        "--link-border-color": linkBorder?.color ?? null,
+
+        /* -----------------------------
+         * Text decoration
+         * ----------------------------- */
+        "--decoration": props['text-decoration'] ?? null,
+
+        /* -----------------------------
+         * Color system (direct pass-through)
+         * ----------------------------- */
+        "--color-background-active": props['color-background-active'] ?? null,
+        "--color-text-active": props['color-text-active'] ?? null,
+        "--color-text-decoration": props['color-text-decoration'] ?? null,
+        "--color-text-decoration-active": props['color-text-decoration-active'] ?? null,
+
+        "--color-submenu-background": props['color-submenu-background'] ?? null,
+        "--color-submenu-background-hover": props['color-submenu-background-hover'] ?? null,
+        "--color-submenu-background-active": props['color-submenu-background-active'] ?? null,
+
+        "--color-submenu-text": props['color-submenu-text'] ?? null,
+        "--color-submenu-text-hover": props['color-submenu-text-hover'] ?? null,
+        "--color-submenu-text-active": props['color-submenu-text-active'] ?? null,
     };
 }
+
 
 const BaseControls = ({entry, update, blockProps, menus = []}) => {
     const bpSettings = entry?.props || {};
@@ -326,6 +392,7 @@ registerBlockType(metadata.name, {
             );
 
             useEffect(() => {
+                console.log(settings);
                 setCss(getCssProps(settings));
             }, [settings, setCss]);
 
@@ -370,45 +437,48 @@ registerBlockType(metadata.name, {
                     >
                         <ul class="wpbs-nav-menu-container wpbs-container wpbs-layout-wrapper">
                             <li class="menu-item menu-item-has-children">
-                                <a href="#"><span>Link</span></a>
+                                <a href="#" className={'pointer-events-none'}><span>Link</span></a>
 
                                 <ul class="sub-menu">
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                 </ul>
                             </li>
 
-                            <li class="menu-item"><a href="#"><span>Link</span></a></li>
-                            <li class="menu-item"><a href="#"><span>Link</span></a></li>
+                            <li class="menu-item"><a href="#" className={'pointer-events-none'}><span>Link</span></a>
+                            </li>
+                            <li class="menu-item"><a href="#" className={'pointer-events-none'}><span>Link</span></a>
+                            </li>
                             <li class="menu-item menu-item-has-children">
-                                <a href="#"><span>Link</span></a>
+                                <a href="#" className={'pointer-events-none'}><span>Link</span></a>
 
                                 <ul class="sub-menu">
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="#"><span>Submenu Link</span></a>
+                                        <a href="#" className={'pointer-events-none'}><span>Submenu Link</span></a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="menu-item"><a href="#"><span>Link</span></a></li>
+                            <li class="menu-item"><a href="#" className={'pointer-events-none'}><span>Link</span></a>
+                            </li>
 
                         </ul>
                     </BlockWrapper>

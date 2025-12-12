@@ -8,8 +8,6 @@ preg_match( '/\bis-style-(\S+)/', ( $block->attributes['className'] ?? '' ), $m 
 $style = $m[1] ?? null;
 
 
-WPBS::console_log( $block ?? false );
-
 if ( empty( $menu_id ) ) {
     return;
 }

@@ -18,7 +18,6 @@ if ( empty( $answer ) ) {
 $block_props = get_block_wrapper_attributes( [
         'class' => join( ' ', array_filter( [
                 'wpbs-faq-content',
-                $settings['styleClass'] ?? null
         ] ) )
 ] );
 

@@ -19,7 +19,6 @@ if ( empty( $question ) ) {
 $block_props = get_block_wrapper_attributes( [
         'class' => join( ' ', array_filter( [
                 'wpbs-faq-header w-full flex items-center justify-between',
-                $settings['styleClass'] ?? null
         ] ) )
 ] );
 

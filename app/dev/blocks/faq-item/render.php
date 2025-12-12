@@ -15,23 +15,16 @@ if ( empty( $faq_item['question'] ) || empty( $faq_item['answer'] ) ) {
 $block_props = get_block_wrapper_attributes( [
         'class' => join( ' ', array_filter( [
                 'wpbs-faq-item w-full flex flex-col',
-                $settings['styleClass'] ?? null
         ] ) )
 ] );
 
 
 $faq_header  = new WP_Block( [
         'blockName' => 'wpbs/faq-header'
-], [
-        'wpbs/faqItem' => $faq_item,
-        'wpbs/group'   => $settings
-] );
+], $block->context ?? [] );
 $faq_content = new WP_Block( [
         'blockName' => 'wpbs/faq-content'
-], [
-        'wpbs/faqItem' => $faq_item,
-        'wpbs/group'   => $settings
-] );
+], $block->context ?? [] );
 
 
 ?>

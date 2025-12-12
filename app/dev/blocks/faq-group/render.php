@@ -12,9 +12,9 @@ $settings = $attributes['wpbs-faq-group'] ?? [];
 $group_id = $settings['group'] ?? null;
 
 if ( empty( $group_id ) ) {
-	echo $content;
+    echo $content;
 
-	return;
+    return;
 }
 
 
@@ -24,12 +24,10 @@ if ( empty( $group_id ) ) {
 $template = $block->parsed_block['innerBlocks'][0] ?? null;
 
 if ( ! $template ) {
-	echo $content;
+    echo $content;
 
-	return;
+    return;
 }
-
-WPBS::console_log( $template );
 
 /**
  * 3. Load ACF FAQ rows
@@ -37,7 +35,7 @@ WPBS::console_log( $template );
 $faqs = get_field( 'wpbs_questions', $group_id );
 
 if ( empty( $faqs ) || ! is_array( $faqs ) ) {
-	return;
+    return;
 }
 
 $faq_content = '';
@@ -47,52 +45,57 @@ $faq_content = '';
  */
 foreach ( $faqs as $faq ) {
 
-	// Duplicate full parsed block structure
-	//$item = wpbs_clone_block( $template );
-	$item = json_decode( json_encode( $template ), true );
+    // Duplicate full parsed block structure
+    //$item = wpbs_clone_block( $template );
+    $item = json_decode( json_encode( $template ), true );
 
-	// Add our dynamic attributes
-	$item['attrs']['faqItem'] = $faq;
-	$item['attrs']['group']   = $settings;
+    // Add our dynamic attributes
+    $item['attrs']['faqItem'] = $faq;
+    $item['attrs']['group']   = $settings;
 
-	// -------------------------------------------
-	// Inject FAQ question & answer
-	// Template structure:
-	//   item
-	//     ├── faq-header
-	//     │       └── paragraph
-	//     └── faq-content
-	//             └── paragraph
-	// -------------------------------------------
+    // -------------------------------------------
+    // Inject FAQ question & answer
+    // Template structure:
+    //   item
+    //     ├── faq-header
+    //     │       └── paragraph
+    //     └── faq-content
+    //             └── paragraph
+    // -------------------------------------------
 
-	// Header paragraph
-	if ( isset( $item['innerBlocks'][0]['innerBlocks'][0] ) ) {
-		$header = &$item['innerBlocks'][0]['innerBlocks'][0];
-		$text   = esc_html( $faq['question'] ?? '' );
+    // Header paragraph
+    if ( isset( $item['innerBlocks'][0]['innerBlocks'][0] ) ) {
+        $header = &$item['innerBlocks'][0]['innerBlocks'][0];
+        $text   = $faq['question'];
 
-		$header['innerHTML']    = "<p>{$text}</p>";
-		$header['innerContent'] = [ $header['innerHTML'] ];
-	}
+        $header['innerHTML']    = $text;
+        $header['innerContent'] = [ $header['innerHTML'] ];
+    }
 
-	// Content paragraph
-	if ( isset( $item['innerBlocks'][1]['innerBlocks'][0] ) ) {
-		$content_block = &$item['innerBlocks'][1]['innerBlocks'][0];
-		$text          = esc_html( $faq['answer'] ?? '' );
+    // Content paragraph
+    if ( isset( $item['innerBlocks'][1]['innerBlocks'][0] ) ) {
+        $content_block = &$item['innerBlocks'][1]['innerBlocks'][0];
+        $text          = $faq['answer'];
 
-		$content_block['innerHTML']    = "<p>{$text}</p>";
-		$content_block['innerContent'] = [ $content_block['innerHTML'] ];
-	}
+        $content_block['innerHTML']    = $text;
+        $content_block['innerContent'] = [ $content_block['innerHTML'] ];
+    }
 
-	// Render block instance so global styles + block supports apply
-	$item_block  = new WP_Block( $item, $block->context );
-	$faq_content .= $item_block->render();
+    // Render block instance so global styles + block supports apply
+    $item_block  = new WP_Block( $item, $block->context );
+    $faq_content .= $item_block->render();
 }
 
-$wrapper_props = get_block_wrapper_attributes( [] );
+$wrapper_props = get_block_wrapper_attributes( [
+        'class' => join( ' ', array_filter( [
+                'wpbs-faq-group w-full flex flex-col',
+                $attributes['uniqueId'] ?? null
+        ] ) )
+] );
 
 
 ?>
 
 <div <?= $wrapper_props ?>>
-	<?= $faq_content ?>
+    <?= $faq_content ?>
 </div>

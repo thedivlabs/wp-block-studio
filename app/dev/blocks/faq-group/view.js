@@ -7,9 +7,7 @@ const {state} = store('wpbs/faq-group', {
         init: () => {
 
             const {ref: component} = getElement();
-
-            console.log(component);
-
+            
             if (!component || component.classList.contains('accordion-initialized')) {
                 return false;
             }

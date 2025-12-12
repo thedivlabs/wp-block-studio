@@ -361,7 +361,51 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                    />
+                    >
+                        <ul class="wpbs-nav-menu-container wpbs-container wpbs-layout-wrapper">
+                            <li class="menu-item menu-item-has-children">
+                                <a href="#"><span>Link</span></a>
+
+                                <ul class="sub-menu">
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="menu-item"><a href="#"><span>Link</span></a></li>
+                            <li class="menu-item"><a href="#"><span>Link</span></a></li>
+                            <li class="menu-item menu-item-has-children">
+                                <a href="#"><span>Link</span></a>
+
+                                <ul class="sub-menu">
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="#"><span>Submenu Link</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="menu-item"><a href="#"><span>Link</span></a></li>
+
+                        </ul>
+                    </BlockWrapper>
                 </>
             );
         },

@@ -12,7 +12,7 @@ function initAccordion(element) {
 
         toggleItem.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             const parent = e.target.closest('li.menu-item-has-children');
             const submenu = parent.querySelector(':scope > .sub-menu');
             parent.classList.toggle('active');
@@ -78,7 +78,7 @@ const {state} = store('wpbs/nav-menu', {
         init: () => {
 
             const {ref: element} = getElement();
-
+            
             const is_dropdown = element.classList.contains('is-style-dropdown');
             const is_accordion = element.classList.contains('is-style-accordion');
 

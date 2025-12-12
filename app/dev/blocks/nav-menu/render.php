@@ -1,6 +1,14 @@
 <?php
-$settings = $attributes['wpbs-nav-menu'] ?? [];
+
+$raw      = $attributes['wpbs-nav-menu'] ?? [];
+$settings = $raw['props'] ?? $raw;
 $menu_id  = $settings['menu'] ?? false;
+
+preg_match( '/\bis-style-(\S+)/', ( $block->attributes['className'] ?? '' ), $m );
+$style = $m[1] ?? null;
+
+
+WPBS::console_log( $block ?? false );
 
 if ( empty( $menu_id ) ) {
     return;
@@ -25,11 +33,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 $menu_class = 'wpbs-nav-menu-container wpbs-container wpbs-layout-wrapper';
 
-$has_submenu = in_array(
-        'is-style-' . ( $settings['style'] ?? '' ),
-        [ 'is-style-dropdown', 'is-style-accordion' ],
-        true
-);
+$has_submenu = ! in_array( $style, [ 'is-style-columns' ] );
 ?>
 
 <nav <?php echo $wrapper_attributes; ?>>

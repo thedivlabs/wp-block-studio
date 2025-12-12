@@ -57,9 +57,10 @@
     }
   },
   "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
   "style": "file:./block.css",
   "icon": "editor-kitchensink",
-  "render": "./render.php"
+  "render": "file:./render.php"
 }
 
 

@@ -168,6 +168,23 @@ export const Field = memo(
                     </BaseControl>
                 );
                 break;
+            case "divider":
+                control = (
+                    <div
+                        style={{
+                            width: "100%",
+                            paddingBottom: "5px",
+                            borderBottom: "1px solid #ddd",
+                            textAlign: "left",
+                            fontSize: "14px",
+                            lineHeight: "1.3",
+                            color: "#dadada"
+                        }}
+                    >
+                        {label}
+                    </div>
+                );
+                break;
 
             case "shadow":
                 control = (

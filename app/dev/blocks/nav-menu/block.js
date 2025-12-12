@@ -94,6 +94,7 @@ const FIELDS_BASE = [
     {type: "border", slug: "link-border", label: "Link Border", full: true},
     {type: "border", slug: "link-border-active", label: "Active Link Border", full: true},
 
+    {type: "divider", label: "Submenu", full: true},
     // Sub-menu layout
     {type: "unit", slug: "submenu-space", label: "Sub-Menu Space"},
     {type: "unit", slug: "submenu-rounded", label: "Sub-Menu Rounded"},

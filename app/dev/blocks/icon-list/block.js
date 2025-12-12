@@ -20,6 +20,7 @@ const FIELDS = [
     {type: "icon", slug: "icon", label: "Icon", full: true},
     {type: "border", slug: "divider", label: "Divider", full: true},
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
+    {type: "unit", slug: "space", label: "Space"},
 ];
 
 /* --------------------------------------------------------------
@@ -191,7 +192,7 @@ registerBlockType(metadata.name, {
                     <InspectorControls group="styles">
                         <PanelBody
                             initialOpen
-                            className="wpbs-controls is-style-unstyled"
+                            className="wpbs-block-controls is-style-unstyled"
                         >
                             <BreakpointPanels
                                 value={settings}

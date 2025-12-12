@@ -1,16 +1,14 @@
 .wpbs-site-header {
   height: var(--wpbs-header-height, 70px);
   z-index: 90;
-  background-color: var(--wp--custom--header--color--bg, transparent);
   @apply relative top-0 left-0 w-full flex items-stretch transition-transform duration-500;
 }
 
-body.--header-sticky .wpbs-site-header {
+&.--sticky {
   @apply fixed;
 }
 
-body.--header-float .wpbs-site-header {
-  background-color: var(--wp--custom--header--color--float);
+&.--float {
   @apply absolute;
 }
 
@@ -34,10 +32,10 @@ body.--header-sticky > .wp-site-blocks {
 }
 
 /* Float layout offset */
-:root:has(body.--header-float) {
+:root:has(.wpbs-site-header.--float) {
   --wpbs-header-offset: 0px;
 }
 
-body.--header-float .wp-site-blocks {
-  @apply pt-0;
+:root:has(.wpbs-site-header.--float) .wp-site-blocks {
+  padding-top: 0;
 }

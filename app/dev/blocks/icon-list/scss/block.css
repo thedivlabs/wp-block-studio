@@ -62,4 +62,9 @@
 
   pointer-events: none;
   user-select: none;
+
+  body:not(.icons-loaded) & {
+    visibility: hidden !important;
+    overflow: hidden !important;
+  }
 }

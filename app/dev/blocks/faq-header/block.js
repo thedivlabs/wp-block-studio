@@ -27,7 +27,7 @@ const getClassNames = (attributes = {}, styleData) => {
         selector,
         "w-full",
         "block",
-        "relative pointer-cursor user-select-none",
+        "relative pointer-cursor select-none",
     ]
         .filter(Boolean)
         .join(" ");

@@ -1,0 +1,57 @@
+{
+  "apiVersion": 3,
+  "name": "wpbs/icon-list-item",
+  "title": "Icon List Item",
+  "description": "Display an icon list item",
+  "selectors": {
+    "root": ".wpbs-icon-list-item"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    },
+    "wpbs-icon-list-item": {
+      "type": "object"
+    }
+  },
+  "providesContext": {
+    "wpbs/settings": "wpbs-icon-list-item"
+  },
+  "parent": [
+    "wpbs/icon-list"
+  ],
+  "allowedBlocks": [
+    "core/paragraph",
+    "core/heading"
+  ],
+  "supports": {
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "editor-kitchensink"
+}
+
+

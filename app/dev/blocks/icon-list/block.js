@@ -170,8 +170,7 @@ registerBlockType(metadata.name, {
         (props) => {
             const {attributes, setAttributes, BlockWrapper, styleData, setCss} = props;
 
-            const raw = attributes["wpbs-icon-list"] || {};
-            const settings = useMemo(() => normalizeIconListSettings(raw), [raw]);
+            const {'wpbs-icon-list': settings} = attributes;
 
             const classNames = [
                 selector,

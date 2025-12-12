@@ -202,6 +202,7 @@ function cssVarsFromProps(props = {}) {
         "--submenu-space": props['submenu-space'] ?? null,
         "--submenu-gap": props['submenu-gap'] ?? null,
         "--submenu-padding": props['submenu-padding'] ?? null,
+        "--submenu-rounded": props['submenu-rounded'] ?? null,
         "--submenu-icon-space": props['submenu-icon-space'] ?? null,
         "--submenu-link-padding": props['submenu-link-padding'] ?? null,
 

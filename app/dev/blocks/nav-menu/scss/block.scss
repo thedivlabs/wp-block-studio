@@ -119,6 +119,7 @@
             background-color: var(--color-submenu-background, white) !important;
 
             display: flex; /* flex */
+            align-items: center;
             width: 100%; /* w-full */
             transition-property: color, background-color, border-color, text-decoration-color; /* transition-colors */
             transition-duration: 300ms;
@@ -135,7 +136,7 @@
               align-items: center;
               justify-content: center;
               width: 1ch;
-              height: 1em;
+              height: 1ch;
 
               body:not(.icons-loaded) & {
                 visibility: hidden !important;

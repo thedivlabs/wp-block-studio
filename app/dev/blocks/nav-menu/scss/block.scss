@@ -31,7 +31,6 @@
         white-space: nowrap; /* whitespace-nowrap */
         display: flex; /* flex */
         position: relative; /* relative */
-        align-items: center; /* items-center */
         transition-property: color, background-color, border-color, text-decoration-color; /* transition-colors */
         transition-duration: 200ms; /* duration-200 */
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -128,7 +127,6 @@
       }
     }
 
-    // Active states
     & > li.current-menu-item,
     & > li.current-menu-ancestor {
       & > a {
@@ -171,9 +169,7 @@
     border: none !important;
   }
 
-  //
-  // ============ Columns STYLE ============
-  //
+
   &.is-style-columns {
     .wpbs-nav-menu-container {
       display: grid;
@@ -189,9 +185,7 @@
     }
   }
 
-  //
-  // ============ DROPDOWN STYLE ============
-  //
+
   &.is-style-dropdown {
     .wpbs-nav-menu-container {
       flex-wrap: wrap;
@@ -258,9 +252,7 @@
     }
   }
 
-  //
-  // ============ ACCORDION STYLE ============
-  //
+
   &.is-style-accordion {
     .wpbs-nav-menu-container {
       width: 100%; /* w-full */
@@ -311,9 +303,7 @@
     }
   }
 
-  //
-  // ============ SUBMENU DIVIDER ============
-  //
+
   &.--submenu-divider .wpbs-nav-menu-container > li > .sub-menu > li {
     position: relative;
 

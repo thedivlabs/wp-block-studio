@@ -1,4 +1,4 @@
-import "./scss/block.css";
+import "./scss/block.scss";
 
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
@@ -322,11 +322,6 @@ registerBlockType(metadata.name, {
             useEffect(() => {
                 setCss(getCssProps(settings));
             }, [settings, setCss]);
-
-            // leave this here for debugging purposes
-            useEffect(() => {
-                console.log(menus);
-            }, [menus])
 
 
             const classNames = getClassNames(attributes);

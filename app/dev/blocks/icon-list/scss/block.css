@@ -32,10 +32,11 @@
 
 /* Icon pseudo-element */
 .wpbs-icon-list-item::before {
-  content: var(--icon, none);
+  content: var(--icon, 'check');
   font-variation-settings: var(--icon-css);
   font-size: var(--icon-size, 24px);
   color: var(--icon-color, inherit);
+  font-family: 'Material Symbols Outlined', sans-serif;
 
   position: absolute;
   top: 0;

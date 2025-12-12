@@ -19,6 +19,17 @@ import {BreakpointPanels} from "Components/BreakpointPanels";
 
 const selector = "wpbs-icon-list-item";
 
+const getClassNames = (attributes) => {
+    const {'wpbs-icon-list-item': settings} = attributes;
+
+    return [
+        selector,
+        "w-full block relative"
+    ]
+        .filter(Boolean)
+        .join(" ");
+}
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -38,12 +49,7 @@ registerBlockType(metadata.name, {
             const {attributes, setAttributes, BlockWrapper, styleData, setCss} = props;
 
 
-            const classNames = [
-                selector,
-                "w-full block relative"
-            ]
-                .filter(Boolean)
-                .join(" ");
+            const classNames = getClassNames(attributes);
 
 
             return (
@@ -52,21 +58,14 @@ registerBlockType(metadata.name, {
                 </>
             );
         },
-        {hasChildren: true}
+        {hasChildren: true, tagName: 'li'}
     ),
 
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;
 
-        const classNames = [
-            selector,
-            "w-full",
-            "flex flex-col",
-            "relative",
-        ]
-            .filter(Boolean)
-            .join(" ");
+        const classNames = getClassNames(attributes);
 
         return <BlockWrapper props={props} className={classNames}/>;
-    }, {hasChildren: true}),
+    }, {hasChildren: true, tagName: 'li'}),
 });

@@ -1,3 +1,49 @@
+/* Main container */
 .wpbs-icon-list {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 1), 1fr);
+  gap: var(--row-gap, 1em);
+  line-height: var(--line-height, 1.5em);
+}
 
+/* Divider logic — apply to every item except last in visual order */
+.wpbs-icon-list.wpbs-icon-list--divider > .wpbs-icon-list-item:not(:last-child) {
+  padding-bottom: var(--row-gap, 1em);
+  border-bottom: var(--divider, none);
+}
+
+/* Individual items */
+.wpbs-icon-list-item {
+  position: relative;
+  padding-left: var(--icon-space, calc(var(--icon-size, 1.5em) + 0.2em));
+  line-height: inherit;
+}
+
+/* Paragraph spacing inside items */
+.wpbs-icon-list-item p:first-of-type {
+  margin-top: 0 !important;
+}
+
+.wpbs-icon-list-item p {
+  margin-bottom: 0 !important;
+}
+
+/* Icon pseudo-element */
+.wpbs-icon-list-item::before {
+  content: var(--icon, none);
+  font-variation-settings: var(--icon-css);
+  font-size: var(--icon-size, 24px);
+  color: var(--icon-color, inherit);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 1lh;
+  height: 1lh;
+
+  pointer-events: none;
+  user-select: none;
 }

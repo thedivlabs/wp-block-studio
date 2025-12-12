@@ -158,7 +158,7 @@ const getClassNames = (attributes) => {
         "w-full",
         "flex flex-col",
         "relative",
-        !isEmpty(cleanObject(settings.props.divider, true)) ? "--divider" : null,
+        !isEmpty(cleanObject(settings?.props?.divider ?? {}, true)) ? "--divider" : null,
     ]
         .filter(Boolean)
         .join(" ");
@@ -240,7 +240,7 @@ registerBlockType(metadata.name, {
                 </>
             );
         },
-        {hasChildren: true}
+        {hasChildren: true, tagName: 'ul'}
     ),
 
     save: withStyleSave((props) => {
@@ -249,5 +249,5 @@ registerBlockType(metadata.name, {
         const classNames = getClassNames(attributes);
 
         return <BlockWrapper props={props} className={classNames}/>;
-    }, {hasChildren: true}),
+    }, {hasChildren: true, tagName: 'ul'}),
 });

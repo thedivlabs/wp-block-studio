@@ -1,7 +1,4 @@
 .wpbs-company-content {
-  @apply
-  flex
-  relative;
 
   &.--line-clamp {
     line-clamp: var(--line-clamp, 6);

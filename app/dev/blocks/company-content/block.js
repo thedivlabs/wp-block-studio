@@ -56,6 +56,7 @@ const FIELDS = [
     },
     {type: "icon", slug: "icon", label: "Icon", full: true},
     {type: "number", slug: "line-clamp", label: "Line Clamp", min: 1},
+    {type: "divider", label: "Options", full: true},
     {type: "toggle", slug: "split-address", label: "Split Address"},
 ];
 
@@ -166,8 +167,9 @@ registerBlockType(metadata.name, {
                 <>
                     <InspectorControls group="styles">
                         <PanelBody
-                            initialOpen
-                            className="wpbs-block-controls is-style-unstyled"
+                            title={'Company Content'}
+                            initialOpen={false}
+                            className="wpbs-block-controls"
                         >
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 {FIELDS.map((field) => (

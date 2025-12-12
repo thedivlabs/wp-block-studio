@@ -1,24 +1,49 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/company-content",
   "title": "Company Content",
-  "description": "Display company content fields",
-  "category": "widgets",
-  "icon": "grid-view",
-  "apiVersion": 3,
+  "description": "Display company content",
+  "selectors": {
+    "root": ".wpbs-company-content"
+  },
   "attributes": {
     "uniqueId": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-company-content": {
-      "type": "object",
-      "default": {},
-      "show_in_rest": true
+      "type": "string"
     }
   },
   "supports": {
-    "html": false
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
   },
   "editorScript": "file:./block.js",
-  "render": "file:./render.php"
+  "style": "file:./block.css",
+  "render": "file:./render.php",
+  "icon": "editor-kitchensink"
 }
+
+

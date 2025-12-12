@@ -1,4 +1,4 @@
-import "./scss/block.css";
+import "./scss/block.scss";
 
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";

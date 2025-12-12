@@ -58,7 +58,8 @@
   },
   "editorScript": "file:./block.js",
   "style": "file:./block.css",
-  "icon": "editor-kitchensink"
+  "icon": "editor-kitchensink",
+  "render": "./render.php"
 }
 
 

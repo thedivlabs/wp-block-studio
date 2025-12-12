@@ -1,3 +1,5 @@
+import "./scss/block.css";
+
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 

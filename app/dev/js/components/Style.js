@@ -48,12 +48,20 @@ function sortBreakpointsDescending(raw, breakpointsDef) {
 }
 
 
+function generateUniqueId(prefix = "wpbs") {
+    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+        return `${prefix}-${crypto.randomUUID().slice(0, 8)}`;
+    }
+
+    return `${prefix}-${Math.random().toString(16).slice(2, 10)}`;
+}
+
+
 export const withStyle = (Component, config) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
     const {onStyleChange, cleanObject, registerBlock, unregisterBlock} = API;
 
     const {clientId, attributes, setAttributes, name} = props;
-    const instanceId = useInstanceId(withStyle, name.replace("/", "-"));
 
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
@@ -70,6 +78,16 @@ export const withStyle = (Component, config) => (props) => {
         "wpbs-background": bgData = {props: {}, breakpoints: {}},
         "wpbs-advanced": advData = {},
     } = attributes;
+
+    const instanceIdRef = useRef(null);
+
+    if (!instanceIdRef.current) {
+        instanceIdRef.current = uniqueId
+            ? uniqueId
+            : generateUniqueId(name ? name.replace("/", "-") : "wpbs");
+    }
+
+    const instanceId = instanceIdRef.current;
 
     /* ----------------------------------------------
        BLOCK REGISTRATION / UNIQUE ID SYNC

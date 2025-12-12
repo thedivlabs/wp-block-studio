@@ -18,9 +18,14 @@ import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
 import {BreakpointPanels} from "Components/BreakpointPanels";
 
-/* --------------------------------------------------------------
- * NORMALIZER — identical to GRID block pattern
- * -------------------------------------------------------------- */
+
+const FIELDS = [
+    {type: "icon", slug: "icon", label: "Icon", full: true},
+    {type: "border", slug: "divider", label: "Divider", full: true},
+    {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
+];
+
+
 function normalizeIconListSettings(raw = {}) {
     if (raw && (raw.props || raw.breakpoints)) {
         return {
@@ -74,65 +79,64 @@ function getCssProps(settings) {
     };
 }
 
-/* --------------------------------------------------------------
- * BREAKPOINT CONTROL PANEL
- * -------------------------------------------------------------- */
 const BreakpointControls = ({entry, update}) => {
     const props = entry?.props || {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{padding: "14px"}}>
+        <Grid
+            columns={2}
+            columnGap={10}
+            rowGap={10}
+        >
+            {FIELDS.map((field) => {
+                const value = props[field.slug];
 
-            <Field
-                key="icon"
-                field={{type: "icon", slug: "icon", label: "Icon", full: true}}
-                props={props}
-                callback={(val) =>
-                    update({
-                        props: {
-                            ...props,
-                            icon: val,
-                        },
-                    })
+                // NumberControl path
+                if (field.type === "number") {
+                    return (
+                        <NumberControl
+                            key={field.slug}
+                            label={field.label}
+                            value={value ?? ""}
+                            min={field.min}
+                            max={field.max}
+                            onChange={(val) => {
+                                update({
+                                    props:
+                                        val === ""
+                                            ? {}
+                                            : {
+                                                ...props,
+                                                [field.slug]:
+                                                    parseInt(val, 10) || 1,
+                                            },
+                                });
+                            }}
+                            __next40pxDefaultSize
+                        />
+                    );
                 }
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
 
-            <Field
-                key="divider"
-                field={{type: "border", slug: "divider", label: "Divider", full: true}}
-                props={props}
-                callback={(val) =>
-                    update({
-                        props: {
-                            ...props,
-                            divider: val,
-                        },
-                    })
-                }
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-
-            <NumberControl
-                label="Columns"
-                value={props.columns ?? ""}
-                onChange={(val) => {
-                    update({
-                        props:
-                            val === ""
-                                ? {}
-                                : {
+                // Default Field path
+                return (
+                    <Field
+                        key={field.slug}
+                        field={field}
+                        props={props}
+                        isToolsPanel={false}
+                        callback={(val) =>
+                            update({
+                                props: {
                                     ...props,
-                                    columns: parseInt(val, 10) || 1,
+                                    [field.slug]: val,
                                 },
-                    });
-                }}
-                min={1}
-                max={6}
-                __next40pxDefaultSize
-            />
+                            })
+                        }
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                );
+            })}
         </Grid>
     );
 };

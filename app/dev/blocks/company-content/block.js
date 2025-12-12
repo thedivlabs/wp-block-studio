@@ -64,6 +64,7 @@ const FIELDS = [
     },
     {type: "divider", label: "Options", full: true},
     {type: "toggle", slug: "split-address", label: "Split Address"},
+    {type: "toggle", slug: "bold-label", label: "Bold Label"},
 ];
 
 const selector = "wpbs-company-content";

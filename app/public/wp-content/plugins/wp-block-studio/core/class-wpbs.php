@@ -104,6 +104,60 @@ class WPBS {
 			return $html;
 		}, 1, 3 );
 
+
+		add_action( 'wp_head', 'output_header_height', 20 );
+
+
+	}
+	
+	public function output_header_height(): void {
+
+		$theme_json = wp_get_global_settings();
+		$custom     = $theme_json['custom'] ?? [];
+
+		$breakpoints = $custom['breakpoints'] ?? [];
+		$header      = $custom['header']['height'] ?? [];
+
+		if ( empty( $breakpoints ) || empty( $header ) || ! is_array( $header ) ) {
+			return;
+		}
+
+		$css = [];
+
+		/**
+		 * Base (xs)
+		 */
+		if ( ! empty( $header['xs'] ) ) {
+			$css[] = ':root{--header-height:' . esc_attr( $header['xs'] ) . ';}';
+		}
+
+		/**
+		 * Responsive breakpoints
+		 */
+		foreach ( $header as $key => $value ) {
+
+			if ( $key === 'xs' || empty( $value ) ) {
+				continue;
+			}
+
+			if ( empty( $breakpoints[ $key ]['size'] ) ) {
+				continue;
+			}
+
+			$min_width = (int) $breakpoints[ $key ]['size'];
+
+			$css[] = sprintf(
+				'@media (min-width:%dpx){:root{--header-height:%s;}}',
+				$min_width,
+				esc_attr( $value )
+			);
+		}
+
+		if ( empty( $css ) ) {
+			return;
+		}
+
+		echo "<style id=\"wpbs-header-height\">\n" . implode( "\n", $css ) . "\n</style>";
 	}
 
 	public function print_theme_vars(): void {

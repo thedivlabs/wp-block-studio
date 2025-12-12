@@ -4,7 +4,7 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {InspectorControls} from "@wordpress/block-editor";
-import {__experimentalGrid as Grid, PanelBody} from "@wordpress/components";
+import {__experimentalGrid as Grid, PanelBody, SelectControl} from "@wordpress/components";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
@@ -13,6 +13,7 @@ import {isEmpty, isEqual} from "lodash";
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
 import {MaterialIcon} from "Components/IconControl";
+import {useSelect} from "@wordpress/data";
 
 /* --------------------------------------------------------------
  * FIELD MAP (from original block)
@@ -145,9 +146,12 @@ registerBlockType(metadata.name, {
 
             const rawSettings = attributes["wpbs-company-content"] || {};
 
-            const settings = useMemo(
-                () => normalizeCompanyContentSettings(rawSettings),
-                [rawSettings]
+            const companies = useSelect(
+                (select) =>
+                    select("core").getEntityRecords("postType", "company", {
+                        per_page: -1,
+                    }),
+                []
             );
 
             useEffect(() => {
@@ -181,6 +185,20 @@ registerBlockType(metadata.name, {
                             className="wpbs-block-controls"
                         >
                             <Grid columns={2} columnGap={15} rowGap={20}>
+                                <SelectControl
+                                    label="Company"
+                                    value={settings?.["company-id"] ?? ""}
+                                    options={[
+                                        {label: "Select a company", value: ""},
+                                        ...(companies || []).map((post) => ({
+                                            label: post.title.rendered,
+                                            value: String(post.id),
+                                        })),
+                                    ]}
+                                    onChange={(v) =>
+                                        updateSettings({"company-id": v})
+                                    }
+                                />
                                 {FIELDS.map((field) => (
                                     <Field
                                         key={field.slug}

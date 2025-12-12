@@ -190,7 +190,8 @@ registerBlockType(metadata.name, {
 
                     <BlockWrapper props={props} className={classNames}>
                         <MaterialIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
-                        {<span className={'wpbs-company-content__label'}>{settings?.type ?? 'Company Content'}</span>}
+                        {settings?.label && <span className={'wpbs-company-content__label'}>{settings?.label}</span>}
+                        {<span>{settings?.type ?? 'Company Content'}</span>}
                     </BlockWrapper>
                 </>
             );

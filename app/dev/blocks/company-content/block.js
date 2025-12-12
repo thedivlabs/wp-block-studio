@@ -188,7 +188,7 @@ registerBlockType(metadata.name, {
 
                     <BlockWrapper props={props} className={classNames}>
                         <MaterialIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
-                        {settings?.label}
+                        {<span className={'wpbs-company-content__label'}>{settings?.type ?? 'Company Content'}</span>}
                     </BlockWrapper>
                 </>
             );
@@ -208,7 +208,7 @@ registerBlockType(metadata.name, {
 
             return <BlockWrapper props={props} className={classNames}>
                 <MaterialIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
-                {settings?.label}
+                {settings?.label && <span className={'wpbs-company-content__label'}>{settings?.label}</span>}
                 {'%%__COMPANY_CONTENT__%%'}
             </BlockWrapper>;
         },

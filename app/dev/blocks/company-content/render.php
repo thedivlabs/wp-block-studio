@@ -27,6 +27,10 @@ $has_label = ! empty( $settings['label'] );
  */
 $force_wrap_types = [
 	'social',
+	'hours',
+	'hours-inline',
+	'address',
+	'address-inline',
 ];
 
 $force_wrap = in_array( $type, $force_wrap_types, true );
@@ -138,13 +142,7 @@ if ( $is_link && ! empty( $link ) ) {
 		'<a href="' . esc_url( $link ) . '" target="_blank" rel="noopener">' .
 		$inner .
 		'</a>';
-} elseif ( $force_wrap || $has_icon || $has_label ) {
-	$replacement =
-		'<div>' .
-		$inner .
-		'</div>';
 } else {
-	// Pure content injection, no wrapper
 	$replacement = $inner;
 }
 

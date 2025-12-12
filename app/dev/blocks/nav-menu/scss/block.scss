@@ -2,6 +2,12 @@
   .wpbs-nav-menu-container {
     display: flex;
 
+    ul, li {
+      appearance: none;
+      margin: 0;
+      padding: 0;
+    }
+
     & > li {
       position: relative; /* relative */
 

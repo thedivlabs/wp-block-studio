@@ -35,6 +35,9 @@
     "typography": {
       "__experimentalFontFamily": true,
       "__experimentalFontWeight": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true,
       "textAlign": true,
       "fontSize": true,
       "lineHeight": true

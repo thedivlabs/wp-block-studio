@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
                 </>
             );
         },
-        {hasChildren: false}
+        {hasChildren: true}
     ),
     save: withStyleSave(
         (props) => {

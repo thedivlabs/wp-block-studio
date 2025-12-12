@@ -16,6 +16,7 @@ import {useSelect} from "@wordpress/data";
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {useCallback} from "@wordpress/element";
 import {isEqual} from "lodash";
+import {MaterialIcon} from "Components/IconControl";
 
 const selector = "wpbs-faq-header";
 
@@ -62,7 +63,7 @@ registerBlockType(metadata.name, {
                 </>
             );
         },
-        {hasChildren: false}
+        {hasChildren: true}
     ),
     save: withStyleSave(
         (props) => {
@@ -73,7 +74,14 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                />
+                >
+                    <span className="wpbs-faq-header__text">
+                        <Innerblocks.Content/>
+                    </span>
+                    <button class="wpbs-faq-header__button">
+                        <MaterialIcon {...settings?.icon} />
+                    </button>
+                </BlockWrapper>
             );
         },
         {hasChildren: true}

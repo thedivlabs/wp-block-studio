@@ -25,6 +25,7 @@ $block_props = get_block_wrapper_attributes( [
 
 $icon = $settings['icon'] ?? [ 'name' => 'add', 'styles' => '' ];
 
+
 ?>
 
 <div <?= $block_props ?>>

@@ -243,9 +243,7 @@ registerBlockType(metadata.name, {
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                >
-                    {'%%__FAQ_CONTENT__%%'}
-                </BlockWrapper>
+                />
             );
         },
         {hasChildren: true}

@@ -11,10 +11,10 @@ import {
     Spinner,
 } from "@wordpress/components";
 
-import {useSelect} from "@wordpress/data";
+import {InnerBlocks} from "@wordpress/block-editor";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {useCallback} from "@wordpress/element";
+import {useCallback, useEffect} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {MaterialIcon} from "Components/IconControl";
 
@@ -48,10 +48,9 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const {attributes, setAttributes, BlockWrapper, styleData} = props;
+            const {attributes, setAttributes, BlockWrapper, styleData, context} = props;
 
             const {"wpbs-faq-header": settings = {}} = attributes;
-
             const classNames = getClassNames(attributes, styleData);
 
             return (
@@ -70,18 +69,14 @@ registerBlockType(metadata.name, {
             const {attributes, styleData, BlockWrapper} = props;
             const classNames = getClassNames(attributes, styleData);
 
+            const {"wpbs-faq-header": settings = {}} = attributes;
+
+
             return (
                 <BlockWrapper
                     props={props}
                     className={classNames}
-                >
-                    <span className="wpbs-faq-header__text">
-                        <Innerblocks.Content/>
-                    </span>
-                    <button class="wpbs-faq-header__button">
-                        <MaterialIcon {...settings?.icon} />
-                    </button>
-                </BlockWrapper>
+                />
             );
         },
         {hasChildren: true}

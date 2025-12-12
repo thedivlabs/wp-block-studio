@@ -12,22 +12,16 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
-    },
-    "faqItem": {
-      "type": "object"
-    },
-    "group": {
-      "type": "object"
     }
   },
   "allowedBlocks": [
     "wpbs/faq-header",
     "wpbs/faq-content"
   ],
-  "providesContext": {
-    "wpbs/faqItem": "faqItem",
-    "wpbs/group": "group"
-  },
+  "usesContext": [
+    "wpbs/group",
+    "wpbs/faqItem"
+  ],
   "styles": [
     {
       "name": "accordion",

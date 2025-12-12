@@ -9,6 +9,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "wpbs-faq-group": {
+      "type": "object"
     }
   },
   "styles": [
@@ -17,6 +20,9 @@
       "label": "Accordion"
     }
   ],
+  "providesContext": {
+    "wpbs/group": "wpbs-faq-group"
+  },
   "allowedBlocks": [
     "wpbs/faq-item"
   ],

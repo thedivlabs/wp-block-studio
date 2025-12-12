@@ -48,7 +48,10 @@ function getCssProps(settings) {
 
     const css = {
         props: {
-            "--divider": Object.values(divider ?? {}).join(' ')
+            "--divider": Object.values(divider ?? {}).join(' '),
+            "--icon": settings?.icon?.name ? '"' + settings?.icon?.name + '"' : null,
+            "--icon-color": settings?.icon?.color,
+            "--icon-size": settings?.icon?.size ? `${settings?.icon?.size}px` : '1em',
         },
         breakpoints: {},
     };

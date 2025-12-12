@@ -15,7 +15,8 @@
     }
   },
   "usesContext": [
-    "wpbs/faqItem"
+    "wpbs/faqItem",
+    "wpbs/group"
   ],
   "styles": [
     {

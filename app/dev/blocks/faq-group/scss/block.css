@@ -21,7 +21,17 @@
 
 
   .wpbs-faq-header {
-    .wpbs-faq-header__button {
+    padding-right: calc(var(--icon-size, 32px) + 1rem);
+
+    &:after {
+      content: var(--icon, 'add');
+      font-size: var(--icon-size, 32px);
+      line-height: var(--icon-size, 32px);
+      color: var(--icon-color, inherit);
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
       height: 1lh;
       width: auto;
       aspect-ratio: 1 / 1;
@@ -30,6 +40,7 @@
       align-items: center;
       text-align: center;
       cursor: pointer;
+      z-index: 10;
     }
 
 

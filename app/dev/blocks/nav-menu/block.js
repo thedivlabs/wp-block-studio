@@ -79,7 +79,18 @@ const FIELDS_BASE = [
     // Layout / structure
     {type: "number", slug: "columns", label: "Columns", min: 1, max: 6},
     {type: "unit", slug: "link-padding", label: "Link Padding"},
-    {type: "select", slug: "text-decoration", label: "Text Decoration"},
+    {
+        type: "select",
+        slug: "text-decoration",
+        label: "Text Decoration",
+        options: [
+            {label: "None", value: ""},
+            {label: "Underline", value: "underline"},
+            {label: "Overline", value: "overline"},
+            {label: "Line Through", value: "line-through"},
+        ],
+    },
+
     {type: "border", slug: "link-border", label: "Link Border", full: true},
     {type: "border", slug: "link-border-active", label: "Active Link Border", full: true},
 

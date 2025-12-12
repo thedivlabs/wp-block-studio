@@ -107,6 +107,7 @@
 
         & > li {
           width: 100%; /* w-full */
+          overflow: hidden;
 
           &:last-of-type {
             border-bottom: none;

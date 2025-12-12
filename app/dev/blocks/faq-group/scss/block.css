@@ -57,7 +57,7 @@
 
   }
 
-  &.--open .wpbs-faq-header:after {
+  .wpbs-faq-item.--open .wpbs-faq-header:after {
     content: var(--icon-open, var(--icon-closed, 'remove'));
     transform: translateY(-50%) rotate(180deg);
   }

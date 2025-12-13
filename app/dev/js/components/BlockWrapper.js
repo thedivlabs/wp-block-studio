@@ -114,7 +114,7 @@ export const BlockWrapper = ({
 
     const hasContainer =
         isBackgroundActive || advanced?.container;
-    
+
     const containerClass =
         "wpbs-layout-wrapper wpbs-container w-full h-full relative z-20";
 
@@ -127,7 +127,7 @@ export const BlockWrapper = ({
     if (isSave) {
         const saveProps = useBlockProps.save(baseBlockProps);
 
-        if (hasChildren && (hasContainer || isBackgroundActive)) {
+        if (hasChildren && hasContainer) {
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>

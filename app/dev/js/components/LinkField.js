@@ -7,7 +7,13 @@ import {
 } from "@wordpress/components";
 
 export default function LinkField({value = "", onChange}) {
-    const [query, setQuery] = useState(value || "");
+    // Normalize incoming value to a string once
+    const initialValue =
+        typeof value === "string"
+            ? value
+            : value?.url ?? "";
+
+    const [query, setQuery] = useState(initialValue);
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -15,6 +21,14 @@ export default function LinkField({value = "", onChange}) {
     const inputRef = useRef(null);
 
     useEffect(() => {
+        // Absolute guard: query must always be a string
+        if (typeof query !== "string") {
+            setResults([]);
+            setOpen(false);
+            return;
+        }
+
+        // Skip lookup for empty or absolute URLs
         if (!query || query.startsWith("http")) {
             setResults([]);
             setOpen(false);
@@ -41,19 +55,26 @@ export default function LinkField({value = "", onChange}) {
                     )
                 );
 
-                const merged = responses.flat().map((item) => ({
-                    id: `${item.type}-${item.id}`,
-                    title: item.title || item.url,
-                    url: item.url,
-                    type: item.type,
-                }));
+                const merged = responses
+                    .flat()
+                    .filter(Boolean)
+                    .map((item) => ({
+                        id: `${item.type}-${item.id}`,
+                        title: item.title || item.url,
+                        url: item.url,
+                        type: item.type,
+                    }));
 
                 setResults(merged);
                 setOpen(true);
             } catch (err) {
-                if (!signal.aborted) console.error(err);
+                if (!signal.aborted) {
+                    console.error(err);
+                }
             } finally {
-                if (!signal.aborted) setLoading(false);
+                if (!signal.aborted) {
+                    setLoading(false);
+                }
             }
         }, 180);
 
@@ -64,8 +85,9 @@ export default function LinkField({value = "", onChange}) {
     }, [query]);
 
     function apply(url) {
-        onChange?.(url);  // wrapped
         setQuery(url);
+        onChange?.(url);
+
         setResults([]);
         setOpen(false);
 
@@ -81,36 +103,38 @@ export default function LinkField({value = "", onChange}) {
     }
 
     const itemGroupStyle = {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        padding: '35px 0px 10px'
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        padding: "35px 0px 10px",
     };
 
     const itemStyle = {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        padding: '0px'
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+        padding: "0px",
     };
 
     const searchStyle = {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        padding: '0px',
-        backgroundColor: 'white',
-        position: 'relative',
-        zIndex: 10
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+        padding: "0px",
+        backgroundColor: "white",
+        position: "relative",
+        zIndex: 10,
     };
 
     return (
         <div className="block-editor-link-control wpbs-link-field">
-
-            <div className="block-editor-link-control__search" style={searchStyle}>
+            <div
+                className="block-editor-link-control__search"
+                style={searchStyle}
+            >
                 <TextControl
                     className="block-editor-link-control__search-input"
                     placeholder="Search or type URL…"
@@ -121,7 +145,7 @@ export default function LinkField({value = "", onChange}) {
                     onBlur={handleBlur}
                     onChange={(v) => {
                         setQuery(v);
-                        onChange?.({url: v}); // wrapped
+                        onChange?.(v);
                     }}
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize

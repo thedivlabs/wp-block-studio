@@ -784,53 +784,84 @@ function onStyleChange({css = {}, preload = [], props, styleRef, bpMin = false})
     });
 }
 
+function walkBlocks(blocks, callback) {
+    for (const block of blocks) {
+        callback(block);
+
+        if (Array.isArray(block.innerBlocks) && block.innerBlocks.length) {
+            walkBlocks(block.innerBlocks, callback);
+        }
+    }
+}
+
+function generateUniqueId(prefix = 'wpbs') {
+    if (crypto?.randomUUID) {
+        return `${prefix}-${crypto.randomUUID().slice(0, 8)}`;
+    }
+    return `${prefix}-${Math.random().toString(16).slice(2, 10)}`;
+}
+
+
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 
-    const identityStore = new Map();
+    let watcherStarted = false;
+    let isReconciling = false;
 
-    function registerBlock(uniqueId, clientId) {
-        // No uniqueId yet → fresh block
-        if (!uniqueId) {
-            return "fresh";
-        }
+    function startUniqueIdWatcher() {
+        if (watcherStarted) return;
+        watcherStarted = true;
 
-        let owners = identityStore.get(uniqueId);
+        wp.data.subscribe(() => {
+            if (isReconciling) return;
 
-        // First time we've seen this ID
-        if (!owners) {
-            owners = new Set();
-            identityStore.set(uniqueId, owners);
-        }
+            const select = wp.data.select('core/block-editor');
+            const dispatch = wp.data.dispatch('core/block-editor');
 
-        // No owners yet → this clientId becomes the owner
-        if (owners.size === 0) {
-            owners.add(clientId);
-            return "fresh";
-        }
+            const rootBlocks = select.getBlocks();
+            if (!rootBlocks || !rootBlocks.length) return;
 
-        // Already owned by this block
-        if (owners.has(clientId)) {
-            return "normal";
-        }
+            const seen = new Map();
 
-        // Another block owns this ID → collision
-        return "clone";
+            isReconciling = true;
+
+            try {
+                walkBlocks(rootBlocks, (block) => {
+                    const {clientId, attributes, name} = block;
+
+                    // WPBS ONLY
+                    if (!name?.startsWith('wpbs/')) return;
+                    if (!attributes?.uniqueId) return;
+
+                    const id = attributes.uniqueId;
+
+                    if (!seen.has(id)) {
+                        seen.set(id, []);
+                    }
+
+                    seen.get(id).push({clientId, name});
+                });
+
+                for (const [uniqueId, owners] of seen.entries()) {
+                    if (owners.length <= 1) continue;
+
+                    // First block keeps the ID, rest get new ones
+                    owners.slice(1).forEach(({clientId, name}) => {
+                        dispatch.updateBlockAttributes(clientId, {
+                            uniqueId: generateUniqueId(
+                                name.replace('/', '-')
+                            ),
+                        });
+                    });
+                }
+            } finally {
+                isReconciling = false;
+            }
+        });
     }
 
-    function unregisterBlock(uniqueId, clientId) {
-        if (!uniqueId) return;
-
-        const owners = identityStore.get(uniqueId);
-        if (!owners) return;
-
-        owners.delete(clientId);
-
-        if (owners.size === 0) {
-            identityStore.delete(uniqueId);
-        }
-    }
-
+    // 🔥 Start watcher immediately
+    startUniqueIdWatcher();
 
     const api = {
         layoutFieldsMap,
@@ -838,8 +869,6 @@ export function initStyleEditor() {
         backgroundFieldsMap,
         cleanObject,
         onStyleChange,
-        registerBlock,
-        unregisterBlock,
         updateEditorIcons,
     };
 

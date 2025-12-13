@@ -59,7 +59,7 @@ function generateUniqueId(prefix = "wpbs") {
 
 export const withStyle = (Component, config) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
-    const {onStyleChange, cleanObject, registerBlock, unregisterBlock} = API;
+    const {onStyleChange, cleanObject} = API;
 
     const {clientId, attributes, setAttributes, name} = props;
 
@@ -67,10 +67,17 @@ export const withStyle = (Component, config) => (props) => {
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
 
-    const {hasBackground = true, hasAdvanced = true, hasChildren, tagName, bpMin = false} = config || {};
+    const {
+        hasBackground = true,
+        hasAdvanced = true,
+        hasChildren,
+        tagName,
+        bpMin = false,
+    } = config || {};
 
     const blockGap = attributes?.style?.spacing?.blockGap;
-    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
+    const blockGapDeps =
+        typeof blockGap === "object" ? JSON.stringify(blockGap) : blockGap;
 
     const {
         uniqueId,
@@ -79,6 +86,11 @@ export const withStyle = (Component, config) => (props) => {
         "wpbs-advanced": advData = {},
     } = attributes;
 
+    /**
+     * ------------------------------------------------------------
+     * Stable instance ID (source of truth)
+     * ------------------------------------------------------------
+     */
     const instanceIdRef = useRef(null);
 
     if (!instanceIdRef.current) {
@@ -89,32 +101,24 @@ export const withStyle = (Component, config) => (props) => {
 
     const instanceId = instanceIdRef.current;
 
-
+    /**
+     * ------------------------------------------------------------
+     * Ensure uniqueId exists ONCE (watcher handles collisions)
+     * ------------------------------------------------------------
+     */
     useEffect(() => {
-        const status = registerBlock(uniqueId, clientId);
-
-        if (status === "fresh" || status === "clone") {
-            // assign the correct new ID
+        if (!uniqueId && instanceId) {
             setAttributes({uniqueId: instanceId});
-
-            // register new ownership
-            registerBlock(instanceId, clientId);
-
-            // unregister old ID if it existed
-            if (uniqueId && uniqueId !== instanceId) {
-                unregisterBlock(uniqueId, clientId);
-            }
         }
+    }, []);
 
-        return () => {
-            unregisterBlock(uniqueId, clientId);
-        };
-    }, [clientId, uniqueId]);
-
-
+    /**
+     * ------------------------------------------------------------
+     * Update callbacks
+     * ------------------------------------------------------------
+     */
     const updateStyleSettings = useCallback(
         (patch) => {
-
             let next = {
                 ...styleData,
                 ...patch,
@@ -126,71 +130,65 @@ export const withStyle = (Component, config) => (props) => {
 
             next = normalizeBreakpoints(next);
 
-            const result = {
-                "wpbs-style": next,
-            }
-
-            if (uniqueId !== instanceId) result["uniqueId"] = instanceId;
-
-            setAttributes(result);
+            setAttributes({"wpbs-style": next});
         },
-        [setAttributes]
+        [setAttributes, styleData]
     );
-
 
     const updateBgSettings = useCallback(
         (patch) => {
-
             let next = {
                 ...bgData,
                 ...patch,
             };
 
-            // Explicitly replace breakpoints, do NOT deep merge them
             if (patch.breakpoints !== undefined) {
                 next.breakpoints = patch.breakpoints;
             }
 
             next = normalizeBreakpoints(next);
 
-            const result = {
-                "wpbs-background": next,
-            }
-
-            if (uniqueId !== instanceId) result["uniqueId"] = instanceId;
-
-            setAttributes(result);
-
+            setAttributes({"wpbs-background": next});
         },
-        [setAttributes]
+        [setAttributes, bgData]
     );
-
 
     const updateAdvancedSettings = useCallback(
         (patch = {}) => {
-            const next = {
-                ...advData,
-                ...patch,
-            };
-            setAttributes({"wpbs-advanced": next});
+            setAttributes({
+                "wpbs-advanced": {
+                    ...advData,
+                    ...patch,
+                },
+            });
         },
-        [setAttributes]
+        [setAttributes, advData]
     );
 
+    /**
+     * ------------------------------------------------------------
+     * Base style sync
+     * ------------------------------------------------------------
+     */
     useEffect(() => {
         if (typeof onStyleChange !== "function") return;
         if (!styleRef.current) return;
 
         onStyleChange({
             css: blockCssRef.current,
-            bpMin: bpMin,
             preload: blockPreloadRef.current,
-            group: uniqueId,
+            bpMin,
+            group: instanceId,
             props,
             styleRef,
         });
-    }, [styleData, blockGapDeps, uniqueId, bgData]);
+    }, [styleData, bgData, blockGapDeps, instanceId]);
 
+    /**
+     * ------------------------------------------------------------
+     * CSS injection
+     * ------------------------------------------------------------
+     */
     const applyCss = useCallback(
         (raw) => {
             if (!raw || typeof raw !== "object") return;
@@ -201,30 +199,34 @@ export const withStyle = (Component, config) => (props) => {
             );
 
             const cleaned = cleanObject(sorted, true);
-            const cleanedCurrent = cleanObject(blockCssRef.current, true);
+            const current = cleanObject(blockCssRef.current, true);
 
-            if (!cleaned || isEqual(cleaned, cleanedCurrent)) return;
+            if (!cleaned || isEqual(cleaned, current)) return;
 
             blockCssRef.current = cleaned;
 
             if (typeof onStyleChange === "function" && styleRef.current) {
                 onStyleChange({
                     css: blockCssRef.current,
-                    bpMin: bpMin,
                     preload: blockPreloadRef.current,
-                    group: uniqueId,
+                    bpMin,
+                    group: instanceId,
                     props,
                     styleRef,
                 });
             }
         },
-        [cleanObject, onStyleChange, uniqueId]
+        [cleanObject, onStyleChange, instanceId]
     );
 
+    /**
+     * ------------------------------------------------------------
+     * Preload sync
+     * ------------------------------------------------------------
+     */
     const applyPreload = useCallback(
         (items) => {
             const arr = Array.isArray(items) ? items : [];
-
             if (isEqual(blockPreloadRef.current, arr)) return;
 
             blockPreloadRef.current = arr;
@@ -233,32 +235,39 @@ export const withStyle = (Component, config) => (props) => {
                 onStyleChange({
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,
-                    group: uniqueId,
-                    bpMin: bpMin,
+                    bpMin,
+                    group: instanceId,
                     props,
                     styleRef,
                 });
             }
         },
-        [onStyleChange, uniqueId]
+        [onStyleChange, instanceId]
     );
 
+    /**
+     * ------------------------------------------------------------
+     * Block wrapper passthrough
+     * ------------------------------------------------------------
+     */
     const wrappedBlockWrapperCallback = useCallback(
-        ({children, props: blockProps, ...wrapperProps}) => {
-
-            return (
-                <BlockWrapper
-                    props={blockProps}
-                    wrapperProps={wrapperProps}
-                    config={config}
-                >
-                    {children}
-                </BlockWrapper>
-            );
-        },
+        ({children, props: blockProps, ...wrapperProps}) => (
+            <BlockWrapper
+                props={blockProps}
+                wrapperProps={wrapperProps}
+                config={config}
+            >
+                {children}
+            </BlockWrapper>
+        ),
         []
     );
 
+    /**
+     * ------------------------------------------------------------
+     * Render
+     * ------------------------------------------------------------
+     */
     return (
         <>
             <Component

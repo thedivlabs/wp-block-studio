@@ -51,24 +51,28 @@ function normalizeIcon(input = {}, defaultName = "") {
     const family = input.family ?? "classic";
     const style = input.style ?? "solid";
     const color = input.color || "";
+    const gradient = input.gradient || "";
 
     return {
         name,
         family,
         style,
+        color,
+        gradient,
         css: buildIconCssVars({
             name,
             family,
             style,
             color,
+            gradient,
         }),
     };
 }
 
 /* ------------------------------------------------------------
- * BUILD CSS CUSTOM PROPERTIES (PERSISTED)
+ * BUILD CSS CUSTOM PROPERTIES (DERIVED)
  * ------------------------------------------------------------ */
-function buildIconCssVars({name, family, style, color}) {
+function buildIconCssVars({name, family, style, color, gradient}) {
     const font =
         FONT_MAP?.[family]?.[style] ??
         FONT_MAP.classic.solid;
@@ -78,18 +82,15 @@ function buildIconCssVars({name, family, style, color}) {
         "--icon-style": style,
         "--icon-name": name,
         "--icon-font": font,
-        "--icon-color": color || "currentColor",
+        "--icon-color": gradient ? "transparent" : color || "currentColor",
+        "--icon-gradient": gradient || null,
     };
 }
 
 /* ------------------------------------------------------------
- * FA CLASS BUILDER (DERIVED)
+ * FA CLASS BUILDER
  * ------------------------------------------------------------ */
-export function getFaClassNames({
-                                    name,
-                                    family = "classic",
-                                    style = "solid",
-                                }) {
+export function getFaClassNames({name, family = "classic", style = "solid"}) {
     if (!name) return "";
 
     if (family === "brands") {
@@ -110,14 +111,27 @@ export function getFaClassNames({
  * ------------------------------------------------------------ */
 const IconPreview = memo(
     ({settings, defaultName}) => {
-        const icon = normalizeIcon(settings, defaultName);
-        if (!icon.name) return null;
+        const {name, family, style, color, gradient} =
+            normalizeIcon(settings, defaultName);
+
+        if (!name) return null;
+
+        const styleObj = {};
+
+        if (gradient) {
+            styleObj.background = gradient;
+            styleObj.color = "transparent";
+            styleObj.backgroundClip = "text";
+            styleObj.webkitBackgroundClip = "text";
+        } else if (color) {
+            styleObj.color = color;
+        }
 
         return (
             <i
                 aria-hidden="true"
-                className={getFaClassNames(icon)}
-                style={{color: icon.css["--icon-color"]}}
+                className={getFaClassNames({name, family, style})}
+                style={styleObj}
             />
         );
     },
@@ -149,7 +163,6 @@ export const IconControl = ({
                     {...prev, ...patch},
                     defaultName
                 );
-
                 onChange(next);
                 return next;
             });
@@ -176,7 +189,7 @@ export const IconControl = ({
     /* --------------------------------------------------------
      * UI
      * -------------------------------------------------------- */
-    const {family, style} = local;
+    const {family, style, color, gradient} = local;
 
     return (
         <BaseControl label={label} style={{marginBottom: 0}}>
@@ -187,7 +200,7 @@ export const IconControl = ({
                         setLocalName(val);
                         debouncedUpdate({name: val});
                     }}
-                    placeholder="check"
+                    placeholder="calendar-check"
                     style={{flex: 1}}
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
@@ -242,11 +255,15 @@ export const IconControl = ({
                             <ColorSelector
                                 label="Icon Color"
                                 value={{
-                                    color: local?.css?.["--icon-color"],
+                                    color: color,
+                                    gradient: gradient,
                                 }}
                                 normalize={false}
                                 onChange={(val) =>
-                                    update({color: val.color})
+                                    update({
+                                        color: val.color,
+                                        gradient: val.gradient,
+                                    })
                                 }
                             />
                         </Grid>
@@ -266,18 +283,32 @@ export const FontAwesomeIcon = ({
                                     className = "",
                                     ...rest
                                 }) => {
-    const normalized = normalizeIcon(icon, defaultName);
-    if (!normalized.name) return null;
+    const {name, family, style, color, gradient} =
+        normalizeIcon(icon, defaultName);
+
+    if (!name) return null;
+
+    const styleObj = {};
+
+    if (gradient) {
+        styleObj.background = gradient;
+        styleObj.color = "transparent";
+        styleObj.backgroundClip = "text";
+        styleObj.webkitBackgroundClip = "text";
+    } else if (color) {
+        styleObj.color = color;
+    }
 
     return (
         <i
             aria-hidden="true"
             className={[
-                getFaClassNames(normalized),
+                getFaClassNames({name, family, style}),
                 className,
             ]
                 .filter(Boolean)
                 .join(" ")}
+            style={styleObj}
             {...rest}
         />
     );

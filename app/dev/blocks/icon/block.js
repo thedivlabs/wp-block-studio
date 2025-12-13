@@ -31,6 +31,15 @@ const getClassNames = (attributes = {}) => {
         .join(" ");
 };
 
+function getCssProps(settings) {
+    
+    return Object.fromEntries(Object.entries({
+        props: {
+            '--icon-size': settings?.icon?.size ?? null,
+        }
+    }).filter(([k, v]) => v !== null));
+}
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -57,8 +66,11 @@ registerBlockType(metadata.name, {
             );
 
             const isLink = Boolean(settings?.link?.url);
-            const anchorProps = isLink ? getAnchorProps(settings.link) : {};
-            
+
+
+            useEffect(() => {
+                setCss(getCssProps(settings));
+            }, [settings, setCss]);
 
             const updateSettings = useCallback(
                 (nextValue) => {

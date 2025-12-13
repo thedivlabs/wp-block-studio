@@ -32,10 +32,6 @@
       "size": true,
       "color": true,
       "radius": true
-    },
-    "typography": {
-      "fontSize": true,
-      "lineHeight": true
     }
   },
   "editorScript": "file:./block.js",

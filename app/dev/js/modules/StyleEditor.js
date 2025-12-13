@@ -308,6 +308,7 @@ function parseBackgroundProps(props = {}) {
     ) {
         result["--image"] = "none";
         result["--video"] = "none";
+        result["--bg-color"] = "unset";
     }
 
     /* ------------------------------------------------------------

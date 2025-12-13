@@ -21,7 +21,7 @@ import {useCallback, useEffect} from "@wordpress/element";
 import {isEqual} from "lodash";
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
-import {getIconCssProps, MaterialIcon} from "Components/IconControl";
+import {getIconCssProps, FontAwesomeIcon} from "Components/IconControl";
 
 
 const selector = "wpbs-faq-group";

@@ -12,7 +12,7 @@ import {isEmpty, isEqual} from "lodash";
 
 import {Field} from "Components/Field";
 import {cleanObject} from "Includes/helper";
-import {MaterialIcon} from "Components/IconControl";
+import {FontAwesomeIcon} from "Components/IconControl";
 import {useSelect} from "@wordpress/data";
 
 /* --------------------------------------------------------------
@@ -216,7 +216,7 @@ registerBlockType(metadata.name, {
                     </InspectorControls>
 
                     <BlockWrapper props={props} className={classNames}>
-                        <MaterialIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
+                        <FontAwesomeIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
                         {settings?.label && <span className={'wpbs-company-content__label'}>{settings?.label}</span>}
                         {<span>{settings?.type ?? 'Company Content'}</span>}
                     </BlockWrapper>
@@ -237,7 +237,7 @@ registerBlockType(metadata.name, {
             const classNames = getClassNames(attributes, settings);
 
             return <BlockWrapper props={props} className={classNames}>
-                <MaterialIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
+                <FontAwesomeIcon {...(settings?.icon ?? {})} className={'wpbs-icon'}/>
                 {settings?.label && <span className={'wpbs-company-content__label'}>{settings?.label}</span>}
                 {'%%__COMPANY_CONTENT__%%'}
             </BlockWrapper>;

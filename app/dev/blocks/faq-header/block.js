@@ -16,7 +16,7 @@ import {InnerBlocks} from "@wordpress/block-editor";
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {useCallback, useEffect} from "@wordpress/element";
 import {isEqual} from "lodash";
-import {MaterialIcon} from "Components/IconControl";
+import {FontAwesomeIcon} from "Components/IconControl";
 
 const selector = "wpbs-faq-header";
 

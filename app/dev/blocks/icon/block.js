@@ -10,7 +10,7 @@ import {isEqual} from "lodash";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {Field} from "Components/Field";
-import {getIconCssProps, IconControl, MaterialIcon} from "Components/IconControl";
+import {getIconCssProps, IconControl, FontAwesomeIcon} from "Components/IconControl";
 import Link, {getAnchorProps} from "Components/Link";
 import {cleanObject} from "Includes/helper";
 
@@ -105,7 +105,7 @@ registerBlockType(metadata.name, {
                             aria-hidden={true}
                         />
                     )}
-                    {!isImage && <MaterialIcon {...settings?.icon} />}
+                    {!isImage && <FontAwesomeIcon icon={settings?.icon}/>}
                 </>
             ), [isImage, settings?.image, settings?.icon]);
 
@@ -217,7 +217,7 @@ registerBlockType(metadata.name, {
                             aria-hidden={true}
                         />
                     )}
-                    {!isImage && <MaterialIcon {...settings?.icon} />}
+                    {!isImage && <FontAwesomeIcon icon={settings?.icon}/>}
                 </>
             );
 

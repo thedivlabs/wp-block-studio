@@ -14,7 +14,7 @@ import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {isEqual} from "lodash";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {cleanObject, getImageUrlForResolution, normalizeVideo, normalizeMedia} from "Includes/helper";
-import {MaterialIcon} from "Components/IconControl";
+import {FontAwesomeIcon} from "Components/IconControl";
 
 //
 // -------------------------------------------------------------
@@ -151,7 +151,7 @@ function renderVideoContent(settings, attributes, isEditor) {
             <div
                 className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
                 <span className="screen-reader-text">Play video</span>
-                <MaterialIcon {...(settings?.["button-icon"] ?? {})} />
+                <FontAwesomeIcon {...(settings?.["button-icon"] ?? {})} />
             </div>
 
             <img

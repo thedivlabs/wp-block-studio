@@ -2,7 +2,7 @@ import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, FontAwesomeIcon} from "Components/IconControl";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {getCSSFromStyle} from "Includes/helper";
 import {
@@ -88,14 +88,14 @@ const NavigationContent = ({options = {}, context = {}}) => {
         <>
             <button type="button" className={prevClass}>
                 <span className="screen-reader-text">Previous Slide</span>
-                <MaterialIcon {...options?.['icon-prev']} defaultName={'arrow_back'}/>
+                <FontAwesomeIcon {...options?.['icon-prev']} defaultName={'arrow_back'}/>
             </button>
 
             {!!options?.['pagination'] && (<div className={paginationClass}></div>)}
 
             <button type="button" className={nextClass}>
                 <span className="screen-reader-text">Next Slide</span>
-                <MaterialIcon {...options?.['icon-next']} defaultName={'arrow_forward'}/>
+                <FontAwesomeIcon {...options?.['icon-next']} defaultName={'arrow_forward'}/>
             </button>
         </>
     );

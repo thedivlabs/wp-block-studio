@@ -19,7 +19,7 @@ import {
 import {useMemo, useCallback, useEffect} from '@wordpress/element';
 
 import Link from "Components/Link.js";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, FontAwesomeIcon} from "Components/IconControl";
 import PopupSelector from "Components/PopupSelector";
 
 import {
@@ -237,7 +237,7 @@ registerBlockType(metadata.name, {
                     {...anchorProps}
                 >
                     <span className="wpbs-cta-button__title relative">{title}</span>
-                    <MaterialIcon
+                    <FontAwesomeIcon
                         className="wpbs-cta-button__icon"
                         {...(settings?.icon ?? {})}
                         isEditor={true}
@@ -271,7 +271,7 @@ registerBlockType(metadata.name, {
                 {...anchorProps}
             >
                 <span className="wpbs-cta-button__title">{'Learn more'}</span>
-                <MaterialIcon
+                <FontAwesomeIcon
                     className="wpbs-cta-button__icon"
                     {...(settings?.icon ?? {})}
                 />

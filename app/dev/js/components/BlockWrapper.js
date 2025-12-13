@@ -135,7 +135,7 @@ export const BlockWrapper = ({
                         {children}
                     </div>
 
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    {isBackgroundActive && <BackgroundElement attributes={attributes} isSave={true}/>}
                 </Tag>
             );
         }
@@ -153,7 +153,7 @@ export const BlockWrapper = ({
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>{children}</div>
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    {isBackgroundActive && <BackgroundElement attributes={attributes} isSave={true}/>}
                 </Tag>
             );
         }

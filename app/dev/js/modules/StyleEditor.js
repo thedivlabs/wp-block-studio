@@ -332,7 +332,7 @@ function parseBackgroundProps(props = {}) {
     /* ------------------------------------------------------------
      * BACKGROUND POSITION → TOP / RIGHT / BOTTOM / LEFT
      * ------------------------------------------------------------ */
-    if (backgroundPosition != null) {
+    if (backgroundPosition != null && backgroundPosition !== "") {
         const pos = String(backgroundPosition).toLowerCase();
 
         // Default: centered

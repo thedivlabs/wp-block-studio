@@ -730,7 +730,7 @@ export const backgroundFieldsMap = [
         type: 'select',
         slug: 'background-position',
         label: 'Position',
-        options: POSITION_OPTIONS,
+        options: OBJECT_POSITION_OPTIONS,
     },
     {
         type: 'select',

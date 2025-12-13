@@ -82,9 +82,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
                 }
 
                 case 'container':
-                    console.log(val);
-                    console.log(containerMap[val]);
-                    console.log(containerMap);
                     result['--container-width'] = containerMap[val] ?? val;
                     break;
 
@@ -242,37 +239,55 @@ function parseBackgroundProps(props = {}) {
     const result = {};
 
     const {
-        type,            // "image", "video", "featured-image"
-        media,           // unified media object
+        type,
+        media,
         resolution = "large",
+
+        // visual modifiers
         overlay,
-        'bg-color': color,
+        "bg-color": color,
         opacity,
         scale,
         fade,
         fixed,
-        maskImage,
-        maskSize,
-        maskOrigin,
-        backgroundSize,
-        backgroundBlendMode,
-        maxHeight,
+
+        // background css
+        "background-size": backgroundSize,
+        "background-position": backgroundPosition,
+        "background-origin": backgroundOrigin,
+        "background-repeat": backgroundRepeat,
+        "background-blend-mode": backgroundBlendMode,
+
+        // mask
+        "mask-image": maskImage,
+        "mask-size": maskSize,
+        "mask-origin": maskOrigin,
+
+        // dimensions
+        width,
+        height,
+        "max-height": maxHeight,
+        "min-height": minHeight,
+        top,
+        right,
+        bottom,
+        left,
     } = props;
 
     const mediaObj = media || null;
 
     /* ------------------------------------------------------------
-     * IMAGE BACKGROUND
+     * IMAGE / FEATURED IMAGE
      * ------------------------------------------------------------ */
-    if (type === "image" || type === "featured-image" || type === "featured-image-mobile") {
-
-        if (!mediaObj || mediaObj === "" || mediaObj == null) {
-            // No image at all — emit nothing
-        } else if (mediaObj.isPlaceholder || mediaObj.source === "#") {
-            // Disabled at this breakpoint
+    if (
+        type === "image" ||
+        type === "featured-image" ||
+        type === "featured-image-mobile"
+    ) {
+        if (mediaObj?.isPlaceholder || mediaObj?.source === "#") {
             result["--image"] = "#";
-        } else if (mediaObj.source) {
-            result["--video"] = 'none';
+        } else if (mediaObj?.source) {
+            result["--video"] = "none";
             const resolved = getImageUrlForResolution(mediaObj, resolution);
             if (resolved) {
                 result["--image"] = buildImageSet(resolved);
@@ -282,85 +297,72 @@ function parseBackgroundProps(props = {}) {
         if (type === "featured-image") {
             result["--featured-image"] = "true";
         }
+
         if (type === "featured-image-mobile") {
             result["--featured-image-mobile"] = "true";
         }
     }
 
-    if (type === "video") {
-        if (mediaObj && mediaObj.isPlaceholder !== true) {
-            result["--video"] = "flex";
-        }
+    /* ------------------------------------------------------------
+     * VIDEO
+     * ------------------------------------------------------------ */
+    if (type === "video" && mediaObj && !mediaObj.isPlaceholder) {
+        result["--video"] = "flex";
     }
 
+    /* ------------------------------------------------------------
+     * BACKGROUND CORE PROPS
+     * ------------------------------------------------------------ */
+    if (backgroundSize != null) {
+        result["--size"] = backgroundSize;
+    }
+
+    if (backgroundPosition != null) {
+        result["--position"] = backgroundPosition;
+    }
+
+    if (backgroundOrigin != null) {
+        result["--origin"] = backgroundOrigin;
+    }
+
+    if (backgroundRepeat != null) {
+        result["--repeat"] = backgroundRepeat;
+    }
+
+    if (backgroundBlendMode != null) {
+        result["--blend"] = backgroundBlendMode;
+    }
 
     /* ------------------------------------------------------------
-     * MASK IMAGE
+     * MASK
      * ------------------------------------------------------------ */
-    const maskVal = maskImage || props["mask-image"];
-
-    if (maskVal === "" || maskVal == null) {
-        // cleared
-    } else if (maskVal?.isPlaceholder || maskVal?.source === "#") {
+    if (maskImage?.isPlaceholder || maskImage?.source === "#") {
         result["--mask-image"] = "none";
         result["--mask-repeat"] = "initial";
         result["--mask-size"] = "initial";
         result["--mask-position"] = "initial";
-    } else {
+    } else if (maskImage) {
         const url =
-            typeof maskVal === "object" && maskVal?.source
-                ? maskVal.source
-                : typeof maskVal === "string"
-                    ? maskVal
-                    : null;
+            typeof maskImage === "object"
+                ? maskImage.source
+                : maskImage;
 
         if (url) {
             result["--mask-image"] = `url("${url}")`;
             result["--mask-repeat"] = "no-repeat";
-            result["--mask-size"] =
-                maskSize || props["mask-size"] || "contain";
-            result["--mask-position"] =
-                maskOrigin || props["mask-origin"] || "center";
+            result["--mask-size"] = maskSize || "contain";
+            result["--mask-position"] = maskOrigin || "center";
         }
     }
 
     /* ------------------------------------------------------------
-     * OPACITY
+     * VISUAL MODIFIERS
      * ------------------------------------------------------------ */
     if (opacity != null) {
         const n = parseFloat(opacity);
         if (!isNaN(n)) {
             result["--opacity"] = n > 1 ? n / 100 : n;
         }
-    }
-
-    /* ------------------------------------------------------------
-     * OVERLAY
-     * ------------------------------------------------------------ */
-    if (overlay != null) {
-        result["--overlay"] = overlay;
-    }
-
-    /* ------------------------------------------------------------
-     * COLOR
-     * ------------------------------------------------------------ */
-    if (color != null) {
-        result["--color"] = color;
-    }
-
-    /* ------------------------------------------------------------
-     * BLEND MODE
-     * ------------------------------------------------------------ */
-    if (backgroundBlendMode || props["background-blend-mode"]) {
-        result["--blend"] =
-            backgroundBlendMode || props["background-blend-mode"];
-    }
-
-    /* ------------------------------------------------------------
-     * SIZE / SCALE
-     * ------------------------------------------------------------ */
-    if (backgroundSize != null || props["background-size"] != null) {
-        result["--size"] = backgroundSize || props["background-size"];
     }
 
     if (scale != null) {
@@ -370,19 +372,37 @@ function parseBackgroundProps(props = {}) {
         }
     }
 
-    /* ------------------------------------------------------------
-     * FADE MASK
-     * ------------------------------------------------------------ */
     if (fade != null) {
         result["--fade"] = fade;
     }
 
-    /* ------------------------------------------------------------
-     * MAX-HEIGHT
-     * ------------------------------------------------------------ */
-    if (maxHeight != null || props["max-height"] != null) {
-        result["--max-height"] = maxHeight || props["max-height"];
+    if (overlay != null) {
+        result["--overlay"] = overlay;
     }
+
+    if (color != null) {
+        result["--color"] = color;
+    }
+
+    /* ------------------------------------------------------------
+     * DIMENSIONS / POSITION
+     * ------------------------------------------------------------ */
+    const DIMENSIONS = {
+        top,
+        right,
+        bottom,
+        left,
+        width,
+        height,
+        "max-height": maxHeight,
+        "min-height": minHeight,
+    };
+
+    Object.entries(DIMENSIONS).forEach(([key, val]) => {
+        if (val != null && val !== "") {
+            result[`--${key}`] = val;
+        }
+    });
 
     /* ------------------------------------------------------------
      * ATTACHMENT

@@ -89,9 +89,7 @@ export const withStyle = (Component, config) => (props) => {
 
     const instanceId = instanceIdRef.current;
 
-    /* ----------------------------------------------
-       BLOCK REGISTRATION / UNIQUE ID SYNC
-    ---------------------------------------------- */
+
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 
@@ -261,10 +259,6 @@ export const withStyle = (Component, config) => (props) => {
         []
     );
 
-
-    /* ----------------------------------------------
-       RENDER
-    ---------------------------------------------- */
     return (
         <>
             <Component

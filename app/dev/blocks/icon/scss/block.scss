@@ -1,20 +1,28 @@
 .wpbs-icon-block {
-  width: var(--icon-size, 1em);
-  height: var(--icon-size, 1em);
-  line-height: var(--icon-size, 1em);
+  width: 1ch;
+  height: 1ch;
+  line-height: 1ch;
   display: flex;
   position: relative;
   overflow: visible;
+  justify-content: center;
+  align-items: center;
+  text-align: center !important;
 
   &.--inline {
     display: inline-flex;
   }
 
-  img, span.wpbs-icon, a {
-    width: var(--icon-size, 1em);
-    height: var(--icon-size, 1em);
-    line-height: var(--icon-size, 1em);
+  span.wpbs-icon, a {
+    width: 1ch;
+    height: 1ch;
+    line-height: 1ch;
     display: flex;
+  }
+
+  span.wpbs-icon, a {
+    justify-content: center;
+    align-items: center;
   }
 
   img {

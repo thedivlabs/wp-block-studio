@@ -31,17 +31,6 @@ const getClassNames = (attributes = {}) => {
         .join(" ");
 };
 
-function getCssProps(attributes) {
-
-    const {'wpbs-icon-block': settings = {}} = attributes;
-
-    return Object.fromEntries(Object.entries({
-        props: {
-            '--icon-size': '24px'
-        }
-    }).filter(([k, v]) => v !== null));
-}
-
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -69,12 +58,7 @@ registerBlockType(metadata.name, {
 
             const isLink = Boolean(settings?.link?.url);
             const anchorProps = isLink ? getAnchorProps(settings.link) : {};
-
-            console.log(getCssProps(attributes));
-
-            useEffect(() => {
-                setCss(getCssProps(attributes));
-            }, [settings, setCss]);
+            
 
             const updateSettings = useCallback(
                 (nextValue) => {

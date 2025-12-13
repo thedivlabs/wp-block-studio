@@ -25,7 +25,7 @@ const getClassNames = (attributes) => {
 
     return [
         selector,
-        "wpbs-material-icon",
+        'w-fit h-fit inline-block select-none pointer-events-none'
     ]
         .filter(Boolean)
         .join(" ");
@@ -102,7 +102,7 @@ registerBlockType(metadata.name, {
 
             return <BlockWrapper props={props} className={classNames}>
 
-                <MaterialIcon {...settings?.icon}/>
+                <MaterialIcon {...settings?.icon} className={'!flex'}/>
             </BlockWrapper>;
         },
         {hasChildren: false, hasBackground: false}

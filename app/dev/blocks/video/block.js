@@ -157,7 +157,7 @@ function renderVideoContent(settings, attributes, isEditor) {
             <img
                 {...(eager || isEditor ? {src: posterSrc} : {"data-src": posterSrc})}
                 alt={settings.title || ""}
-                className="w-full h-full absolute top-0 left-0 z-0 object-cover object-center"
+                className="!w-full !h-full absolute top-0 left-0 z-0 object-cover object-center"
             />
         </>
     );

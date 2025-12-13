@@ -15,7 +15,12 @@ $CTA = new class {
 
 		// Normal mode (not loop)
 		if ( empty( $settings['loop'] ) ) {
-			return $settings['link']['url'] ?? '#';
+			if ( ! empty( $settings['link']['url'] ) && is_string( $settings['link']['url'] ) ) {
+				return $settings['link']['url'];
+			} else {
+				return '#';
+			}
+
 		}
 
 		// Loop mode — check postId first

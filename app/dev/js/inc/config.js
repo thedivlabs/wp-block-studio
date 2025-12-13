@@ -748,7 +748,11 @@ export const backgroundFieldsMap = [
         type: 'unit',
         slug: 'max-height', // not background-related CSS; applies to wrapper
         label: 'Max Height',
-        units: [{value: 'vh', label: 'vh', default: 0}],
+        units: [
+            {value: 'vh', label: 'vh', default: 0},
+            {value: 'rem', label: 'rem', default: 0},
+            {value: 'px', label: 'px', default: 0},
+        ],
     },
 
     // --- Visual modifiers (non-standard CSS, custom implementation) ---

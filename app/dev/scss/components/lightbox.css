@@ -141,6 +141,7 @@
 
   .wpbs-video {
     max-width: min(140svh, 92rem);
+    margin: auto;
 
     @apply
     pointer-events-auto

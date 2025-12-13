@@ -47,6 +47,7 @@ export const BackgroundFields = function BackgroundFields({
                             ? [{label: "Featured Image Mobile", value: "featured-image-mobile"}]
                             : []),
                         {label: "Video", value: "video"},
+                        {label: "None", value: "none"},
                     ]}
                 />
 

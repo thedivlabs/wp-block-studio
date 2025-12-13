@@ -89,7 +89,7 @@ registerBlockType(metadata.name, {
 
                     <BlockWrapper props={props} className={classNames}>
 
-                        <MaterialIcon {...settings?.icon}/>
+                        <MaterialIcon {...settings?.icon} className={'!flex !w-[1ch] !h-[1ch]'}/>
                     </BlockWrapper>
                 </>
             );
@@ -105,7 +105,7 @@ registerBlockType(metadata.name, {
 
             return <BlockWrapper props={props} className={classNames}>
 
-                <MaterialIcon {...settings?.icon} className={'!flex'}/>
+                <MaterialIcon {...settings?.icon} className={'!flex !w-[1ch] !h-[1ch]'}/>
             </BlockWrapper>;
         },
         {hasChildren: false, hasBackground: false}

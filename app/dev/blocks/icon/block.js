@@ -1,15 +1,18 @@
+import "./scss/block.scss";
+
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {InspectorControls} from "@wordpress/block-editor";
 import {__experimentalGrid as Grid, PanelBody} from "@wordpress/components";
-import {useCallback, useMemo} from "@wordpress/element";
+import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import {isEqual} from "lodash";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {Field} from "Components/Field";
 import {IconControl, MaterialIcon} from "Components/IconControl";
 import Link, {getAnchorProps} from "Components/Link";
+import {cleanObject} from "Includes/helper";
 
 const selector = "wpbs-icon-block";
 
@@ -28,9 +31,18 @@ const getClassNames = (attributes = {}) => {
         .join(" ");
 };
 
-/* --------------------------------------------------------------
- * BLOCK REGISTRATION
- * -------------------------------------------------------------- */
+function getCssProps(attributes) {
+
+    const {'wpbs-icon-block': settings = {}} = attributes;
+
+    return Object.fromEntries(Object.entries({
+        props: {
+            '--icon-size': '24px'
+        }
+    }).filter(([k, v]) => v !== null));
+}
+
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
 
@@ -46,7 +58,7 @@ registerBlockType(metadata.name, {
 
     edit: withStyle(
         (props) => {
-            const {attributes, BlockWrapper, setAttributes} = props;
+            const {attributes, BlockWrapper, setAttributes, setCss} = props;
             const {"wpbs-icon-block": settings = {}} = attributes;
 
             const classNames = getClassNames(attributes);
@@ -57,6 +69,12 @@ registerBlockType(metadata.name, {
 
             const isLink = Boolean(settings?.link?.url);
             const anchorProps = isLink ? getAnchorProps(settings.link) : {};
+
+            console.log(getCssProps(attributes));
+
+            useEffect(() => {
+                setCss(getCssProps(attributes));
+            }, [settings, setCss]);
 
             const updateSettings = useCallback(
                 (nextValue) => {
@@ -139,7 +157,7 @@ registerBlockType(metadata.name, {
                                         }}
                                         fieldKey="inline"
                                         props={props}
-                                        value={settings}
+                                        value={!!settings?.inline}
                                         callback={(val) =>
                                             updateSettings({inline: !!val})
                                         }
@@ -152,7 +170,16 @@ registerBlockType(metadata.name, {
 
                     <BlockWrapper props={props} className={classNames}>
                         {isLink ? (
-                            <a {...anchorProps}>{BlockContent}</a>
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                }}
+                            >
+                                {BlockContent}
+                            </a>
+
                         ) : (
                             BlockContent
                         )}

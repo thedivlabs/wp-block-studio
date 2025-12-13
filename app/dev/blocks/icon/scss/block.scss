@@ -1,3 +1,29 @@
 .wpbs-icon-block {
-  
+  width: var(--icon-size, 1em);
+  height: var(--icon-size, 1em);
+  line-height: var(--icon-size, 1em);
+  display: flex;
+  position: relative;
+  overflow: visible;
+
+  &.--inline {
+    display: inline-flex;
+  }
+
+  img, span.wpbs-icon, a {
+    width: var(--icon-size, 1em);
+    height: var(--icon-size, 1em);
+    line-height: var(--icon-size, 1em);
+    display: flex;
+  }
+
+  img {
+    object-fit: contain;
+    object-position: center;
+  }
+
+  &:not(body.wp-admin &) {
+    //pointer-events: none;
+    user-select: none;
+  }
 }

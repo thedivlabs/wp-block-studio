@@ -39,7 +39,8 @@
     }
   },
   "editorScript": "file:./block.js",
-  "icon": "editor-kitchensink"
+  "icon": "editor-kitchensink",
+  "style": "file:./block.css"
 }
 
 

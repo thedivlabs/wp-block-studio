@@ -10,7 +10,7 @@ import {isEqual} from "lodash";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {Field} from "Components/Field";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {getIconCssProps, IconControl, MaterialIcon} from "Components/IconControl";
 import Link, {getAnchorProps} from "Components/Link";
 import {cleanObject} from "Includes/helper";
 
@@ -31,11 +31,18 @@ const getClassNames = (attributes = {}) => {
         .join(" ");
 };
 
-function getCssProps(settings) {
-    
+function getCssProps(attributes) {
+
+    const {"wpbs-icon-block": settings = {}} = attributes;
+
+    const isImage = (attributes?.className ?? '').includes("is-style-image");
+
+    const fontSize = attributes?.fontSize ?? attributes?.style?.typography?.fontSize ?? null;
+    const iconSize = settings?.icon?.size ?? fontSize ?? null;
+
     return Object.fromEntries(Object.entries({
         props: {
-            '--icon-size': settings?.icon?.size ?? null,
+            '--icon-size': isImage ? fontSize : iconSize,
         }
     }).filter(([k, v]) => v !== null));
 }
@@ -69,8 +76,9 @@ registerBlockType(metadata.name, {
 
 
             useEffect(() => {
-                setCss(getCssProps(settings));
-            }, [settings, setCss]);
+                console.log(attributes);
+                setCss(getCssProps(attributes));
+            }, [attributes?.fontSize, setCss, settings]);
 
             const updateSettings = useCallback(
                 (nextValue) => {

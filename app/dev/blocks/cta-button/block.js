@@ -34,7 +34,7 @@ function classNames(attributes = {}) {
     return [
         'wpbs-cta-button',
         'relative',
-        !settings?.['is-link'] ? 'wp-element-button' : null,
+        //!settings?.['is-link'] ? 'wp-element-button' : null,
         settings?.['icon'] && '--icon',
         settings?.['icon-hide'] && '--icon-hide',
         settings?.['icon-bold'] && '--icon-bold',

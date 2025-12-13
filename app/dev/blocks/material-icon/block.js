@@ -23,9 +23,12 @@ const getClassNames = (attributes) => {
 
     const {'wpbs-material-icon': settings = {}} = attributes;
 
+    const isInline = (attributes?.className || '').includes('is-style-inline');
+
     return [
         selector,
-        'w-fit h-fit inline-block select-none pointer-events-none'
+        isInline ? 'inline-block' : 'block',
+        'w-fit h-fit select-none pointer-events-none'
     ]
         .filter(Boolean)
         .join(" ");

@@ -14,6 +14,12 @@
       "type": "object"
     }
   },
+  "styles": [
+    {
+      "name": "inline",
+      "label": "Inline"
+    }
+  ],
   "supports": {
     "color": {
       "background": true,

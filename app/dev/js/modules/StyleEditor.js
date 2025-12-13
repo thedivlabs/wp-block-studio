@@ -276,6 +276,18 @@ function parseBackgroundProps(props = {}) {
 
     const mediaObj = media || null;
 
+    if (
+        type === "none"
+    ) {
+        result["--bg-display"] = "none";
+        result["--image"] = "none";
+        result["--video"] = "none";
+        result["--color"] = "unset";
+        result["--mask-image"] = "unset";
+
+        return result;
+    }
+
     /* ------------------------------------------------------------
      * IMAGE / FEATURED IMAGE
      * ------------------------------------------------------------ */
@@ -301,15 +313,6 @@ function parseBackgroundProps(props = {}) {
         if (type === "featured-image-mobile") {
             result["--featured-image-mobile"] = "true";
         }
-    }
-
-    if (
-        type === "none"
-    ) {
-        result["--image"] = "none";
-        result["--video"] = "none";
-        result["--color"] = "unset";
-        result["--mask-image"] = "unset";
     }
 
     /* ------------------------------------------------------------

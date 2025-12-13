@@ -91,7 +91,7 @@ registerBlockType(metadata.name, {
                 </>
             );
         },
-        {hasChildren: true, tagName: "ul"}
+        {hasChildren: false, hasBackground: false}
     ),
 
     save: withStyleSave(
@@ -105,6 +105,6 @@ registerBlockType(metadata.name, {
                 <MaterialIcon {...settings?.icon}/>
             </BlockWrapper>;
         },
-        {hasChildren: true, tagName: "ul"}
+        {hasChildren: false, hasBackground: false}
     ),
 });

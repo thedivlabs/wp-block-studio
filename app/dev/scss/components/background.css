@@ -7,8 +7,8 @@
   mask-repeat: no-repeat;
   mask-size: var(--mask-size, contain);
   mask-position: var(--mask-origin, center);
-  top: var(--top, auto);
-  left: var(--left, auto);
+  top: var(--top, 0);
+  left: var(--left, 0);
   right: var(--right, auto);
   bottom: var(--bottom, auto);
   width: var(--width, 100%);

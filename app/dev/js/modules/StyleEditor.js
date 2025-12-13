@@ -317,10 +317,6 @@ function parseBackgroundProps(props = {}) {
         result["--size"] = backgroundSize;
     }
 
-    if (backgroundPosition != null) {
-        result["--position"] = backgroundPosition;
-    }
-
     if (backgroundOrigin != null) {
         result["--origin"] = backgroundOrigin;
     }
@@ -331,6 +327,63 @@ function parseBackgroundProps(props = {}) {
 
     if (backgroundBlendMode != null) {
         result["--blend"] = backgroundBlendMode;
+    }
+
+    /* ------------------------------------------------------------
+     * BACKGROUND POSITION → TOP / RIGHT / BOTTOM / LEFT
+     * ------------------------------------------------------------ */
+    if (backgroundPosition != null) {
+        const pos = String(backgroundPosition).toLowerCase();
+
+        // Default: centered
+        let inset = {
+            top: "50%",
+            right: "auto",
+            bottom: "auto",
+            left: "50%",
+        };
+
+        if (pos.includes("top")) {
+            inset = {
+                top: "0",
+                right: "0",
+                bottom: "auto",
+                left: "0",
+            };
+        }
+
+        if (pos.includes("bottom")) {
+            inset = {
+                top: "auto",
+                right: "0",
+                bottom: "0",
+                left: "0",
+            };
+        }
+
+        if (pos.includes("left")) {
+            inset = {
+                top: "0",
+                right: "auto",
+                bottom: "0",
+                left: "0",
+            };
+        }
+
+        if (pos.includes("right")) {
+            inset = {
+                top: "0",
+                right: "0",
+                bottom: "0",
+                left: "auto",
+            };
+        }
+
+        // Apply atomically
+        result["--top"] = inset.top;
+        result["--right"] = inset.right;
+        result["--bottom"] = inset.bottom;
+        result["--left"] = inset.left;
     }
 
     /* ------------------------------------------------------------
@@ -385,24 +438,37 @@ function parseBackgroundProps(props = {}) {
     }
 
     /* ------------------------------------------------------------
-     * DIMENSIONS / POSITION
+     * DIMENSIONS (append % where appropriate)
      * ------------------------------------------------------------ */
-    const DIMENSIONS = {
-        top,
-        right,
-        bottom,
-        left,
-        width,
-        height,
-        "max-height": maxHeight,
-        "min-height": minHeight,
-    };
+    if (width != null && width !== "") {
+        result["--width"] =
+            typeof width === "number" || /^\d+$/.test(width)
+                ? `${width}%`
+                : width;
+    }
 
-    Object.entries(DIMENSIONS).forEach(([key, val]) => {
-        if (val != null && val !== "") {
-            result[`--${key}`] = val;
-        }
-    });
+    if (height != null && height !== "") {
+        result["--height"] =
+            typeof height === "number" || /^\d+$/.test(height)
+                ? `${height}%`
+                : height;
+    }
+
+    if (maxHeight != null) {
+        result["--max-height"] = maxHeight;
+    }
+
+    if (minHeight != null) {
+        result["--min-height"] = minHeight;
+    }
+
+    /* ------------------------------------------------------------
+     * EXPLICIT POSITION OVERRIDES (win last)
+     * ------------------------------------------------------------ */
+    if (top != null) result["--top"] = top;
+    if (right != null) result["--right"] = right;
+    if (bottom != null) result["--bottom"] = bottom;
+    if (left != null) result["--left"] = left;
 
     /* ------------------------------------------------------------
      * ATTACHMENT

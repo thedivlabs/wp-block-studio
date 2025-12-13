@@ -1,0 +1,38 @@
+{
+  "apiVersion": 3,
+  "name": "wpbs/material-icon",
+  "title": "Material Icon",
+  "description": "Display an icon",
+  "selectors": {
+    "root": ".wpbs-material-icon"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    },
+    "wpbs-material-icon": {
+      "type": "object"
+    }
+  },
+  "supports": {
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "editor-kitchensink"
+}
+
+

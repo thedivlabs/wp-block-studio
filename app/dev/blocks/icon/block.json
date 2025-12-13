@@ -1,23 +1,20 @@
 {
   "apiVersion": 3,
-  "name": "wpbs/material-icon",
-  "title": "Material Icon",
+  "name": "wpbs/icon",
+  "title": "Icon",
   "description": "Display an icon",
   "selectors": {
-    "root": ".wpbs-material-icon"
+    "root": ".wpbs-icon-block"
   },
   "attributes": {
     "uniqueId": {
       "type": "string"
-    },
-    "wpbs-material-icon": {
-      "type": "object"
     }
   },
   "styles": [
     {
-      "name": "inline",
-      "label": "Inline"
+      "name": "image",
+      "label": "Image"
     }
   ],
   "supports": {
@@ -35,6 +32,10 @@
       "size": true,
       "color": true,
       "radius": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
     }
   },
   "editorScript": "file:./block.js",

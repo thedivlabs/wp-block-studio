@@ -62,7 +62,8 @@
       "textAlign": true,
       "fontSize": true,
       "lineHeight": true,
-      "__experimentalTextTransform": true
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true
     }
   },
   "editorScript": "file:./block.js",

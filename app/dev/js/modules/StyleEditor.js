@@ -387,13 +387,13 @@ function parseBackgroundProps(props = {}) {
     }
 
     /* ------------------------------------------------------------
-     * MASK
-     * ------------------------------------------------------------ */
+ * MASK
+ * ------------------------------------------------------------ */
     if (maskImage?.isPlaceholder || maskImage?.source === "#") {
         result["--mask-image"] = "none";
         result["--mask-repeat"] = "initial";
         result["--mask-size"] = "initial";
-        result["--mask-position"] = "initial";
+        result["--mask-origin"] = "initial";
     } else if (maskImage) {
         const url =
             typeof maskImage === "object"
@@ -404,9 +404,10 @@ function parseBackgroundProps(props = {}) {
             result["--mask-image"] = `url("${url}")`;
             result["--mask-repeat"] = "no-repeat";
             result["--mask-size"] = maskSize || "contain";
-            result["--mask-position"] = maskOrigin || "center";
+            result["--mask-origin"] = maskOrigin || "center";
         }
     }
+
 
     /* ------------------------------------------------------------
      * VISUAL MODIFIERS
